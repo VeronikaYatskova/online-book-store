@@ -8,6 +8,6 @@
 * Mediator with CQRS pattern
 * AutoMapper
 * PostgreSQL
-* Docker
+* Docker and docker compose
 * Fluent Api and Fluent Validation
 * AWS S3 and Minio for storing books
