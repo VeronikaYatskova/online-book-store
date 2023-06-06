@@ -1,4 +1,5 @@
-﻿using Application.DTOs;
+﻿using Application.Abstractions.Contracts.Interfaces;
+using Application.DTOs;
 using Application.DTOs.Request;
 using Application.DTOs.Response;
 using Application.Features.Book.Commands.AddBook;
@@ -24,11 +25,30 @@ namespace WebApi.Controllers
     {
         private readonly IMediator mediator;
         private readonly IConfiguration config;
+        private readonly IMessageProducer messageProducer;
 
-        public BooksController(IMediator mediator, IConfiguration config)
+        public BooksController(IMediator mediator, IConfiguration config, IMessageProducer messageProducer)
         {
             this.mediator = mediator;
             this.config = config;
+            this.messageProducer = messageProducer;
+        }
+        
+        [HttpPost("send")]
+        public IActionResult SendReply([FromBody] EmailData emailData)
+        {
+            var connectionData = new RabbitMqConnectionData()
+            {
+                HostName = config["RabbitMqConfiguration:HostName"]!,
+                UserName = config["RabbitMqConfiguration:UserName"]!,
+                Password = config["RabbitMqConfiguration:Password"]!,
+                VirtualHost = config["RabbitMqConfiguration:VirtualHost"]!,
+                ChannelName = "email-sending"
+            };
+
+            messageProducer.SendingMessage(emailData, connectionData);
+
+            return Ok("The message is sent.");
         }
 
         [HttpGet]

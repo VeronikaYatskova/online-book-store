@@ -3,6 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using FluentValidation;
 using MediatR;
 using Application.PipelineBehaviors;
+using Application.Abstractions.Contracts.Interfaces;
+using Application.Services;
 
 namespace Application
 {
@@ -13,6 +15,7 @@ namespace Application
             services.AddMediatR(_ => _.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            services.AddScoped<IMessageProducer, MessageProducer>();
         }
     }
 }

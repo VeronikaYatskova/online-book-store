@@ -2,6 +2,7 @@ using Application.DTOs.Request;
 using Application.DTOs.Response;
 using AutoMapper;
 using Domain.Entities;
+using RabbitMQ.Client;
 
 namespace Application.AutoMapper
 {
@@ -14,6 +15,7 @@ namespace Application.AutoMapper
             CreateMap<CategoryEntity, CategoryResponse>();
             CreateMap<AddBookDto, BookDto>();
             CreateMap<AddBookDto, BookEntity>();
+            CreateMap<RabbitMqConnectionData, ConnectionFactory>();
         }
     }
 }

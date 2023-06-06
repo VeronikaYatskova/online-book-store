@@ -4,19 +4,16 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
-COPY ["/Smtp.WebApi/smptp-pdf-generation.csproj", "src/Smtp.WebApi/"]
+COPY ["/Smtp.WebAPI/Smtp.WebAPI.csproj", "src/Smtp.WebAPI/"]
 
-RUN dotnet restore "src/Smtp.WebApi/smptp-pdf-generation.csproj"
-COPY . .
-
-RUN dotnet build "smptp-pdf-generation.csproj" -c Release -o /app
+RUN dotnet restore "src/Smtp.WebAPI/Smtp.WebAPI.csproj"
 
 FROM build AS publish
-RUN dotnet publish "smptp-pdf-generation.csproj" -c Release -o /app
+RUN dotnet publish -c Release -o /app
 
 FROM base AS runtime
 WORKDIR /app
 
 COPY --from=publish /app .
 
-ENTRYPOINT ["dotnet", "smptp-pdf-generation.csproj"]
+ENTRYPOINT ["dotnet", "Smtp.WebAPI.dll"]

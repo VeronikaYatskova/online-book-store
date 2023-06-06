@@ -3,8 +3,6 @@ using Application;
 using WebApi.Middlewares;
 using Serilog;
 using Serilog.Events;
-using WebApi;
-using Infrastructure.Persistance.DataContext;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
