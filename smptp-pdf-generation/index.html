@@ -1,0 +1,75 @@
+<html>
+    <head>
+    </head>
+    <body>
+        <div class='container'>
+            <div class='title'>
+                <p>You request to publish the book with below characteristics is accepted.</p>
+            </div>
+            <div class='books-chars'>
+                <div class='info'>
+                    <p class='field'>Title:</p>
+                    <p class='value'>book_title</p>
+                </div>
+                <div class='info'>
+                    <p class='field'>Authors: </p>
+                    <p class='value'>author_name</p>
+                </div>
+                <div class='info'>
+                    <p class='field'>Publisher:</p>
+                    <p class='value'>publisher</p>
+                </div>
+                <div class='info'>
+                    <p class='field'>Year: </p>
+                    <p class='value'>year</p>
+                </div>
+            </div>
+        </div>
+    </body>
+    <style>
+        .container {
+            margin-top: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: 800;   
+            border-bottom: 2px solid green; 
+            margin-bottom: 50px;    
+        }
+
+        .field {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .books-chars {
+            display: flex;
+            flex-direction: column;
+            width: 500px;
+            margin-right: 300px;
+        }
+
+        .info {
+            display: flex;
+        }
+
+        .info .value {
+            font-size: 18px;
+            padding-left: 20px;
+        }
+
+        ul {
+            text-decoration: none;
+        }
+
+        ul.li {
+            text-decoration: none;
+        }
+
+    </style>
+</html>

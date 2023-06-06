@@ -12,10 +12,10 @@ namespace Infrastructure.Persistance.Repositories
         }
         
         public async Task<IEnumerable<PublisherEntity>> GetAllAsync() =>
-            await FindAllAsync(false);
+            await FindAllAsync();
 
         public async Task<PublisherEntity?> GetByIdAsync(Guid id) =>
-            await FindByCondition(b => b.PublisherGuid == id, false).FirstOrDefaultAsync();
+            await FindByCondition(b => b.PublisherGuid == id).FirstOrDefaultAsync();
 
         public async Task AddPublisherAsync(PublisherEntity publisher) =>
             await CreateAsync(publisher);

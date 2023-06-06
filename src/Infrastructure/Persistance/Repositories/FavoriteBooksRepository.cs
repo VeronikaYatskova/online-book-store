@@ -13,11 +13,11 @@ namespace Infrastructure.Persistance.Repositories
         }
 
         public async Task<IEnumerable<UserFavoriteBookEntity>> GetFavouriteBooks(Guid userId) => 
-            await FindByCondition(fb => fb.UserId == userId, false).ToListAsync();
+            await FindByCondition(fb => fb.UserId == userId).ToListAsync();
 
         public async Task AddBookToFavorite(Guid userId, Guid bookId)
         {
-            var bookIsAdded = FindByCondition(fb => fb.UserId == userId && fb.BookId == bookId, false).FirstOrDefault(); 
+            var bookIsAdded = FindByCondition(fb => fb.UserId == userId && fb.BookId == bookId).FirstOrDefault(); 
             if (bookIsAdded is not null)
             {
                 throw Exceptions.BookAlreadyExistsInFavorites;
@@ -34,7 +34,7 @@ namespace Infrastructure.Persistance.Repositories
 
         public void RemoveBookFromFavorite(Guid userId, Guid bookId)
         {
-            var bookToDelete = FindByCondition(fb => fb.UserId == userId && fb.BookId == bookId, false).FirstOrDefault();
+            var bookToDelete = FindByCondition(fb => fb.UserId == userId && fb.BookId == bookId).FirstOrDefault();
 
             if (bookToDelete is null)
             {

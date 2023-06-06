@@ -18,12 +18,10 @@ RUN dotnet publish -c Release -o /app/publish
 RUN dotnet tool install -g dotnet-ef
 ENV PATH $PATH:/root/.dotnet/tools
 
-CMD dotnet ef database update
-
 FROM base AS runtime
 WORKDIR /app
 
 COPY --from=publish /app/publish .
 RUN ls -l
 
-ENTRYPOINT ["dotnet", "Auth.API.dll"]
+CMD dotnet ef database update && dotnet Auth.API.dll

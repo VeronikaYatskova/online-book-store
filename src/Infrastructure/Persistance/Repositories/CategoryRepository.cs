@@ -12,6 +12,6 @@ namespace Infrastructure.Persistance.Repositories
         }
 
         public async Task<IEnumerable<CategoryEntity>> GetCategoriesAsync() =>
-            await FindAllAsync(false);
+            await FindAllAsync();
     }
 }

@@ -10,7 +10,6 @@ namespace Auth.Application
         public static void AddApplicationLayer(this IServiceCollection services)
         {
             services.AddMediatR(_ => _.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddServices();
         }
 

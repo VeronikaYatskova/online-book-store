@@ -14,9 +14,9 @@ namespace Infrastructure.Persistance.Repositories
             this.dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<T>> FindAllAsync(bool trackChanges) => await dbContext.Set<T>().ToListAsync();
+        public async Task<IEnumerable<T>> FindAllAsync() => await dbContext.Set<T>().ToListAsync();
 
-        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression, bool trackChanges) =>
+        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression) =>
             dbContext.Set<T>().Where(expression);
         
         public async Task<T> CreateAsync(T entity)

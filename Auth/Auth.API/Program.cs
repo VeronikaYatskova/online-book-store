@@ -3,6 +3,8 @@ using Auth.Application;
 using Serilog;
 using Serilog.Events;
 using Auth.API.Middlewares;
+using Auth.API;
+using Auth.Infrastructure.Database.DataContext;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,9 +27,11 @@ builder.Services.AddApplicationLayer();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 
+app.MigrateDatabase<AppDbContext>();
 app.ConfigureCustomExceptionMiddleware();
 
 // Configure the HTTP request pipeline.
@@ -37,10 +41,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+
+

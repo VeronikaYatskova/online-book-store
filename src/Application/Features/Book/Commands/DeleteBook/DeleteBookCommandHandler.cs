@@ -60,7 +60,7 @@ namespace Application.Features.Book.Commands.DeleteBook
             }
             catch(AmazonS3Exception ex)
             {
-                throw new NotImplementedException();
+                throw new AmazonS3Exception(ex);
             }  
         }
     }

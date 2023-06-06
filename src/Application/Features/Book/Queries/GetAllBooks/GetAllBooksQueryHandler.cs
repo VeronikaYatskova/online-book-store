@@ -21,7 +21,7 @@ namespace Application.Features.Book.Queries.GetAllBooks
             this.mapper = mapper;
         }
 
-        public async Task<IEnumerable<BookDto>> Handle(GetAllBooksQuery request, CancellationToken cancellationToken)
+        public Task<IEnumerable<BookDto>> Handle(GetAllBooksQuery request, CancellationToken cancellationToken)
         {
             var policy = SetRetryPolicyAsync();
 
@@ -42,7 +42,7 @@ namespace Application.Features.Book.Queries.GetAllBooks
                 book.FileURL = GetFilePreSignedUrl(awsData, book.BookFakeName);
             }
 
-            return booksDto;
+            return Task.FromResult(booksDto);
         }
 
         private string GetFilePreSignedUrl(AwsDataWithClientUrl awsData, string fileName)
@@ -76,7 +76,7 @@ namespace Application.Features.Book.Queries.GetAllBooks
         private Polly.Retry.RetryPolicy SetRetryPolicy()
         {
             return Policy
-                .Handle<Exception>()
+                .Handle<AmazonS3Exception>()
                 .WaitAndRetry(3, i => TimeSpan.FromSeconds(5), onRetry: (exception, retryCount) =>
                 {
                     Console.WriteLine("Get Exception: " + exception + "... Retry count: " + retryCount);
@@ -86,7 +86,7 @@ namespace Application.Features.Book.Queries.GetAllBooks
         private Polly.Retry.AsyncRetryPolicy SetRetryPolicyAsync()
         {
             return Policy
-                .Handle<Exception>()
+                .Handle<AmazonS3Exception>()
                 .WaitAndRetryAsync(0, i => TimeSpan.FromSeconds(5), onRetry: (exception, retryCount) =>
                 {
                     Console.WriteLine("Get Exception: " + exception + "... Retry count: " + retryCount);

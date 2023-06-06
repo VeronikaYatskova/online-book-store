@@ -11,6 +11,6 @@ namespace Infrastructure.Persistance.Repositories
         }
 
         public async Task<IEnumerable<AuthorEntity>> GetAllAsync() =>
-            await FindAllAsync(false);
+            await FindAllAsync();
     }
 }

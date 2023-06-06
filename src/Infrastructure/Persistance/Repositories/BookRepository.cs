@@ -12,22 +12,22 @@ namespace Infrastructure.Persistance.Repositories
         }
 
         public async Task<IEnumerable<BookEntity>> GetAllAsync() => 
-            await FindAllAsync(trackChanges: false);
+            await FindAllAsync();
         
         public async Task<BookEntity?> GetByIdAsync(Guid id) => 
-            await FindByCondition(b => b.BookGuid == id, false)!.FirstOrDefaultAsync();
+            await FindByCondition(b => b.BookGuid == id)!.FirstOrDefaultAsync();
 
         public IEnumerable<BookEntity> GetByName(string name) =>
-            FindByCondition(b => b.BookName == name, false);
+            FindByCondition(b => b.BookName == name);
         
         public IEnumerable<BookEntity> GetByISBN10(string isbn10) =>
-            FindByCondition(b => b.ISBN10 == isbn10, false);
+            FindByCondition(b => b.ISBN10 == isbn10);
 
         public IEnumerable<BookEntity> GetByISBN13(string isbn13) =>
-            FindByCondition(b => b.ISBN13 == isbn13, false);
+            FindByCondition(b => b.ISBN13 == isbn13);
 
         public IEnumerable<BookEntity> GetByPublisher(string publisher) =>
-            FindByCondition(b => b.Publisher.PublisherName == publisher, false);
+            FindByCondition(b => b.Publisher.PublisherName == publisher);
 
         public async Task AddBookAsync(BookEntity book) => 
             await CreateAsync(book);

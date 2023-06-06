@@ -9,7 +9,7 @@ namespace Auth.Infrastructure.Database.DataContext
         {
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
             
-            string connectionString = "Host=postgres-auth;User ID =admin;Password=admin;Port=5432;Database=books-users; Integrated Security=true;Pooling=true;";
+            string connectionString = "Host=postgres;User ID =admin;Password=admin;Port=5432;Database=books-users; Integrated Security=true;Pooling=true;";
             optionsBuilder.UseNpgsql(connectionString, opts => opts.CommandTimeout((int)TimeSpan.FromMinutes(10).TotalSeconds));
             return new AppDbContext(optionsBuilder.Options);
         }
