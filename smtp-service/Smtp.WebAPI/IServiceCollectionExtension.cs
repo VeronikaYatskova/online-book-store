@@ -1,9 +1,9 @@
 using DinkToPdf;
 using DinkToPdf.Contracts;
-using smptp_pdf_generation.Services;
-using smptp_pdf_generation.Services.Contracts;
+using Smtp.WebAPI.Services;
+using Smtp.WebAPI.Services.Contracts;
 
-namespace smptp_pdf_generation
+namespace Smtp.WebAPI
 {
     public static class IServiceCollectionExtension
     {

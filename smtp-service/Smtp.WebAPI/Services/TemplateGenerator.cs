@@ -1,8 +1,8 @@
 using System.Text;
-using smptp_pdf_generation.Models;
-using smptp_pdf_generation.Services.Contracts;
+using Smtp.WebAPI.Models;
+using Smtp.WebAPI.Services.Contracts;
 
-namespace smptp_pdf_generation.Services
+namespace Smtp.WebAPI.Services
 {
     public class TemplateGenerator : ITemplateGenerator
     {

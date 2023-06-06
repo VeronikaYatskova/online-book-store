@@ -1,4 +1,4 @@
-namespace smptp_pdf_generation.Models
+namespace Smtp.WebAPI.Models
 {
     public class EmailInfo
     {

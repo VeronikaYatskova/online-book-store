@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using smptp_pdf_generation.Models;
-using smptp_pdf_generation.Services.Contracts;
+using Smtp.WebAPI.Models;
+using Smtp.WebAPI.Services.Contracts;
 
-namespace smptp_pdf_generation.Controllers
+namespace Smtp.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/email")]

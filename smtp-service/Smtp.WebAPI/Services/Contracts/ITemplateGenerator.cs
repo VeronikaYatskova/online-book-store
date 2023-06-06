@@ -1,6 +1,6 @@
-using smptp_pdf_generation.Models;
+using Smtp.WebAPI.Models;
 
-namespace smptp_pdf_generation.Services.Contracts
+namespace Smtp.WebAPI.Services.Contracts
 {
     public interface ITemplateGenerator
     {

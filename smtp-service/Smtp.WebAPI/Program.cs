@@ -1,4 +1,4 @@
-using smptp_pdf_generation;
+using Smtp.WebAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 

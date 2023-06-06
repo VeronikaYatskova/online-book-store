@@ -1,10 +1,10 @@
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
-using smptp_pdf_generation.Models;
-using smptp_pdf_generation.Services.Contracts;
+using Smtp.WebAPI.Models;
+using Smtp.WebAPI.Services.Contracts;
 
-namespace smptp_pdf_generation.Services
+namespace Smtp.WebAPI.Services
 {
     public class EmailSender : IEmailSender
     {
