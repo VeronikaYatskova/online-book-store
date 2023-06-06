@@ -16,12 +16,12 @@ namespace smptp_pdf_generation.Services
                     <body>
                         <div class='container'>
                             <div class='title'>
-                                <p>Your request to publish the {0} with below characteristics is accepted.</p>
+                                <p>Your request to publish the book with below characteristics is accepted.</p>
                             </div>
                             <div class='books-chars'>
                                 <div class='info'>
                                     <p class='field'>Title:</p>
-                                    <p class='value'>book_title</p>
+                                    <p class='value'>{0}</p>
                                 </div>
                                 <div class='info'>
                                     <p class='field'>Authors: </p>
@@ -34,21 +34,21 @@ namespace smptp_pdf_generation.Services
                 sb.AppendFormat(@"<p class='value'>{0}</p>", author);
             }
 
-            sb.Append(@"
+            sb.AppendFormat(@"
                                 </div>
                                 <div class='info'>
                                     <p class='field'>Publisher:</p>
-                                    <p class='value'>publisher</p>
+                                    <p class='value'>{0}</p>
                                 </div>
                                 <div class='info'>
                                     <p class='field'>Year: </p>
-                                    <p class='value'>year</p>
+                                    <p class='value'>{1}</p>
                                 </div>
                             </div>
                         </div>
                     </body>
                 </html>
-            ");
+            ", book.PublisherName, book.PublishDate);
 
             return sb.ToString();
         }

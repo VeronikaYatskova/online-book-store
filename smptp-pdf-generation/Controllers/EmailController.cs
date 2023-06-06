@@ -17,17 +17,13 @@ namespace smptp_pdf_generation.Controllers
             this.pdfGenerator = pdfGenerator;
         }
 
-        public Task<IActionResult> SendEmailWithPdf()
+        [HttpPost]
+        public IActionResult SendEmailWithPdf([FromBody] EmailInfo emailInfo)
         {
-            throw new NotImplementedException();
-        }
+            var file = pdfGenerator.CreatePDF(emailInfo.Book);
+            emailSender.SendEmail(emailInfo.EmailTo, file);
 
-        [HttpGet("pdf")]
-        public IActionResult GetPdf([FromBody] Book book)
-        {
-            var file = pdfGenerator.CreatePDF(book);
-
-            return File(file, "application/pdf");
+            return Ok("Your email is sent.");
         }
     }
 }

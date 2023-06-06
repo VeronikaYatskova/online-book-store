@@ -31,10 +31,14 @@ namespace smptp_pdf_generation.Services
             {
                 PagesCount = true,
                 HtmlContent = templateGenerator.GetHTMLString(book),
-                WebSettings = { DefaultEncoding = "utf-8", UserStyleSheet =  Path.Combine(Directory.GetCurrentDirectory(), "assets", "styles.css") },
-                HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
-                FooterSettings = { FontName = "Arial", FontSize = 9, Line = true, Center = "Report Footer" }
-            };
+                WebSettings = 
+                { 
+                    DefaultEncoding = "utf-8", 
+                    UserStyleSheet =  Path.Combine(Directory.GetCurrentDirectory(), "assets", "styles.css"),
+                },
+                HeaderSettings = { FontName = "Arial", FontSize = 9, Line = false },
+                FooterSettings = { FontName = "Arial", FontSize = 9, Line = false }
+           };
 
             var pdf = new HtmlToPdfDocument()
             {
