@@ -14,4 +14,5 @@
 * Fluent Api and Fluent Validation
 * AWS S3 and Minio for storing books
 * DinkToPdf Tool to convert html to pdf
+* Serilog
 
