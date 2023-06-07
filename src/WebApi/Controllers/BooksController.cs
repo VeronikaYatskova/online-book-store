@@ -35,7 +35,7 @@ namespace WebApi.Controllers
         }
         
         [HttpPost("send")]
-        public IActionResult SendReply([FromBody] EmailData emailData)
+        public IActionResult SendReply([FromBody] EmailDataRequest emailData)
         {
             var connectionData = new RabbitMqConnectionData()
             {

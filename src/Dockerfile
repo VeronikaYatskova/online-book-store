@@ -18,8 +18,9 @@ RUN dotnet build -c Release -o /app/build
 FROM build AS publish
 RUN dotnet publish -c Release -o /app/publish
 
-RUN dotnet tool install -g dotnet-ef
-ENV PATH $PATH:/root/.dotnet/tools
+# RUN dotnet tool install -g dotnet-ef
+# ENV PATH="${PATH}:/root/.dotnet/tools"
+# RUN dotnet ef database update
 
 FROM base AS runtime
 WORKDIR /app
@@ -27,4 +28,4 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 RUN ls -l
 
-CMD dotnet ef database update && dotnet WebApi.dll
+ENTRYPOINT ["dotnet", "WebApi.dll"]

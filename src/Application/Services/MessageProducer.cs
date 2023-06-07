@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using Application.Abstractions.Contracts.Interfaces;
+using Application.DTOs.Request;
 using AutoMapper;
 using Domain.Entities;
 using RabbitMQ.Client;
@@ -16,7 +17,7 @@ namespace Application.Services
             this.mapper = mapper;
         }
 
-        public void SendingMessage(EmailData emailData, RabbitMqConnectionData connectionData)
+        public void SendingMessage(EmailDataRequest emailData, RabbitMqConnectionData connectionData)
         {
             try
             {
@@ -25,7 +26,7 @@ namespace Application.Services
                 var connection = factory.CreateConnection();
 
                 using var channel = connection.CreateModel();
-                channel.QueueDeclare(connectionData.ChannelName, durable: true, exclusive: true);
+                channel.QueueDeclare(connectionData.ChannelName, durable: true, exclusive: false);
 
                 var jsonString = JsonSerializer.Serialize(emailData);
                 var body = Encoding.UTF8.GetBytes(jsonString);
