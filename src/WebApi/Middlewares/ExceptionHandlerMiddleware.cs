@@ -1,16 +1,17 @@
-using System.Net;
 using System.Text.Json;
-using Application.Exceptions;
+using Application.Abstractions.Contracts.Interfaces;
 
 namespace WebApi.Middlewares
 {
     public class ExceptionHandlerMiddleware
     {
         private readonly RequestDelegate next;
+        private readonly IExceptionsService exceptionService;
 
-        public ExceptionHandlerMiddleware(RequestDelegate next)
+        public ExceptionHandlerMiddleware(RequestDelegate next, IExceptionsService exceptionService)
         {
             this.next = next;
+            this.exceptionService = exceptionService;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -25,22 +26,9 @@ namespace WebApi.Middlewares
             }
         }
 
-        private static Task HandleExceptionAsync(HttpContext context, Exception ex)
+        private Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
-            var code = HttpStatusCode.InternalServerError;
-
-            if (ex is NotFoundException)
-            {
-                code = HttpStatusCode.NotFound;
-            }
-            else if (ex is ValidationException)
-            {
-                code = HttpStatusCode.UnprocessableEntity;
-            }
-            else if (ex is AlreadyExistsException)
-            {
-                code = HttpStatusCode.Conflict;
-            }
+            var code = exceptionService.GetStatusCodeOnException(ex);
 
             var result = JsonSerializer.Serialize(new { error = ex.Message });
             context.Response.ContentType = "application/json";

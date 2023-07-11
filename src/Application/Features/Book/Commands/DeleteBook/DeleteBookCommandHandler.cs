@@ -3,6 +3,7 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using Application.Abstractions.Contracts.Interfaces;
+using Application.Exceptions;
 using AutoMapper;
 using MediatR;
 
@@ -26,7 +27,7 @@ namespace Application.Features.Book.Commands.DeleteBook
 
             if (bookToDelete is null)
             {
-                throw Exceptions.Exceptions.BookNotFound;
+                throw new NotFoundException(ExceptionMessages.BookNotFound);
             }
 
             unitOfWork.BooksRepository.DeleteBook(bookToDelete);

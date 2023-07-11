@@ -4,6 +4,7 @@ using Amazon.S3.Model;
 using Application.Abstractions.Contracts.Interfaces;
 using Application.DTOs;
 using Application.DTOs.Response;
+using Application.Exceptions;
 using AutoMapper;
 using MediatR;
 using Polly;
@@ -30,7 +31,7 @@ namespace Application.Features.Book.Queries.GetAllBooks
             
             if (books is null)
             {
-                throw Exceptions.Exceptions.BookListIsEmpty;
+                throw new NotFoundException(ExceptionMessages.BookListIsEmpty);
             }
 
             var booksDto = mapper.Map<IEnumerable<BookDto>>(books);

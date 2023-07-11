@@ -1,5 +1,6 @@
 using Application.Abstractions.Contracts.Interfaces;
 using Application.DTOs.Response;
+using Application.Exceptions;
 using AutoMapper;
 using MediatR;
 
@@ -22,7 +23,7 @@ namespace Application.Features.Category.Queries
 
             if (categories is null)
             {
-                 throw Exceptions.Exceptions.CategoriesListIsEmpty;
+                 throw new NotFoundException(ExceptionMessages.CategoriesListIsEmpty);
             }
 
             return mapper.Map<IEnumerable<CategoryResponse>>(categories);

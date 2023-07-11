@@ -10,8 +10,6 @@ namespace Auth.Infrastructure.Database.DataContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            // Database.EnsureCreated();
-            // Database.Migrate();
 
             modelBuilder.Entity<User>().HasKey(u => u.UserGuid);
             modelBuilder.Entity<User>().Property(u => u.UserGuid).ValueGeneratedOnAdd();

@@ -1,5 +1,6 @@
 using Application.Abstractions.Contracts.Interfaces;
 using Application.DTOs.Response;
+using Application.Exceptions;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
@@ -20,11 +21,11 @@ namespace Application.Features.Book.Queries.GetFavoriteBooks
         public async Task<IEnumerable<BookDto>> Handle(GetFavoriteBooksQuery request, CancellationToken cancellationToken)
         {
             var userId = new Guid(request.userId);
-            var favoriteBooks = await unitOfWork.FavoriteBooksRepository.GetFavouriteBooks(userId);
+            var favoriteBooks = await unitOfWork.FavoriteBooksRepository.GetFavouriteBooksAsync(userId);
 
             if (!favoriteBooks.Any())
             {
-                throw Exceptions.Exceptions.NoFavoriteBooks;
+                throw new NotFoundException(ExceptionMessages.NoFavoriteBooks);
             }
 
             var bookGuids = favoriteBooks.Select(fb => fb.BookId);

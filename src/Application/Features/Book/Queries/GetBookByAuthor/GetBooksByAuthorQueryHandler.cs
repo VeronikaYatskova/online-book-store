@@ -1,5 +1,6 @@
 using Application.Abstractions.Contracts.Interfaces;
 using Application.DTOs.Response;
+using Application.Exceptions;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
@@ -26,14 +27,14 @@ namespace Application.Features.Book.Queries.GetBookByAuthor
             var author = authors.FirstOrDefault(a => a.AuthorLastName == request.authorName);
             if (author is null)
             {
-                throw Exceptions.Exceptions.AuthorNotFound;
+                throw new NotFoundException(ExceptionMessages.AuthorNotFound);
             }
             
             var authorBooksGuids = authorsBooks.Where(ab => ab.AuthorGuid == author.AuthorGuid);
 
             if (authorBooksGuids is null)
             {
-                throw Exceptions.Exceptions.BookNotFound;
+                throw new NotFoundException(ExceptionMessages.BookNotFound);
             }
 
             var authorBooksEntities = new List<BookEntity>();
