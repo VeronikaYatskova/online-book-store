@@ -35,7 +35,7 @@ namespace Auth.Application.Features.User.Commands.LoginUser
             {
                 VerifyData(user, userData);
 
-                var token = tokenService.CreateToken(user, request.secretKey);
+                var token = tokenService.CreateToken(user);
                 return token;
             }
         }

@@ -1,0 +1,18 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:7201"
+  },
+  "Routes": 
+  [ 
+    {
+      "UpstreamPathTemplate": "/api/gateway/sign-in",
+      "UpstreamHttpMethod": ["Post"],
+      "DownstreamPathTemplate": "/api/users/sign-in",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [{
+          "Host": "localhost",
+          "Port": "7198"
+      }]
+    }
+  ]  
+}

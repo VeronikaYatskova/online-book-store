@@ -12,12 +12,10 @@ namespace Auth.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IMediator mediator;
-        private readonly IConfiguration config;
 
-        public UserController(IMediator mediator, IConfiguration config)
+        public UserController(IMediator mediator)
         {
             this.mediator = mediator;
-            this.config = config;
         }
 
         [HttpGet]
@@ -31,8 +29,7 @@ namespace Auth.API.Controllers
         [HttpPost("sign-in")]
         public async Task<IActionResult> LoginUser([FromBody] LoginUserRequest request)
         {
-            var key = config["SecretKey"];
-            var token = await mediator.Send(new LoginUserCommand(request, key!));
+            var token = await mediator.Send(new LoginUserCommand(request));
 
             return Ok(token);
         }
@@ -40,8 +37,7 @@ namespace Auth.API.Controllers
         [HttpPost("sign-up")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserRequest request)
         {
-            var key = config["SecretKey"];
-            var token = await mediator.Send(new RegisterUserCommand(request, key!));
+            var token = await mediator.Send(new RegisterUserCommand(request));
 
             return Created("User was created.", token);
         }

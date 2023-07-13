@@ -31,7 +31,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 
-app.MigrateDatabase<AppDbContext>();
+// app.MigrateDatabase<AppDbContext>();
 app.ConfigureCustomExceptionMiddleware();
 
 // Configure the HTTP request pipeline.

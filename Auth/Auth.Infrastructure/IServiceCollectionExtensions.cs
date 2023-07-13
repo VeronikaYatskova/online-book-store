@@ -17,14 +17,17 @@ namespace Auth.Infrastructure
 
         private static void AddDbContext(this IServiceCollection services, IConfiguration config)
         {
+            var connectionString = config.GetConnectionString("DefaultConnection");       
+            ArgumentNullException.ThrowIfNull(connectionString, nameof(connectionString));
             services.AddDbContext<AppDbContext>(options =>
                 options.UseLazyLoadingProxies()
-                       .UseNpgsql(config.GetConnectionString("DefaultConnection")));
+                       .UseNpgsql(connectionString));
         }
 
         private static void AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserRoleRepository, UserRoleRepository>();
         }
     }
 }

@@ -1,3 +1,4 @@
+using Auth.Infrastructure.Database.DataContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace Auth.API

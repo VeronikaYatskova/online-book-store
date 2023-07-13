@@ -9,7 +9,8 @@ namespace Auth.Domain.Models
 
         public byte[]? PasswordSalt { get; set; }
 
-        public string Role { get; set; } = default!;
+        public Guid RoleId { get; set; }
+        public virtual UserRole Role { get; set; } = default!;
 
         public string? RefreshToken { get; set; }
 

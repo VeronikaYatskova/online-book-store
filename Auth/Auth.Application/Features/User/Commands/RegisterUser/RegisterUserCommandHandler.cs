@@ -11,12 +11,18 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
     public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, string>
     {
         private readonly IUserRepository userRepository;
+        private readonly IUserRoleRepository userRoleRepository;
         private readonly ITokenService tokenService;
         private readonly IMapper mapper;
 
-        public RegisterUserCommandHandler(IUserRepository userRepository, ITokenService tokenService, IMapper mapper)
+        public RegisterUserCommandHandler(
+            IUserRepository userRepository, 
+            IUserRoleRepository userRoleRepository,
+            ITokenService tokenService, 
+            IMapper mapper)
         {
             this.userRepository = userRepository;
+            this.userRoleRepository = userRoleRepository;
             this.tokenService = tokenService;
             this.mapper = mapper;
         }
@@ -31,14 +37,18 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
 
             CreatePasswordHash(userData.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
+            var userRoleId = new Guid(request.request.RoleId);
             var user = mapper.Map<Auth.Domain.Models.User>(userData);
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
-
-            var token = tokenService.CreateToken(user, request.secretKey);
+            user.Role = await userRoleRepository.GetUserRoleByIdAsync(userRoleId) ??
+                throw new NotFoundException("No user with the given role.");
+            user.RoleId = userRoleId;
 
             userRepository.AddUser(user);
             await userRepository.SaveUserChangesAsync();
+
+            var token = tokenService.CreateToken(user);
 
             return token;
         }

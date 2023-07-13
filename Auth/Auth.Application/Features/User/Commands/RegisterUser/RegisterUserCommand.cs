@@ -3,5 +3,5 @@ using MediatR;
 
 namespace Auth.Application.Features.User.Commands.RegisterUser
 {
-    public record RegisterUserCommand(RegisterUserRequest request, string secretKey) : IRequest<string>;
+    public record RegisterUserCommand(RegisterUserRequest request) : IRequest<string>;
 }
