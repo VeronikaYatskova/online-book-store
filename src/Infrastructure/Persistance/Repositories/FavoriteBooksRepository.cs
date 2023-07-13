@@ -12,15 +12,15 @@ namespace Infrastructure.Persistance.Repositories
         {
         }
 
-        public async Task<IEnumerable<UserFavoriteBookEntity>> GetFavouriteBooks(Guid userId) => 
+        public async Task<IEnumerable<UserFavoriteBookEntity>> GetFavouriteBooksAsync(Guid userId) => 
             await FindByCondition(fb => fb.UserId == userId).ToListAsync();
 
-        public async Task AddBookToFavorite(Guid userId, Guid bookId)
+        public async Task AddBookToFavoriteAsync(Guid userId, Guid bookId)
         {
             var bookIsAdded = FindByCondition(fb => fb.UserId == userId && fb.BookId == bookId).FirstOrDefault(); 
             if (bookIsAdded is not null)
             {
-                throw Exceptions.BookAlreadyExistsInFavorites;
+                throw new NotFoundException(ExceptionMessages.BookAlreadyExistsInFavorites);
             }
 
             var bookToAdd = new UserFavoriteBookEntity()
@@ -38,7 +38,7 @@ namespace Infrastructure.Persistance.Repositories
 
             if (bookToDelete is null)
             {
-                throw Exceptions.BookNotFound;
+                throw new NotFoundException(ExceptionMessages.BookNotFound);
             }
 
             Delete(bookToDelete);

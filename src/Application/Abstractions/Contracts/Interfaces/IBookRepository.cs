@@ -7,7 +7,6 @@ namespace Application.Abstractions.Contracts.Interfaces
         Task<IEnumerable<BookEntity>> GetAllAsync();
         Task<BookEntity?> GetByIdAsync(Guid id);
         IEnumerable<BookEntity> GetByName(string name);
-        // IEnumerable<BookEntity> GetByAuthorName(string name);
         IEnumerable<BookEntity> GetByPublisher(string publisher);
         IEnumerable<BookEntity> GetByISBN10(string isbn10);
         IEnumerable<BookEntity> GetByISBN13(string isbn10);

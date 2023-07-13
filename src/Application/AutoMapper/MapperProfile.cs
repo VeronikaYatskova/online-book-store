@@ -10,11 +10,6 @@ namespace Application.AutoMapper
     {
         public MapperProfile()
         {
-            CreateMap<BookEntity, BookDto>();
-            CreateMap<PublisherEntity, PublisherDto>();
-            CreateMap<CategoryEntity, CategoryResponse>();
-            CreateMap<AddBookDto, BookDto>();
-            CreateMap<AddBookDto, BookEntity>();
             CreateMap<RabbitMqConnectionData, ConnectionFactory>();
         }
     }

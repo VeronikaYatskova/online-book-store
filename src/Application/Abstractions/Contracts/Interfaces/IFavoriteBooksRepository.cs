@@ -4,8 +4,8 @@ namespace Application.Abstractions.Contracts.Interfaces
 {
     public interface IFavoriteBooksRepository
     {
-        Task<IEnumerable<UserFavoriteBookEntity>> GetFavouriteBooks(Guid userId);
-        Task AddBookToFavorite(Guid userId, Guid bookId);
+        Task<IEnumerable<UserFavoriteBookEntity>> GetFavouriteBooksAsync(Guid userId);
+        Task AddBookToFavoriteAsync(Guid userId, Guid bookId);
         void RemoveBookFromFavorite(Guid userId, Guid bookId);
     }
 }

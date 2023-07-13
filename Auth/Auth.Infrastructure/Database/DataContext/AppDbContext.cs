@@ -10,7 +10,7 @@ namespace Auth.Infrastructure.Database.DataContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            
+
             modelBuilder.Entity<User>().HasKey(u => u.UserGuid);
             modelBuilder.Entity<User>().Property(u => u.UserGuid).ValueGeneratedOnAdd();
             modelBuilder.Entity<User>().HasOne(u => u.Role).WithMany(u => u.Users);

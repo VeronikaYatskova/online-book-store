@@ -1,5 +1,6 @@
 using Application.Abstractions.Contracts.Interfaces;
 using Application.DTOs.Response;
+using Application.Exceptions;
 using AutoMapper;
 using MediatR;
 
@@ -22,7 +23,7 @@ namespace Application.Features.Publisher.Queries.GetAllPublishers
 
             if (publishers is null)
             {
-                throw Exceptions.Exceptions.PublishersListIsEmpty;
+                throw new NotFoundException(ExceptionMessages.PublishersListIsEmpty);
             }
 
             return mapper.Map<IEnumerable<PublisherDto>>(publishers);

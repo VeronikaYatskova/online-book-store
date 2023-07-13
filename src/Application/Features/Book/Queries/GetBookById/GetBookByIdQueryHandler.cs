@@ -1,5 +1,6 @@
 using Application.Abstractions.Contracts.Interfaces;
 using Application.DTOs.Response;
+using Application.Exceptions;
 using AutoMapper;
 using MediatR;
 
@@ -22,7 +23,7 @@ namespace Application.Features.Book.Queries.GetBookById
 
             if (book is null)
             {
-                throw Exceptions.Exceptions.BookNotFound;
+                throw new NotFoundException(ExceptionMessages.BookNotFound);
             }
 
             return mapper.Map<BookDto>(book);
