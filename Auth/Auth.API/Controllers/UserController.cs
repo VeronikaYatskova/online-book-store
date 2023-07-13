@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Auth.Application.Features.User.Queries.GetUsers;
 using Auth.Application.Features.User.Commands.RegisterUser;
 using Auth.Application.Features.User.Commands.LoginUser;
+using Auth.Application.Features.User.Commands.GetRefreshToken;
 
 namespace Auth.API.Controllers
 {
@@ -40,6 +41,14 @@ namespace Auth.API.Controllers
             var token = await mediator.Send(new RegisterUserCommand(request));
 
             return Created("User was created.", token);
+        }
+
+        [HttpPost("refresh")]
+        public async Task<IActionResult> RefreshToken()
+        {
+            var token = await mediator.Send(new GetRefreshTokenCommand());
+
+            return Ok(token);
         }
     }
 }

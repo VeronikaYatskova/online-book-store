@@ -36,6 +36,8 @@ namespace Auth.Application.Features.User.Commands.LoginUser
                 VerifyData(user, userData);
 
                 var token = tokenService.CreateToken(user);
+                await tokenService.SetRefreshTokenAsync(user);
+
                 return token;
             }
         }
