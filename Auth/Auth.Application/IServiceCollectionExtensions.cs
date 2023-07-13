@@ -11,11 +11,13 @@ namespace Auth.Application
         {
             services.AddMediatR(_ => _.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             services.AddServices();
+            services.AddHttpClient();
         }
 
         private static void AddServices(this IServiceCollection services)
         {
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IHttpClientFactoryService, HttpClientFactoryService>();
         }
     }
 }
