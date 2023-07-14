@@ -18,3 +18,7 @@
 * Polly
 * RabbitMQ
 * MailKit
+* Authentication with JWT
+* Refresh tokens
+* Role-based authorization
+* Oauth2.0 with Google
