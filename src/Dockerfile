@@ -9,7 +9,7 @@ COPY ["/Domain/Domain.csproj", "src/Domain/"]
 COPY ["/Infrastructure/Infrastructure.csproj", "src/Infrastructure/"]
 COPY ["/WebApi/WebApi.csproj", "src/WebApi/"]
 
-RUN dotnet restore "WebApi/WebApi.csproj"
+RUN dotnet restore "src/WebApi/WebApi.csproj"
 COPY . .
 
 WORKDIR "/src/WebApi/"
