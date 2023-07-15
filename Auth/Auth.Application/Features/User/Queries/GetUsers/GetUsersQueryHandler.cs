@@ -1,8 +1,8 @@
-using Auth.Application.Abstractions.Repositories;
+using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Application.DTOs.Response;
 using AutoMapper;
 using MediatR;
-using Auth.Domain.Exceptions;
+using Auth.Application.Exceptions;
 
 namespace Auth.Application.Features.User.Queries.GetUsers
 {
@@ -23,7 +23,7 @@ namespace Auth.Application.Features.User.Queries.GetUsers
 
             if (users is null)
             {
-                throw Exceptions.NoUsers;
+                throw new NotFoundException(ExceptionMessages.UserNotFoundMessage);
             }
 
             return Task.FromResult(mapper.Map<IEnumerable<GetUsersResponse>>(users));

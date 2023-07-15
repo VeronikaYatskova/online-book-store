@@ -1,5 +1,5 @@
-using Auth.Application.Abstractions.Repositories;
-using Auth.Application.Abstractions.Services;
+using Auth.Application.Abstractions.Interfaces.Repositories;
+using Auth.Application.Abstractions.Interfaces.Services;
 using Auth.Application.DTOs.Request;
 using Auth.Application.DTOs.Response;
 using Auth.Application.Features.User.Commands.LoginUser;

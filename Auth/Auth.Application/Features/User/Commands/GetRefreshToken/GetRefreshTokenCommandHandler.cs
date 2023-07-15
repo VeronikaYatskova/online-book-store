@@ -1,4 +1,4 @@
-using Auth.Application.Abstractions.Services;
+using Auth.Application.Abstractions.Interfaces.Services;
 using MediatR;
 
 namespace Auth.Application.Features.User.Commands.GetRefreshToken

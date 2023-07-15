@@ -1,10 +1,10 @@
-using Auth.Application.Abstractions.Repositories;
+using Auth.Application.Abstractions.Interfaces.Repositories;
 using AutoMapper;
 using MediatR;
-using Auth.Domain.Exceptions;
+using Auth.Application.Exceptions;
 using System.Security.Cryptography;
 using System.Text;
-using Auth.Application.Abstractions.Services;
+using Auth.Application.Abstractions.Interfaces.Services;
 
 namespace Auth.Application.Features.User.Commands.RegisterUser
 {
@@ -32,7 +32,7 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
             var userData = request.request;
             if (userRepository.FindUserBy(u => u.Email == userData.Email) is not null)
             {
-                throw Exceptions.UserAlreadyExists;
+                throw new AlreadyExistsException(ExceptionMessages.UserAlreadyExistsMessage);
             }
 
             CreatePasswordHash(userData.Password, out byte[] passwordHash, out byte[] passwordSalt);

@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 
-namespace Auth.Application.Abstractions.Repositories
+namespace Auth.Application.Abstractions.Interfaces.Repositories
 {
     public interface IRepositoryBase<T>
     {

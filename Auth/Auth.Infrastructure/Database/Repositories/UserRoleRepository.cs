@@ -1,4 +1,4 @@
-using Auth.Application.Abstractions.Repositories;
+using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Domain.Models;
 using Auth.Infrastructure.Database.DataContext;
 using Microsoft.EntityFrameworkCore;

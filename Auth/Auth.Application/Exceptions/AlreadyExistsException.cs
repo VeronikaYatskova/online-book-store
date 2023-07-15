@@ -1,4 +1,4 @@
-namespace Auth.Domain.Exceptions
+namespace Auth.Application.Exceptions
 {
     public class AlreadyExistsException : Exception
     {

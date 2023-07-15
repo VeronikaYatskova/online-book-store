@@ -1,6 +1,6 @@
 using System.Text;
-using Auth.Application.Abstractions.Repositories;
-using Auth.Application.Abstractions.Services;
+using Auth.Application.Abstractions.Interfaces.Repositories;
+using Auth.Application.Abstractions.Interfaces.Services;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 

@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using Auth.Application.Abstractions.Repositories;
+using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Infrastructure.Database.DataContext;
 
 namespace Auth.Infrastructure.Database.Repositories

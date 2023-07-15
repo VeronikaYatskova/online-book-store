@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Auth.Application.Abstractions.Services;
+using Auth.Application.Abstractions.Interfaces.Services;
 
 namespace Auth.Application.Services
 {

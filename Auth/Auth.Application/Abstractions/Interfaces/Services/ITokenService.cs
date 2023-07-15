@@ -1,7 +1,6 @@
-using Auth.Application.DTOs.Response;
 using Auth.Domain.Models;
 
-namespace Auth.Application.Abstractions.Services
+namespace Auth.Application.Abstractions.Interfaces.Services
 {
     public interface ITokenService
     {

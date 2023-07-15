@@ -1,11 +1,11 @@
 using System.Reflection;
-using Auth.Application.Abstractions.Services;
+using Auth.Application.Abstractions.Interfaces.Services;
 using Auth.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Auth.Application
+namespace Auth.Application.Extensions
 {
-    public static class IServiceCollectionExtensions
+    public static class ServiceCollectionExtensions
     {
         public static void AddApplicationLayer(this IServiceCollection services)
         {

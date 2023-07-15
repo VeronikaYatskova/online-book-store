@@ -1,8 +1,8 @@
 using System.Security.Cryptography;
-using Auth.Application.Abstractions.Repositories;
-using Auth.Application.Abstractions.Services;
+using Auth.Application.Abstractions.Interfaces.Repositories;
+using Auth.Application.Abstractions.Interfaces.Services;
 using Auth.Application.DTOs.Request;
-using Auth.Domain.Exceptions;
+using Auth.Application.Exceptions;
 using AutoMapper;
 using MediatR;
 
@@ -29,7 +29,7 @@ namespace Auth.Application.Features.User.Commands.LoginUser
 
             if (user is null)
             {
-                throw Exceptions.UserNotRegistered;
+                throw new UserNotRegisteredException(ExceptionMessages.UserNotRegisteredMessage);
             }
             else
             {

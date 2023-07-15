@@ -1,5 +1,5 @@
-using Auth.Application.Abstractions.Repositories;
-using Auth.Application.Abstractions.Services;
+using Auth.Application.Abstractions.Interfaces.Repositories;
+using Auth.Application.Abstractions.Interfaces.Services;
 using Auth.Domain.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -54,7 +54,7 @@ namespace Auth.Application.Services
         {
             var refreshToken = httpContextAccessor.HttpContext.Request.Cookies["refresh-token"];
 
-            if (!user.RefreshToken.Equals(refreshToken))
+            if (!object.Equals(user.RefreshToken, refreshToken))
             {
                 throw new ArgumentException("Invalid Refresh Token");
             }

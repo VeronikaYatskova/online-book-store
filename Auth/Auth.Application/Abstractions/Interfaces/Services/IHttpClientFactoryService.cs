@@ -1,4 +1,4 @@
-namespace Auth.Application.Abstractions.Services
+namespace Auth.Application.Abstractions.Interfaces.Services
 {
     public interface IHttpClientFactoryService
     {

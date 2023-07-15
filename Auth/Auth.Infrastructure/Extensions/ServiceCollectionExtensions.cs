@@ -1,13 +1,13 @@
-using Auth.Application.Abstractions.Repositories;
+using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Infrastructure.Database.DataContext;
 using Auth.Infrastructure.Database.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Auth.Infrastructure
+namespace Auth.Infrastructure.Extensions
 {
-    public static class IServiceCollectionExtensions
+    public static class ServiceCollectionExtensions
     {
         public static void AddInfrastructureLayer(this IServiceCollection services, IConfiguration config)
         {

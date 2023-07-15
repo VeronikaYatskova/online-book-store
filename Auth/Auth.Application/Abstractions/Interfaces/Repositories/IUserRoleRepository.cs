@@ -1,6 +1,6 @@
 using Auth.Domain.Models;
 
-namespace Auth.Application.Abstractions.Repositories
+namespace Auth.Application.Abstractions.Interfaces.Repositories
 {
     public interface IUserRoleRepository
     {

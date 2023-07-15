@@ -18,7 +18,7 @@ namespace Auth.Infrastructure.Database.DataContext
             modelBuilder.Entity<UserRole>().HasKey(u => u.UserRoleGuid);
         }
         
-        public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<UserRole> UserRoles { get; set; }
+        public virtual DbSet<User> Users { get; set; } = default!;
+        public virtual DbSet<UserRole> UserRoles { get; set; } = default!;
     }
 }
