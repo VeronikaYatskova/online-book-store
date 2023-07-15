@@ -5,13 +5,23 @@
   "Routes": 
   [ 
     {
-      "UpstreamPathTemplate": "/api/gateway/sign-in",
+      "UpstreamPathTemplate": "/sign-in",
       "UpstreamHttpMethod": ["Post"],
-      "DownstreamPathTemplate": "/api/users/sign-in",
-      "DownstreamScheme": "https",
+      "DownstreamPathTemplate": "/api/auth/sign-in",
+      "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [{
           "Host": "localhost",
           "Port": "7198"
+      }]
+    },
+    {
+      "UpstreamPathTemplate": "/books",
+      "UpstreamHttpMethod": ["Get"],
+      "DownstreamPathTemplate": "/api/books",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [{
+        "Host": "localhost",
+        "Port": "7223"
       }]
     }
   ]  

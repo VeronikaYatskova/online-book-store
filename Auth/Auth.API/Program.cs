@@ -4,10 +4,8 @@ using Serilog;
 using Serilog.Events;
 using Auth.API.Middlewares;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Swashbuckle.AspNetCore.Filters;
+using Auth.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,18 +43,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-                    .GetBytes(builder.Configuration.GetSection("AppSettings:SecretKey").Value!)),
-                ValidateIssuer = false,
-                ValidateAudience = false,
-            };
-        });
+builder.Services.AddCustomAuthentication(configuration);
 
 var app = builder.Build();
 

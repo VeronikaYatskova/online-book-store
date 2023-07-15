@@ -15,10 +15,12 @@ using Application.Features.Book.Queries.GetBooksByName;
 using Application.Features.Book.Queries.GetFavoriteBooks;
 using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers
 {
+    [Authorize]
     [Route("api/books")]
     [ApiController]
     public class BooksController : ControllerBase

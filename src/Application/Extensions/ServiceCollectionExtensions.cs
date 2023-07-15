@@ -17,6 +17,7 @@ namespace Application.Extensions
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddScoped<IMessageProducer, MessageProducer>();
+            services.AddSingleton<IExceptionsService, ExceptionsService>();
         }
     }
 }

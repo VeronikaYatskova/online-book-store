@@ -3,11 +3,30 @@ using Infrastructure.Extensions;
 using Application.Extensions;
 using Serilog;
 using Serilog.Events;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace WebApi.Extensions
 {
     public static class ServiceCollectionExtensions
     {
+        public static void AddCustomAuthentication(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+                            .GetBytes(configuration.GetSection("AppSettings:SecretKey").Value!)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                    };
+                });
+        }
+        
         public static void AddLayers(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddApplicationLayer();

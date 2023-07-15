@@ -9,7 +9,7 @@ COPY ["/Domain/Domain.csproj", "src/Domain/"]
 COPY ["/Infrastructure/Infrastructure.csproj", "src/Infrastructure/"]
 COPY ["/WebApi/WebApi.csproj", "src/WebApi/"]
 
-RUN dotnet restore "src/WebApi/WebApi.csproj"
+RUN dotnet restore "WebApi/WebApi.csproj"
 COPY . .
 
 WORKDIR "/src/WebApi/"
@@ -17,10 +17,6 @@ RUN dotnet build -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish -c Release -o /app/publish
-
-# RUN dotnet tool install -g dotnet-ef
-# ENV PATH="${PATH}:/root/.dotnet/tools"
-# RUN dotnet ef database update
 
 FROM base AS runtime
 WORKDIR /app
