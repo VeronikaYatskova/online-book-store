@@ -3,7 +3,7 @@ version: '3'
 services:
   
   api:
-    image: book-store:1.0
+    image: book-store-api:latest
     ports:
       - "7223:80"
     depends_on:

@@ -4,15 +4,15 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
-COPY ["/Application/Application.csproj", "src/Application/"]
-COPY ["/Domain/Domain.csproj", "src/Domain/"]
-COPY ["/Infrastructure/Infrastructure.csproj", "src/Infrastructure/"]
-COPY ["/WebApi/WebApi.csproj", "src/WebApi/"]
+COPY ["/BookStore.Application/BookStore.Application.csproj", "src/BookStore.Application/"]
+COPY ["/BookStore.Domain/BookStore.Domain.csproj", "src/BookStore.Domain/"]
+COPY ["/BookStore.Infrastructure/BookStore.Infrastructure.csproj", "src/BookStore.Infrastructure/"]
+COPY ["/BookStore.Api/BookStore.Api.csproj", "src/BookStore.Api/"]
 
-RUN dotnet restore "src/WebApi/WebApi.csproj"
+RUN dotnet restore "src/BookStore.Api/BookStore.Api.csproj"
 COPY . .
 
-WORKDIR "/src/WebApi/"
+WORKDIR "/src/BookStore.Api/"
 RUN dotnet build -c Release -o /app/build
 
 FROM build AS publish
@@ -24,4 +24,4 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 RUN ls -l
 
-ENTRYPOINT ["dotnet", "WebApi.dll"]
+ENTRYPOINT ["dotnet", "BookStore.Api.dll"]
