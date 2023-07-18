@@ -18,11 +18,15 @@
       "UpstreamPathTemplate": "/books",
       "UpstreamHttpMethod": ["Get"],
       "DownstreamPathTemplate": "/api/books",
-      "DownstreamScheme": "http",
+      "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [{
         "Host": "localhost",
-        "Port": "7223"
-      }]
+        "Port": "7025"
+      }],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
     }
   ]  
 }

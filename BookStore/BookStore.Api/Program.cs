@@ -4,7 +4,7 @@ using BookStore.WebApi.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-builder.AddCustomLogger();
+// builder.AddCustomLogger();
 builder.Logging.ClearProviders();
 
 builder.Services.AddControllers();
@@ -35,3 +35,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+

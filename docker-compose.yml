@@ -9,6 +9,8 @@ services:
     depends_on:
       - postgres
       - minio
+    environment:
+      - ConnectionString:Host=postgres;User ID =admin;Password=admin;Port=5432;Database=books;Integrated Security=true;Pooling=true;
 
   auth:
     image: book-store-auth:latest
