@@ -2,8 +2,9 @@ using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Application.Abstractions.Interfaces.Services;
 using Auth.Application.DTOs.Request;
 using Auth.Application.DTOs.Response;
+using Auth.Application.Features.Account.Commands.RegisterAccount;
 using Auth.Application.Features.User.Commands.LoginUser;
-using Auth.Application.Features.User.Commands.RegisterUser;
+using Auth.Domain.Models;
 using AutoMapper;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
@@ -18,6 +19,7 @@ namespace Auth.Application.Features.User.Commands.LoginUserViaGoogle
     {
         private readonly ITokenService tokenService;
         private readonly IUserRepository userRepository;
+        private readonly IAccountDataRepository accountDataRepository;
         private readonly IMapper mapper;
         private readonly IConfiguration config;
         private readonly IMediator mediator;
@@ -28,7 +30,8 @@ namespace Auth.Application.Features.User.Commands.LoginUserViaGoogle
 
         public LoginUserViaGoogleCommandHandler(
             ITokenService tokenService, 
-            IUserRepository userRepository, 
+            IUserRepository userRepository,
+            IAccountDataRepository accountDataRepository,
             IMapper mapper, 
             IConfiguration config,
             IMediator mediator,
@@ -36,6 +39,7 @@ namespace Auth.Application.Features.User.Commands.LoginUserViaGoogle
         {
             this.tokenService = tokenService;
             this.userRepository = userRepository;
+            this.accountDataRepository = accountDataRepository;
             this.mapper = mapper;
             this.config = config;
             this.mediator = mediator;
@@ -51,15 +55,16 @@ namespace Auth.Application.Features.User.Commands.LoginUserViaGoogle
             var googleToken = await GetGoogleAccessTokenAsync(request.Code);
             var userGoogleRegistrationDto = await GetUserInfoByToken(googleToken);
 
-            var userExists = userRepository.FindUserBy(u => u.Email == userGoogleRegistrationDto.Email);
+            var userExists = accountDataRepository.FindAccountBy(u => u.Email == userGoogleRegistrationDto.Email);
 
             if (userExists is null)
             {
                 var userData = mapper.Map<RegisterUserRequest>(userGoogleRegistrationDto);
-                userData.RoleId = request.RoleId;
 
-                var token = await mediator.Send(new RegisterUserCommand(userData));
+                var accountData = await mediator.Send(new RegisterAccountCommand(userData.RegisterAccountData, UserRolesConstants.UserRole));
                 
+                var token = tokenService.CreateToken(accountData);
+
                 return token;
             }
             else

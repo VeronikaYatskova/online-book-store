@@ -3,6 +3,7 @@ using System;
 using Auth.Infrastructure.Database.DataContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Auth.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230719074232_init database")]
+    partial class initdatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,10 +128,15 @@ namespace Auth.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("UserRoleId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AccountDataId")
                         .IsUnique();
+
+                    b.HasIndex("UserRoleId");
 
                     b.ToTable("Users");
                 });
@@ -152,7 +159,7 @@ namespace Auth.Infrastructure.Migrations
             modelBuilder.Entity("Auth.Domain.Models.AccountData", b =>
                 {
                     b.HasOne("Auth.Domain.Models.UserRole", "Role")
-                        .WithMany("AccountsData")
+                        .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -190,12 +197,16 @@ namespace Auth.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Auth.Domain.Models.UserRole", null)
+                        .WithMany("Users")
+                        .HasForeignKey("UserRoleId");
+
                     b.Navigation("AccountData");
                 });
 
             modelBuilder.Entity("Auth.Domain.Models.UserRole", b =>
                 {
-                    b.Navigation("AccountsData");
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

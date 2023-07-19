@@ -3,6 +3,7 @@ using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Application.Abstractions.Interfaces.Services;
 using Auth.Application.DTOs.Request;
 using Auth.Application.Exceptions;
+using Auth.Domain.Models;
 using AutoMapper;
 using MediatR;
 
@@ -11,12 +12,18 @@ namespace Auth.Application.Features.User.Commands.LoginUser
     public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, string>
     {
         private readonly IUserRepository userRepository;
+        private readonly IAccountDataRepository accountDataRepository;
         private readonly ITokenService tokenService;
         private readonly IMapper mapper;
 
-        public LoginUserCommandHandler(IUserRepository userRepository, ITokenService tokenService, IMapper mapper)
+        public LoginUserCommandHandler(
+            IUserRepository userRepository, 
+            IAccountDataRepository accountDataRepository,
+            ITokenService tokenService, 
+            IMapper mapper)
         {
             this.userRepository = userRepository;
+            this.accountDataRepository = accountDataRepository;
             this.tokenService = tokenService;
             this.mapper = mapper;
         }
@@ -25,7 +32,7 @@ namespace Auth.Application.Features.User.Commands.LoginUser
         {
             var userData = request.request;
 
-            var user = userRepository.FindUserBy(u => u.Email == userData.Email);
+            var user = accountDataRepository.FindAccountBy(u => u.Email == userData.Email);
 
             if (user is null)
             {
@@ -37,19 +44,19 @@ namespace Auth.Application.Features.User.Commands.LoginUser
 
                 var token = tokenService.CreateToken(user);
                 await tokenService.SetRefreshTokenAsync(user);
-
+                
                 return token;
             }
         }
 
-        private void VerifyData(Domain.Models.User user, LoginUserRequest loginModel)
+        private void VerifyData(AccountData accountData, LoginUserRequest loginModel)
         {
-            if (user!.Email != loginModel.Email)
+            if (accountData!.Email != loginModel.Email)
             {
                 throw new ArgumentException("Not found.");
             }
 
-            if (!VerifyPasswordHash(loginModel.Password, user.PasswordHash!, user.PasswordSalt!))
+            if (!VerifyPasswordHash(loginModel.Password, accountData.PasswordHash!, accountData.PasswordSalt!))
             {
                 throw new ArgumentException("Wrong password");
             }

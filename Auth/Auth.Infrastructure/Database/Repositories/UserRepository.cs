@@ -14,7 +14,7 @@ namespace Auth.Infrastructure.Database.Repositories
         public IEnumerable<User>? FindAllUsers() => FindAll();
 
         public User? FindUserById(Guid userGuid) =>
-            FindByCondition(u => u.UserGuid == userGuid)?.FirstOrDefault();
+            FindByCondition(u => u.Id == userGuid)?.FirstOrDefault();
 
         public void AddUser(User user) => 
             Create(user);

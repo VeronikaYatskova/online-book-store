@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Auth.Application.Features.User.Commands.GetRefreshToken
+namespace Auth.Application.Features.Account.Commands.GetRefreshToken
 {
     public record GetRefreshTokenCommand() : IRequest<string>;
 }

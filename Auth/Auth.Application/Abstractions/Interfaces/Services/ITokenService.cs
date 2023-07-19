@@ -4,9 +4,9 @@ namespace Auth.Application.Abstractions.Interfaces.Services
 {
     public interface ITokenService
     {
-        string CreateToken(User user);
-        Task<string> UpdateRefreshTokenAsync(User user);
-        Task SetRefreshTokenAsync(User user);
-        Task<User?> GetUserAsync();
+        string CreateToken(AccountData accountData);
+        Task<string> UpdateRefreshTokenAsync(AccountData accountData);
+        Task SetRefreshTokenAsync(AccountData accountData);
+        Task<AccountData?> GetAccountDataAsync();
     }
 }

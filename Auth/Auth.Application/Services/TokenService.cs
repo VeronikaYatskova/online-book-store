@@ -16,24 +16,25 @@ namespace Auth.Application.Services
     {
         private readonly IConfiguration config;
         private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly IUserRepository userRepository;
+        private readonly IAccountDataRepository accountDataRepository;
         private readonly string secretKey;
 
-        public TokenService (IConfiguration config, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository)
+        public TokenService (IConfiguration config, IHttpContextAccessor httpContextAccessor, IAccountDataRepository accountDataRepository)
         {
             this.config = config;
             this.httpContextAccessor = httpContextAccessor;
-            this.userRepository = userRepository;
+            this.accountDataRepository = accountDataRepository;
             secretKey = config["AppSettings:SecretKey"];
         }
 
-        public string CreateToken(User user)
+        public string CreateToken(AccountData accountData)
         {
-            var userId = user.UserGuid;
+            var accountDataId = accountData.Id;
+
             var claims = new []
             {
-                new Claim("UserId", userId.ToString()),
-                new Claim("Role", user.Role.Name)
+                new Claim("AccountId", accountData.Id.ToString()),
+                new Claim("Role", accountData.Role.Name)
             };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
@@ -50,51 +51,52 @@ namespace Auth.Application.Services
             return jwt;
         }
 
-        public async Task<string> UpdateRefreshTokenAsync(User user)
+        public async Task<string> UpdateRefreshTokenAsync(AccountData accountData)
         {
             var refreshToken = httpContextAccessor.HttpContext.Request.Cookies["refresh-token"];
 
-            if (!object.Equals(user.RefreshToken, refreshToken))
+            if (!object.Equals(accountData.RefreshToken, refreshToken))
             {
                 throw new ArgumentException("Invalid Refresh Token");
             }
-            else if (user.TokenExpires < DateTime.Now)
+            else if (accountData.TokenExpires < DateTime.Now)
             {
                 throw new ArgumentException("Token is expired.");
             }
 
-            string token = CreateToken(user);
-            await SetRefreshTokenAsync(user);
+            string token = CreateToken(accountData);
+            await SetRefreshTokenAsync(accountData);
 
             return token;
         }
 
-        public async Task<User?> GetUserAsync()
+        public async Task<AccountData?> GetAccountDataAsync()
         {
             var guid = await GetInfoAsync();
             if (guid is not null)
             {
-                var user = userRepository.FindUserById(Guid.Parse(guid));
+                var accountData = accountDataRepository.FindAccountById(Guid.Parse(guid));
 
-                if (user is null)
+                if (accountData is null)
                 {
                     throw new ArgumentException("User is not found...");
                 }
 
-                return user;
+                return accountData;
             }
 
             return null;
         }
 
-        public async Task SetRefreshTokenAsync(User user)
+        public async Task SetRefreshTokenAsync(AccountData accountData)
         {
             var refreshToken = GenerateRefreshToken();
-            user.RefreshToken = refreshToken.Token;
-            user.TokenCreated = refreshToken.Created.ToUniversalTime();
-            user.TokenExpires = refreshToken.Expired.ToUniversalTime();
 
-            await userRepository.SaveUserChangesAsync();
+            accountData.RefreshToken = refreshToken.Token;
+            accountData.TokenCreated = refreshToken.Created.ToUniversalTime();
+            accountData.TokenExpires = refreshToken.Expired.ToUniversalTime();
+
+            await accountDataRepository.SaveChangesAsync();
 
             AppendRefreshTokenToCookies(refreshToken);
         }
