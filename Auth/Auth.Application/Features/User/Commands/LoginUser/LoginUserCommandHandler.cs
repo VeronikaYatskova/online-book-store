@@ -5,6 +5,7 @@ using Auth.Application.DTOs.Request;
 using Auth.Application.Exceptions;
 using Auth.Domain.Models;
 using AutoMapper;
+using FluentValidation;
 using MediatR;
 
 namespace Auth.Application.Features.User.Commands.LoginUser
@@ -15,21 +16,26 @@ namespace Auth.Application.Features.User.Commands.LoginUser
         private readonly IAccountDataRepository accountDataRepository;
         private readonly ITokenService tokenService;
         private readonly IMapper mapper;
+        private readonly IValidator<LoginUserCommand> validator;
 
         public LoginUserCommandHandler(
             IUserRepository userRepository, 
             IAccountDataRepository accountDataRepository,
             ITokenService tokenService, 
-            IMapper mapper)
+            IMapper mapper,
+            IValidator<LoginUserCommand> validator)
         {
             this.userRepository = userRepository;
             this.accountDataRepository = accountDataRepository;
             this.tokenService = tokenService;
             this.mapper = mapper;
+            this.validator = validator;
         }
 
         public async Task<string> Handle(LoginUserCommand request, CancellationToken cancellationToken)
         {
+            await validator.ValidateAndThrowAsync(request);
+
             var userData = request.request;
 
             var user = accountDataRepository.FindAccountBy(u => u.Email == userData.Email);

@@ -10,6 +10,10 @@ namespace Auth.Application.Features.Account.Commands.RegisterAccount
             RuleFor(u => u.RegisterAccountDataRequest.Email)
                 .NotNull()
                 .NotEmpty()
+                .WithMessage(ValidationMessages.FieldIsRequiredMessage);
+
+            RuleFor(u => u.RegisterAccountDataRequest.Email)
+                .Must(IsValidEmail)
                 .WithMessage(ValidationMessages.InvalidEmailMessage);
             
             RuleFor(u => u.RegisterAccountDataRequest.Password)
@@ -27,6 +31,11 @@ namespace Auth.Application.Features.Account.Commands.RegisterAccount
         private bool ReEnteredPasswordIsUnique(string password, string reEnteredPassword)
         {
             return object.Equals(password, reEnteredPassword);
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            return email.Contains("@");
         }
     }
 }

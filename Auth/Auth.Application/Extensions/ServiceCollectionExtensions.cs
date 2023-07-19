@@ -13,8 +13,9 @@ namespace Auth.Application.Extensions
         public static void AddApplicationLayer(this IServiceCollection services)
         {
             services.AddMediatR(_ => _.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-            services.AddServices();
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            services.AddServices();
             services.AddHttpClient();
         }
 
@@ -22,7 +23,6 @@ namespace Auth.Application.Extensions
         {
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IHttpClientFactoryService, HttpClientFactoryService>();
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         }
     }
 }

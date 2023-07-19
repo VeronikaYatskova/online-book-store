@@ -5,6 +5,7 @@ using Auth.Application.Exceptions;
 using System.Security.Cryptography;
 using System.Text;
 using Auth.Domain.Models;
+using FluentValidation;
 
 namespace Auth.Application.Features.Account.Commands.RegisterAccount
 {
@@ -13,19 +14,24 @@ namespace Auth.Application.Features.Account.Commands.RegisterAccount
         private readonly IUserRoleRepository userRoleRepository;
         private readonly IAccountDataRepository accountDataRepository;
         private readonly IMapper mapper;
+        private readonly IValidator<RegisterAccountCommand> validator;
 
         public RegisterAccountCommandHandler(
             IUserRoleRepository userRoleRepository,
             IAccountDataRepository accountDataRepository,
-            IMapper mapper)
+            IMapper mapper,
+            IValidator<RegisterAccountCommand> validator)
         {
             this.userRoleRepository = userRoleRepository;
             this.accountDataRepository = accountDataRepository;
             this.mapper = mapper;
+            this.validator = validator;
         }
         
         public async Task<AccountData> Handle(RegisterAccountCommand registerUserDataRequest, CancellationToken cancellationToken)
         {
+            await validator.ValidateAndThrowAsync(registerUserDataRequest);
+
             var userData = registerUserDataRequest.RegisterAccountDataRequest;
 
             if (accountDataRepository.FindAccountBy(u => u.Email == userData.Email) is not null)
