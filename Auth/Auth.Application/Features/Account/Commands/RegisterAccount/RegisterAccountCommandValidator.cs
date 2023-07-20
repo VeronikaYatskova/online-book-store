@@ -18,6 +18,7 @@ namespace Auth.Application.Features.Account.Commands.RegisterAccount
             
             RuleFor(u => u.RegisterAccountDataRequest.Password)
                 .NotEmpty()
+                .Must(IsValidPassword)
                 .WithMessage(ValidationMessages.InvalidPasswordMessage);
             
             RuleFor(u => u.RegisterAccountDataRequest.ReEnteredPassword)
@@ -36,6 +37,11 @@ namespace Auth.Application.Features.Account.Commands.RegisterAccount
         private bool IsValidEmail(string email)
         {
             return email.Contains("@");
+        }
+
+        private bool IsValidPassword(string password)
+        {
+            return password.Length >= 6 && password.Length <= 15;
         }
     }
 }
