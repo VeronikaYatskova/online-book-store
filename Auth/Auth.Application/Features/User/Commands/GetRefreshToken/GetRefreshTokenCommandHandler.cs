@@ -1,7 +1,7 @@
 using Auth.Application.Abstractions.Interfaces.Services;
 using MediatR;
 
-namespace Auth.Application.Features.Account.Commands.GetRefreshToken
+namespace Auth.Application.Features.User.Commands.GetRefreshToken
 {    
     public class GetRefreshTokenCommandHandler : IRequestHandler<GetRefreshTokenCommand, string>
     {
@@ -14,14 +14,14 @@ namespace Auth.Application.Features.Account.Commands.GetRefreshToken
 
         public async Task<string> Handle(GetRefreshTokenCommand request, CancellationToken cancellationToken)
         {
-            var accountData = await tokenService.GetAccountDataAsync();
+            var user = await tokenService.GetUserAsync();
 
-            if (accountData is null)
+            if (user is null)
             {
                 throw new ArgumentNullException("No user was found");
             }
 
-            return await tokenService.UpdateRefreshTokenAsync(accountData);
+            return await tokenService.UpdateRefreshTokenAsync(user);
         }
     }
 }

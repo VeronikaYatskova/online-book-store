@@ -28,9 +28,6 @@ namespace Auth.Infrastructure.Extensions
         {
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
-            services.AddScoped<IAccountDataRepository, AccountDataRepository>();
-            services.AddScoped<IPublisherRepository, PublisherRepository>(); 
-            services.AddScoped<IAuthorRepository, AuthorRepository>();
         }
     }
 }

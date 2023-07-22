@@ -16,25 +16,28 @@ namespace Auth.Application.Services
     {
         private readonly IConfiguration config;
         private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly IAccountDataRepository accountDataRepository;
+        private readonly IUserRepository userRepository;
         private readonly string secretKey;
 
-        public TokenService (IConfiguration config, IHttpContextAccessor httpContextAccessor, IAccountDataRepository accountDataRepository)
+        public TokenService (
+            IConfiguration config,
+            IHttpContextAccessor httpContextAccessor,
+            IUserRepository userRepository)
         {
             this.config = config;
             this.httpContextAccessor = httpContextAccessor;
-            this.accountDataRepository = accountDataRepository;
+            this.userRepository = userRepository;
             secretKey = config["AppSettings:SecretKey"];
         }
 
-        public string CreateToken(AccountData accountData)
+        public string CreateToken(User user)
         {
-            var accountDataId = accountData.Id;
+            var userId = user.Id;
 
             var claims = new []
             {
-                new Claim("AccountId", accountData.Id.ToString()),
-                new Claim("Role", accountData.Role.Name)
+                new Claim("UserId", user.Id.ToString()),
+                new Claim("Role", user.Role.Name)
             };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
@@ -51,52 +54,52 @@ namespace Auth.Application.Services
             return jwt;
         }
 
-        public async Task<string> UpdateRefreshTokenAsync(AccountData accountData)
+        public async Task<string> UpdateRefreshTokenAsync(User user)
         {
             var refreshToken = httpContextAccessor.HttpContext.Request.Cookies["refresh-token"];
 
-            if (!object.Equals(accountData.RefreshToken, refreshToken))
+            if (!object.Equals(user.RefreshToken, refreshToken))
             {
                 throw new ArgumentException("Invalid Refresh Token");
             }
-            else if (accountData.TokenExpires < DateTime.Now)
+            else if (user.TokenExpires < DateTime.Now)
             {
                 throw new ArgumentException("Token is expired.");
             }
 
-            string token = CreateToken(accountData);
-            await SetRefreshTokenAsync(accountData);
+            string token = CreateToken(user);
+            await SetRefreshTokenAsync(user);
 
             return token;
         }
 
-        public async Task<AccountData?> GetAccountDataAsync()
+        public async Task<User?> GetUserAsync()
         {
             var guid = await GetInfoAsync();
             if (guid is not null)
             {
-                var accountData = accountDataRepository.FindAccountById(Guid.Parse(guid));
+                var user = userRepository.FindUserById(Guid.Parse(guid));
 
-                if (accountData is null)
+                if (user is null)
                 {
                     throw new ArgumentException("User is not found...");
                 }
 
-                return accountData;
+                return user;
             }
 
             return null;
         }
 
-        public async Task SetRefreshTokenAsync(AccountData accountData)
+        public async Task SetRefreshTokenAsync(User user)
         {
             var refreshToken = GenerateRefreshToken();
 
-            accountData.RefreshToken = refreshToken.Token;
-            accountData.TokenCreated = refreshToken.Created.ToUniversalTime();
-            accountData.TokenExpires = refreshToken.Expired.ToUniversalTime();
+            user.RefreshToken = refreshToken.Token;
+            user.TokenCreated = refreshToken.Created.ToUniversalTime();
+            user.TokenExpires = refreshToken.Expired.ToUniversalTime();
 
-            await accountDataRepository.SaveChangesAsync();
+            await userRepository.SaveUserChangesAsync();
 
             AppendRefreshTokenToCookies(refreshToken);
         }

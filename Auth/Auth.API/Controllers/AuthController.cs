@@ -7,10 +7,7 @@ using Auth.Application.Features.User.Queries.GetRedirectUrl;
 using Auth.Application.Features.User.Commands.LoginUserViaGoogle;
 using Auth.Domain.Models;
 using Auth.Application.Features.User.Commands.RegisterUser;
-using Auth.Application.Features.Account.Commands.RegisterAccount;
-using Auth.Application.Features.Publisher.Commands.RegisterPublisher;
-using Auth.Application.Features.Author.Commands.RegisterAuthor;
-using Auth.Application.Features.Account.Commands.GetRefreshToken;
+using Auth.Application.Features.User.Commands.GetRefreshToken;
 
 namespace Auth.API.Controllers
 {
@@ -44,30 +41,24 @@ namespace Auth.API.Controllers
         [HttpPost("users/sign-up")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserRequest request)
         {
-            var accountData = await mediator.Send(new RegisterAccountCommand(request.RegisterAccountData, UserRolesConstants.UserRole));
+            var token = await mediator.Send(new RegisterUserCommand(request, UserRolesConstants.UserRole));
             
-            var token = await mediator.Send(new RegisterUserCommand(request.UserDataRequest, accountData));
-
             return Created("User was created.", token);
         }
 
         [HttpPost("publishers/sign-up")]
-        public async Task<IActionResult> RegisterPublisher([FromBody] RegisterPublisherRequest request)
+        public async Task<IActionResult> RegisterPublisher([FromBody] RegisterUserRequest request)
         {
-            var accountData = await mediator.Send(new RegisterAccountCommand(request.RegisterAccountData, UserRolesConstants.PublisherRole));
+            var token = await mediator.Send(new RegisterUserCommand(request, UserRolesConstants.PublisherRole));
             
-            var token = await mediator.Send(new RegisterPublisherCommand(request.PublisherDataRequest, accountData));
-
             return Created("User was created.", token);
         }
 
         [HttpPost("authors/sign-up")]
-        public async Task<IActionResult> RegisterAuthor([FromBody] RegisterAuthorRequest request)
+        public async Task<IActionResult> RegisterAuthor([FromBody] RegisterUserRequest request)
         {
-            var accountData = await mediator.Send(new RegisterAccountCommand(request.RegisterAccountData, UserRolesConstants.AuthorRole));
+            var token = await mediator.Send(new RegisterUserCommand(request, UserRolesConstants.AuthorRole));
             
-            var token = await mediator.Send(new RegisterAuthorCommand(request.AuthorDataRequest, accountData));
-
             return Created("User was created.", token);
         }
 
