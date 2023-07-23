@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Application.Abstractions.Interfaces.Services;
-using Auth.Application.Exceptions;
+using Auth.Domain.Exceptions;
 using AutoMapper;
 using FluentValidation;
 using MediatR;
@@ -37,7 +37,7 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
             
             var userData = request.UserDataRequest;
 
-            if (userRepository.FindUserBy(u => u.Email == userData.Email) is not null)
+            if (await userRepository.FindUserByAsync(u => u.Email == userData.Email) is not null)
             {
                 throw new AlreadyExistsException(ExceptionMessages.UserAlreadyExistsMessage);
             }
@@ -46,11 +46,14 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
             
             CreatePasswordHash(userData.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            userEntity.RoleId = await userRoleRepository.GetUserRoleIdByName(request.Role);
+            var role = await userRoleRepository.GetUserRoleByNameAsync(request.Role) ??
+                throw new NotFoundException(ExceptionMessages.RoleNotFoundMessage);
+
+            userEntity.RoleId = role.Id;
             userEntity.PasswordHash = passwordHash;
             userEntity.PasswordSalt = passwordSalt;
 
-            userRepository.AddUser(userEntity);
+            await userRepository.AddUserAsync(userEntity);
             await userRepository.SaveUserChangesAsync();
 
             var token = tokenService.CreateToken(userEntity);

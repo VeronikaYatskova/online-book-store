@@ -52,7 +52,7 @@ namespace Auth.Application.Features.User.Commands.LoginUserViaGoogle
             var googleToken = await GetGoogleAccessTokenAsync(request.Code);
             var userGoogleRegistrationDto = await GetUserInfoByToken(googleToken);
 
-            var userExists = userRepository.FindUserBy(u => u.Email == userGoogleRegistrationDto.Email);
+            var userExists = await userRepository.FindUserByAsync(u => u.Email == userGoogleRegistrationDto.Email);
 
             if (userExists is null)
             {

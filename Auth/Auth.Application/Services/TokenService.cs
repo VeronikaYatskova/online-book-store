@@ -78,7 +78,7 @@ namespace Auth.Application.Services
             var guid = await GetInfoAsync();
             if (guid is not null)
             {
-                var user = userRepository.FindUserById(Guid.Parse(guid));
+                var user = await userRepository.FindUserByIdAsync(Guid.Parse(guid));
 
                 if (user is null)
                 {

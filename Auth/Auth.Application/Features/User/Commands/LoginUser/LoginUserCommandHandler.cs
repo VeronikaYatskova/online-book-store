@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Application.Abstractions.Interfaces.Services;
 using Auth.Application.DTOs.Request;
-using Auth.Application.Exceptions;
+using Auth.Domain.Exceptions;
 using AutoMapper;
 using FluentValidation;
 using MediatR;
@@ -34,7 +34,7 @@ namespace Auth.Application.Features.User.Commands.LoginUser
 
             var userData = request.request;
 
-            var user = userRepository.FindUserBy(u => u.Email == userData.Email);
+            var user = await userRepository.FindUserByAsync(u => u.Email == userData.Email);
 
             if (user is null)
             {

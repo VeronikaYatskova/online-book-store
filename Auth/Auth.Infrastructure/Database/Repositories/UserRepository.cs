@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Domain.Models;
 using Auth.Infrastructure.Database.DataContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auth.Infrastructure.Database.Repositories
 {
@@ -11,19 +12,19 @@ namespace Auth.Infrastructure.Database.Repositories
         {
         }
 
-        public IEnumerable<User>? FindAllUsers() => FindAll();
+        public async Task<IEnumerable<User>?> FindAllUsersAsync() => await FindAll().ToListAsync();
 
-        public User? FindUserById(Guid userGuid) =>
-            FindByCondition(u => u.Id == userGuid)?.FirstOrDefault();
+        public async Task<User?> FindUserByIdAsync(Guid userGuid) =>
+            await FindByCondition(u => u.Id == userGuid).FirstOrDefaultAsync();
 
-        public void AddUser(User user) => 
-            Create(user);
+        public async Task AddUserAsync(User user) => 
+            await CreateAsync(user);
         
         public void UpdateUser(User user) =>
             Update(user);
 
-        public User? FindUserBy(Expression<Func<User, bool>> expression) =>
-            FindByCondition(expression)?.FirstOrDefault();
+        public async Task<User?> FindUserByAsync(Expression<Func<User, bool>> expression) =>
+            await FindByCondition(expression).FirstOrDefaultAsync();
 
         public async Task SaveUserChangesAsync() =>
             await SaveChangesAsync();

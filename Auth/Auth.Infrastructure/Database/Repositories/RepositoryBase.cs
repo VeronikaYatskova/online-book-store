@@ -13,13 +13,13 @@ namespace Auth.Infrastructure.Database.Repositories
             this.dbContext = dbContext;
         }
         
-        public IQueryable<T>? FindAll() => dbContext.Set<T>();
+        public IQueryable<T> FindAll() => dbContext.Set<T>();
 
-        public IQueryable<T>? FindByCondition(Expression<Func<T, bool>> expression) =>
+        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression) =>
             dbContext.Set<T>().Where(expression);
 
-        public void Create(T entity) =>
-            dbContext.Set<T>().Add(entity);
+        public async Task CreateAsync(T entity) =>
+            await dbContext.Set<T>().AddAsync(entity);
         
         public void Update(T entity) =>
             dbContext.Set<T>().Update(entity);

@@ -5,10 +5,10 @@ namespace Auth.Application.Abstractions.Interfaces.Repositories
 {
     public interface IUserRepository
     {
-        IEnumerable<User>? FindAllUsers();    
-        User? FindUserById(Guid userId);
-        User? FindUserBy(Expression<Func<User, bool>> expression);
-        void AddUser(User user);
+        Task<IEnumerable<User>?> FindAllUsersAsync();    
+        Task<User?> FindUserByIdAsync(Guid userId);
+        Task<User?> FindUserByAsync(Expression<Func<User, bool>> expression);
+        Task AddUserAsync(User user);
         void UpdateUser(User user);
         Task SaveUserChangesAsync();
     }

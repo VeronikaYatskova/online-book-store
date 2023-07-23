@@ -13,13 +13,12 @@ namespace Auth.Infrastructure.Database.Repositories
 
         public async Task<UserRole?> GetUserRoleByIdAsync(Guid roleId)
         {
-            return await FindByCondition(r => r.Id == roleId)?.FirstOrDefaultAsync();
+            return await FindByCondition(r => r.Id == roleId).FirstOrDefaultAsync();
         }
 
-        public async Task<Guid> GetUserRoleIdByName(string name)
+        public async Task<UserRole?> GetUserRoleByNameAsync(string name)
         {
-            var userRole = await FindByCondition(r => r.Name == name).FirstOrDefaultAsync();
-            return userRole.Id;
+            return await FindByCondition(r => r.Name == name).FirstOrDefaultAsync();;
         }
     }
 }

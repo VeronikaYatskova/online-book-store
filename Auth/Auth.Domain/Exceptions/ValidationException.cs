@@ -1,4 +1,4 @@
-namespace Auth.Application.Exceptions
+namespace Auth.Domain.Exceptions
 {
     public class ValidationException : Exception
     {

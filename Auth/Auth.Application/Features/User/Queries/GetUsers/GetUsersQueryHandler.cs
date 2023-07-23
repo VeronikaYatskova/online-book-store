@@ -2,7 +2,7 @@ using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Application.DTOs.Response;
 using AutoMapper;
 using MediatR;
-using Auth.Application.Exceptions;
+using Auth.Domain.Exceptions;
 
 namespace Auth.Application.Features.User.Queries.GetUsers
 {
@@ -17,16 +17,16 @@ namespace Auth.Application.Features.User.Queries.GetUsers
             this.mapper = mapper;
         }
 
-        public Task<IEnumerable<GetUsersResponse>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<GetUsersResponse>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
         {
-            var users = userRepository.FindAllUsers();
+            var users = await userRepository.FindAllUsersAsync();
 
             if (users is null)
             {
                 throw new NotFoundException(ExceptionMessages.UserNotFoundMessage);
             }
 
-            return Task.FromResult(mapper.Map<IEnumerable<GetUsersResponse>>(users));
+            return mapper.Map<IEnumerable<GetUsersResponse>>(users);
         }
     }
 }
