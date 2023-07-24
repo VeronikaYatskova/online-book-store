@@ -22,6 +22,9 @@ namespace Auth.Infrastructure.Database.Repositories
         
         public void UpdateUser(User user) =>
             Update(user);
+        
+        public void DeleteUser(User user) =>
+            Delete(user);
 
         public async Task<User?> FindUserByAsync(Expression<Func<User, bool>> expression) =>
             await FindByCondition(expression).FirstOrDefaultAsync();

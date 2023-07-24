@@ -10,6 +10,7 @@ namespace Auth.Application.Abstractions.Interfaces.Repositories
         Task<User?> FindUserByAsync(Expression<Func<User, bool>> expression);
         Task AddUserAsync(User user);
         void UpdateUser(User user);
+        void DeleteUser(User user);
         Task SaveUserChangesAsync();
     }
 }

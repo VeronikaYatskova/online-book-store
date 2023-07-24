@@ -8,6 +8,7 @@ using Auth.Application.Features.User.Commands.LoginUserViaGoogle;
 using Auth.Domain.Models;
 using Auth.Application.Features.User.Commands.RegisterUser;
 using Auth.Application.Features.User.Commands.GetRefreshToken;
+using Auth.Application.Features.User.Commands.DeleteUser;
 
 namespace Auth.API.Controllers
 {
@@ -60,6 +61,13 @@ namespace Auth.API.Controllers
             var token = await mediator.Send(new RegisterUserCommand(request, UserRolesConstants.AuthorRole));
             
             return Created("User was created.", token);
+        }
+
+        public async Task<IActionResult> DeleteUser(DeleteUserRequest request)
+        {
+            await mediator.Send(new DeleteUserCommand(request.Email));
+
+            return Ok();
         }
 
         [HttpPost("refresh")]
