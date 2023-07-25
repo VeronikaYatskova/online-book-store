@@ -1,7 +1,13 @@
-using System.Data.SqlClient;
-using Dapper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Profiles.Domain.Entities;
+using Profiles.Application.DTOs.Request;
+using Profiles.Application.Features.Users.Commands.AddUser;
+using Profiles.Application.Features.Users.Commands.DeleteUser;
+using Profiles.Application.Features.Users.Commands.EditUser;
+using Profiles.Application.Features.Users.Queries.GetAllUsers;
+using Profiles.Application.Features.Users.Queries.GetAuthors;
+using Profiles.Application.Features.Users.Queries.GetNormalUsers;
+using Profiles.Application.Features.Users.Queries.GetPublishers;
 
 namespace Profiles.API.Controllers
 {
@@ -10,30 +16,71 @@ namespace Profiles.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IConfiguration config;
+        private readonly IMediator mediator;
 
-        public UsersController(IConfiguration config)
+        public UsersController(IConfiguration config, IMediator mediator)
         {
             this.config = config;
+            this.mediator = mediator;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAllUsersAsync()
         {
-            using var connection = new SqlConnection(config.GetConnectionString("MsSqlConnection"));
-            var users = await connection.QueryAsync<User>("SELECT * FROM Users");
+            var users = await mediator.Send(new GetUsersQuery());
 
             return Ok(users);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddUser(User user)
+        [HttpGet("normal-users")]
+        public async Task<IActionResult> GetNormalUserAsync()
         {
-            using var connection = new SqlConnection(config.GetConnectionString("MsSqlConnection"));
-            
-            await connection.ExecuteAsync("INSERT INTO USERS (Id, Email, FirstName, LastName)" + 
-            "VALUES (NEWID(), @Email, @FirstName, @LastName)", user);
+            var users = await mediator.Send(new GetNormalUsersQuery());
+
+            return Ok(users);
+        }
+
+        [HttpGet("authors")]
+        public async Task<IActionResult> GetAuthorsAsync()
+        {
+            var authors = await mediator.Send(new GetAuthorsQuery());
+
+            return Ok(authors);
+        }
+
+        [HttpGet("publishers")]
+        public async Task<IActionResult> GetPublishersAsync()
+        {
+            var publishers = await mediator.Send(new GetPublishersQuery());
+
+            return Ok(publishers);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddUserAsync([FromBody] AddUserRequest user)
+        {
+            await mediator.Send(new AddUserCommand(user));
 
             return Created("User is created", user);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> EditUserAsync([FromBody] EditUserRequest user)
+        {
+            await mediator.Send(new EditUserCommand(user));
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUserAsync([FromRoute] string id)
+        {
+            await mediator.Send(new DeleteUserCommand(new DeleteUserRequest
+            {
+                UserId = id
+            }));
+
+            return NoContent();
         }
     }
 }

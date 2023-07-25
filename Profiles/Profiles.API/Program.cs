@@ -1,8 +1,9 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Profiles.API.Extensions;
+using Profiles.API.Middlewares.ExceptionMiddleware;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.AddCustomLogger();
 
 // Add services to the container.
 
@@ -11,7 +12,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddLayers();
+
 var app = builder.Build();
+
+app.ConfigureCustomExceptionMiddleware();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
