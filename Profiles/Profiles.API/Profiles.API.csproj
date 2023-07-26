@@ -7,11 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.1.1" />
+    <PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Profiles.Domain\Profiles.Domain.csproj" />
+    <ProjectReference Include="..\Profiles.Infrastructure\Profiles.Infrastructure.csproj" />
+    <ProjectReference Include="..\Profiles.Application\Profiles.Application.csproj" />
   </ItemGroup>
 
 </Project>

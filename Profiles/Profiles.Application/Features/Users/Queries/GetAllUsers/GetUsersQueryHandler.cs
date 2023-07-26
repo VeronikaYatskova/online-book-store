@@ -19,8 +19,8 @@ namespace Profiles.Application.Features.Users.Queries.GetAllUsers
 
         public async Task<IEnumerable<GetUsersResponse>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
         {
-            var users = await userRepository.GetAuthorsAsync() ??
-                throw new NotFoundException(ExceptionMessages.AuthorsNotFoundMessage);
+            var users = await userRepository.GetAllUsersAsync() ??
+                throw new NotFoundException(ExceptionMessages.UsersNotFoundMessage);
             var usersResponse = mapper.Map<IEnumerable<GetUsersResponse>>(users);
 
             return usersResponse;

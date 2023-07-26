@@ -19,6 +19,21 @@ services:
     depends_on:
       - postgres
 
+  profiles:
+    image: profiles:latest
+    ports:
+      - "7034:80"
+    depends_on:
+      - mssql
+  
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - SA_PASSWORD=SpikePrototype2016!
+      - ACCEPT_EULA=Y
+    ports:
+      - "1433:1433"
+
   postgres:
     image: postgres
     environment:
