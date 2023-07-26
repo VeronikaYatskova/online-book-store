@@ -1,4 +1,6 @@
 using Auth.Application.Abstractions.Interfaces.Repositories;
+using Auth.Application.Abstractions.Interfaces.Services;
+using Auth.Infrastructure.AsyncDataServices;
 using Auth.Infrastructure.Database.DataContext;
 using Auth.Infrastructure.Database.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -11,8 +13,9 @@ namespace Auth.Infrastructure.Extensions
     {
         public static void AddInfrastructureLayer(this IServiceCollection services, IConfiguration config)
         {
-            AddDbContext(services, config);
-            AddRepositories(services);
+            services.AddDbContext(config);
+            services.AddRepositories();
+            services.AddThirdPartyServices();
         }
 
         private static void AddDbContext(this IServiceCollection services, IConfiguration config)
@@ -28,6 +31,11 @@ namespace Auth.Infrastructure.Extensions
         {
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+        }
+
+        private static void AddThirdPartyServices(this IServiceCollection services)
+        {
+            services.AddSingleton<IMessageBusClient, MessageBusClient>(); 
         }
     }
 }

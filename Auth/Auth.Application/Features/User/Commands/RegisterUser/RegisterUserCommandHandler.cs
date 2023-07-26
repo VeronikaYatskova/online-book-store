@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Application.Abstractions.Interfaces.Services;
+using Auth.Application.DTOs.Request;
 using Auth.Domain.Exceptions;
 using AutoMapper;
 using FluentValidation;
@@ -16,19 +17,22 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
         private readonly ITokenService tokenService;
         private readonly IMapper mapper;
         private readonly IValidator<RegisterUserCommand> validator;
+        private readonly IMessageBusClient messageBusClient;
 
         public RegisterUserCommandHandler(
             IUserRepository userRepository,
             IUserRoleRepository userRoleRepository,
             ITokenService tokenService, 
             IMapper mapper,
-            IValidator<RegisterUserCommand> validator)
+            IValidator<RegisterUserCommand> validator,
+            IMessageBusClient messageBusClient)
         {
             this.userRepository = userRepository;
             this.userRoleRepository = userRoleRepository;
             this.tokenService = tokenService;
             this.mapper = mapper;
             this.validator = validator;
+            this.messageBusClient = messageBusClient;
         }
 
         public async Task<string> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
@@ -58,6 +62,9 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
 
             var token = tokenService.CreateToken(userEntity);
             await tokenService.SetRefreshTokenAsync(userEntity);
+
+            var userRegistersRequest = mapper.Map<UserRegisteredRequest>(userData); 
+            messageBusClient.AddUserProfile(userRegistersRequest);
 
             return token;
         }
