@@ -4,6 +4,7 @@ using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Application.Abstractions.Interfaces.Services;
 using Auth.Application.DTOs.Request;
 using Auth.Domain.Exceptions;
+using Auth.Domain.Models;
 using AutoMapper;
 using FluentValidation;
 using MediatR;
@@ -63,7 +64,9 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
             var token = tokenService.CreateToken(userEntity);
             await tokenService.SetRefreshTokenAsync(userEntity);
 
-            var userRegistersRequest = mapper.Map<UserRegisteredRequest>(userData); 
+            var userRegistersRequest = mapper.Map<UserRegisteredRequest>(userData);
+            userRegistersRequest.Event = EventTypes.UserRegisteredEvent;
+
             messageBusClient.AddUserProfile(userRegistersRequest);
 
             return token;

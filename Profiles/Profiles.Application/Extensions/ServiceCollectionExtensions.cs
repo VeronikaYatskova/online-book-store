@@ -1,6 +1,8 @@
 using System.Reflection;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using Profiles.Application.Features.EventProcessing;
+using Profiles.Application.Interfaces.Services;
 
 namespace Profiles.Application.Extensions
 {
@@ -11,6 +13,7 @@ namespace Profiles.Application.Extensions
             services.AddMediatR(_ => _.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            services.AddSingleton<IEventProcessor, EventProcessor>(); 
         }                
     }
 }

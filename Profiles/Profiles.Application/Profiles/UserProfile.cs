@@ -1,4 +1,5 @@
 using AutoMapper;
+using Profiles.Application.DTOs.General;
 using Profiles.Application.DTOs.Request;
 using Profiles.Application.DTOs.Response;
 using Profiles.Domain.Entities;
@@ -13,6 +14,7 @@ namespace Profiles.Application.Profiles
             CreateMap<AddUserRequest, User>();
             CreateMap<EditUserRequest, User>()
                 .ForMember(u => u.Id, a => a.MapFrom(au => Guid.Parse(au.Id)));
+            CreateMap<UserRegisteredDto, User>();
         }
     }
 }

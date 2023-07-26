@@ -1,8 +1,7 @@
-namespace Auth.Application.DTOs.Request
+namespace Profiles.Application.DTOs.General
 {
-    public class UserRegisteredRequest
+    public class UserRegisteredDto
     {
-        public string Event { get; set; } = default!;
         public string Email { get; set; } = default!;
         public string FirstName { get; set; } = default!;
         public string LastName { get; set; } = default!;
