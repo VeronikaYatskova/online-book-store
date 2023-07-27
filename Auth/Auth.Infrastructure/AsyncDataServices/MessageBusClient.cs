@@ -11,8 +11,8 @@ namespace Auth.Infrastructure.AsyncDataServices
     public class MessageBusClient : IMessageBusClient
     {
         private readonly IConfiguration configuration;
-        private readonly IConnection connection;
-        private readonly IModel channel;
+        private IConnection connection;
+        private IModel channel;
         private readonly ILogger<MessageBusClient> logger;
 
         public MessageBusClient(IConfiguration configuration, ILogger<MessageBusClient> logger)
@@ -20,20 +20,7 @@ namespace Auth.Infrastructure.AsyncDataServices
             this.configuration = configuration;
             this.logger = logger;
 
-            var factory = new ConnectionFactory()
-            {
-                HostName = configuration["RabbitMqConfig:RabbitMqHost"],
-                UserName = configuration["RabbitMqConfig:UserName"],
-                Password = configuration["RabbitMqConfig:Password"],
-                VirtualHost = configuration["RabbitMqConfig:VirtualHost"]
-            };
-
-            connection = factory.CreateConnection();
-            channel = connection.CreateModel();
-
-            channel.ExchangeDeclare(exchange: "trigger", type: ExchangeType.Fanout);
-
-            connection.ConnectionShutdown += RabbitMQConnectionShutdown;
+            ConfigureRabbitMqConnection();
         }
 
         public void AddUserProfile(UserRegisteredRequest newUser)
@@ -73,6 +60,24 @@ namespace Auth.Infrastructure.AsyncDataServices
         private void RabbitMQConnectionShutdown(object sender, ShutdownEventArgs e)
         {
             logger.LogInformation("RabbitMq connection shutdown.");
+        }
+
+        private void ConfigureRabbitMqConnection()
+        {
+            var factory = new ConnectionFactory()
+            {
+                HostName = configuration["RabbitMqConfig:RabbitMqHost"],
+                UserName = configuration["RabbitMqConfig:UserName"],
+                Password = configuration["RabbitMqConfig:Password"],
+                VirtualHost = configuration["RabbitMqConfig:VirtualHost"]
+            };
+
+            connection = factory.CreateConnection();
+            channel = connection.CreateModel();
+
+            channel.ExchangeDeclare(exchange: "trigger", type: ExchangeType.Fanout);
+
+            connection.ConnectionShutdown += RabbitMQConnectionShutdown;
         }
     }
 }
