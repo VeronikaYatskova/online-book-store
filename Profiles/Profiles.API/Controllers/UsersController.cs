@@ -8,6 +8,7 @@ using Profiles.Application.Features.Users.Queries.GetAllUsers;
 using Profiles.Application.Features.Users.Queries.GetAuthors;
 using Profiles.Application.Features.Users.Queries.GetNormalUsers;
 using Profiles.Application.Features.Users.Queries.GetPublishers;
+using Profiles.Application.Features.Users.Queries.GetUserById;
 
 namespace Profiles.API.Controllers
 {
@@ -30,6 +31,14 @@ namespace Profiles.API.Controllers
             var users = await mediator.Send(new GetUsersQuery());
 
             return Ok(users);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserByIdAsync(string id)
+        {
+            var user = await mediator.Send(new GetUserByIdQuery(id));
+
+            return Ok(user);
         }
 
         [HttpGet("normal-users")]

@@ -4,6 +4,9 @@ services:
   
   api:
     image: book-store-api:latest
+    build:
+      context: .
+      dockerfile: BookStore/Dockerfile
     ports:
       - "7223:80"
     depends_on:
@@ -14,6 +17,9 @@ services:
 
   auth:
     image: book-store-auth:latest
+    build:
+      context: .
+      dockerfile: Auth/Dockerfile
     ports:
       - "7198:80"
     depends_on:
@@ -21,6 +27,9 @@ services:
 
   profiles:
     image: profiles:latest
+    build:
+      context: .
+      dockerfile: Profiles/Dockerfile
     ports:
       - "7034:80"
     depends_on:

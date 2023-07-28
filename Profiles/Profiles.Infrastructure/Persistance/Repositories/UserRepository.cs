@@ -26,19 +26,31 @@ namespace Profiles.Infrastructure.Persistance.Repositories
             return users;
         }
 
-        public Task<IEnumerable<User>> GetAuthorsAsync()
+        public async Task<IEnumerable<User>> GetAuthorsAsync()
         {
-            throw new NotImplementedException();
+            using var connection = new SqlConnection(connectionString);
+            var query = "SELECT * FROM Users WHERE RoleId='984a871c-e075-4fea-84d1-672dc4212b32'";
+            var authors = await connection.QueryAsync<User>(query);
+
+            return authors;
         }
 
-        public Task<IEnumerable<User>> GetNormalUsersAsync()
+        public async Task<IEnumerable<User>> GetNormalUsersAsync()
         {
-            throw new NotImplementedException();
+            using var connection = new SqlConnection(connectionString);
+            var query = "SELECT * FROM Users WHERE RoleId='09f1a17e-a830-415d-8611-7c9595d3dcc5'";
+            var authors = await connection.QueryAsync<User>(query);
+
+            return authors;
         }
 
-        public Task<IEnumerable<User>> GetPublishersAsync()
+        public async Task<IEnumerable<User>> GetPublishersAsync()
         {
-            throw new NotImplementedException();
+            using var connection = new SqlConnection(connectionString);
+            var query = "SELECT * FROM Users WHERE RoleId='4e27e0eb-2033-4db8-85a4-86c40f8122f7'";
+            var publishers = await connection.QueryAsync<User>(query);
+
+            return publishers;
         }
 
         public async Task<User> GetUserByIdAsync(Guid userId)
@@ -53,7 +65,7 @@ namespace Profiles.Infrastructure.Persistance.Repositories
         public async Task AddUserAsync(User user)
         {
             using var connection = new SqlConnection(config.GetConnectionString("MsSqlConnection"));
-            var query = "INSERT INTO USERS (Id, Email, FirstName, LastName) VALUES (NEWID(), @Email, @FirstName, @LastName)";
+            var query = "INSERT INTO USERS (Id, Email, FirstName, LastName, RoleId) VALUES (NEWID(), @Email, @FirstName, @LastName, @RoleId)";
 
             await connection.ExecuteAsync(query, user);
         }

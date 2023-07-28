@@ -15,6 +15,7 @@ namespace Profiles.Application.Profiles
             CreateMap<EditUserRequest, User>()
                 .ForMember(u => u.Id, a => a.MapFrom(au => Guid.Parse(au.Id)));
             CreateMap<UserRegisteredDto, User>();
+            CreateMap<User, GetUserByIdResponse>();
         }
     }
 }

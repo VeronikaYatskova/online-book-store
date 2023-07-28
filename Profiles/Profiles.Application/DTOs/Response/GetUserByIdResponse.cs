@@ -1,13 +1,9 @@
-using System;
-
-namespace Profiles.Domain.Entities
+namespace Profiles.Application.DTOs.Response
 {
-    public class User
+    public class GetUserByIdResponse
     {
-        public Guid Id { get; set; }
         public string Email { get; set; } = default!;
         public string FirstName { get; set; } = default!;
         public string LastName { get; set; } = default!;
-        public Guid RoleId { get; set; }
     }
 }
