@@ -8,5 +8,6 @@ namespace Profiles.Domain.Entities
         public string Email { get; set; } = default!;
         public string FirstName { get; set; } = default!;
         public string LastName { get; set; } = default!;
+        public Guid RoleId { get; set; } = default!;
     }
 }
