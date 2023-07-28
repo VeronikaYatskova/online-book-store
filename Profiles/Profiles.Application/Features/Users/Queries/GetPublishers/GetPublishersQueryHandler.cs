@@ -8,20 +8,20 @@ namespace Profiles.Application.Features.Users.Queries.GetPublishers
 {
     public class GetPublishersQueryHandler : IRequestHandler<GetPublishersQuery, IEnumerable<GetUsersResponse>>
     {
-        private readonly IUserRepository userRepository;
-        private readonly IMapper mapper;
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
         public GetPublishersQueryHandler(IUserRepository userRepository, IMapper mapper)
         {
-            this.userRepository = userRepository;
-            this.mapper = mapper;
+            _userRepository = userRepository;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<GetUsersResponse>> Handle(GetPublishersQuery request, CancellationToken cancellationToken)
         {
-            var publishers = await userRepository.GetPublishersAsync() ??
+            var publishers = await _userRepository.GetPublishersAsync() ??
                 throw new NotFoundException(ExceptionMessages.PublishersNotFoundMessage);
-            var publishersResponse = mapper.Map<IEnumerable<GetUsersResponse>>(publishers);
+            var publishersResponse = _mapper.Map<IEnumerable<GetUsersResponse>>(publishers);
 
             return publishersResponse;
         }

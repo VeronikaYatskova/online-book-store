@@ -2,6 +2,8 @@ using Profiles.Infrastructure.Extensions;
 using Profiles.Application.Extensions;
 using Serilog;
 using Serilog.Events;
+using Profiles.Domain.Entities;
+using Microsoft.Extensions.Options;
 
 namespace Profiles.API.Extensions
 {
@@ -22,6 +24,16 @@ namespace Profiles.API.Extensions
 
             loggingBuilder.ClearProviders();
             loggingBuilder.AddSerilog(logger);
+        }
+
+        public static void AddOptionsConfiguration(
+            this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<DatabaseSettings>(
+                configuration.GetSection("ConnectionStrings"));
+
+            services.AddSingleton(sp => 
+                sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
         }
     }
 }

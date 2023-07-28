@@ -15,19 +15,19 @@ namespace Profiles.API.Controllers
     [Route("api/users")]
     public class UsersController : ControllerBase
     {
-        private readonly IConfiguration config;
-        private readonly IMediator mediator;
+        private readonly IConfiguration _config;
+        private readonly IMediator _mediator;
 
         public UsersController(IConfiguration config, IMediator mediator)
         {
-            this.config = config;
-            this.mediator = mediator;
+            _config = config;
+            _mediator = mediator;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllUsersAsync()
         {
-            var users = await mediator.Send(new GetUsersQuery());
+            var users = await _mediator.Send(new GetUsersQuery());
 
             return Ok(users);
         }
@@ -35,7 +35,7 @@ namespace Profiles.API.Controllers
         [HttpGet("normal-users")]
         public async Task<IActionResult> GetNormalUserAsync()
         {
-            var users = await mediator.Send(new GetNormalUsersQuery());
+            var users = await _mediator.Send(new GetNormalUsersQuery());
 
             return Ok(users);
         }
@@ -43,7 +43,7 @@ namespace Profiles.API.Controllers
         [HttpGet("authors")]
         public async Task<IActionResult> GetAuthorsAsync()
         {
-            var authors = await mediator.Send(new GetAuthorsQuery());
+            var authors = await _mediator.Send(new GetAuthorsQuery());
 
             return Ok(authors);
         }
@@ -51,7 +51,7 @@ namespace Profiles.API.Controllers
         [HttpGet("publishers")]
         public async Task<IActionResult> GetPublishersAsync()
         {
-            var publishers = await mediator.Send(new GetPublishersQuery());
+            var publishers = await _mediator.Send(new GetPublishersQuery());
 
             return Ok(publishers);
         }
@@ -59,7 +59,7 @@ namespace Profiles.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddUserAsync([FromBody] AddUserRequest user)
         {
-            await mediator.Send(new AddUserCommand(user));
+            await _mediator.Send(new AddUserCommand(user));
 
             return Created("User is created", user);
         }
@@ -67,7 +67,7 @@ namespace Profiles.API.Controllers
         [HttpPut]
         public async Task<IActionResult> EditUserAsync([FromBody] EditUserRequest user)
         {
-            await mediator.Send(new EditUserCommand(user));
+            await _mediator.Send(new EditUserCommand(user));
 
             return NoContent();
         }
@@ -75,7 +75,7 @@ namespace Profiles.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserAsync([FromRoute] string id)
         {
-            await mediator.Send(new DeleteUserCommand(new DeleteUserRequest
+            await _mediator.Send(new DeleteUserCommand(new DeleteUserRequest
             {
                 UserId = id
             }));

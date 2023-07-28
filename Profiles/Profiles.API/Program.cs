@@ -2,10 +2,13 @@ using Profiles.API.Extensions;
 using Profiles.API.Middlewares.ExceptionMiddleware;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
 builder.Logging.AddCustomLogger();
 
 // Add services to the container.
+
+builder.Services.AddOptionsConfiguration(configuration);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

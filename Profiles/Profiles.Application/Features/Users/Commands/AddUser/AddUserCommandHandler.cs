@@ -8,27 +8,27 @@ namespace Profiles.Application.Features.Users.Commands.AddUser
 {
     public class AddUserCommandHandler : IRequestHandler<AddUserCommand>
     {
-        private readonly IUserRepository userRepository;
-        private readonly IMapper mapper;
-        private readonly IValidator<AddUserCommand> validator;
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
+        private readonly IValidator<AddUserCommand> _validator;
 
         public AddUserCommandHandler(
             IUserRepository userRepository, 
             IMapper mapper,
             IValidator<AddUserCommand> validator)
         {
-            this.userRepository = userRepository;
-            this.mapper = mapper;
-            this.validator = validator;
+            _userRepository = userRepository;
+            _mapper = mapper;
+            _validator = validator;
         }
 
         public async Task Handle(AddUserCommand request, CancellationToken cancellationToken)
         {
-            await validator.ValidateAndThrowAsync(request);
+            await _validator.ValidateAndThrowAsync(request);
 
-            var user = mapper.Map<User>(request.UserData);
+            var user = _mapper.Map<User>(request.UserData);
             
-            await userRepository.AddUserAsync(user);
+            await _userRepository.AddUserAsync(user);
         }
     }
 }

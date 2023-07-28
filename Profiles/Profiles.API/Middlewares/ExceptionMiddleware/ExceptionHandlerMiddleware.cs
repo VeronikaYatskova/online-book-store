@@ -6,18 +6,18 @@ namespace Profiles.API.Middlewares.ExceptionMiddleware
 {
     public class ExceptionHandlerMiddleware
     {
-        private readonly RequestDelegate next;
+        private readonly RequestDelegate _next;
 
         public ExceptionHandlerMiddleware(RequestDelegate next)
         {
-            this.next = next;
+            _next = next;
         }
 
         public async Task InvokeAsync(HttpContext context)
         {
             try
             {
-                await next(context);
+                await _next(context);
             }
             catch (Exception ex)
             {
