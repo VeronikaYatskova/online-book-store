@@ -1,5 +1,6 @@
 using Auth.Application.DTOs.Request;
 using Auth.Application.DTOs.Response;
+using Auth.Application.Features.User.Commands.RegisterUser;
 using Auth.Domain.Models;
 using AutoMapper;
 
@@ -12,6 +13,7 @@ namespace Auth.Application.AutoMapper
             CreateMap<User, GetUsersResponse>();
             CreateMap<LoginUserRequest, User>();
             CreateMap<RegisterUserRequest, User>();
+            CreateMap<User, UserRegisteredDto>();
         }
     }
 }

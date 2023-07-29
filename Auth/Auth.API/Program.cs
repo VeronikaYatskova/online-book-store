@@ -1,5 +1,7 @@
 using Auth.API.Middlewares;
 using Auth.API.Extensions;
+using MassTransit;
+using Auth.Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 builder.Logging.AddCustomLogger();
+
+builder.Services.AddOptionsConfiguration(configuration);
 
 builder.Services.AddControllers();
 
@@ -21,6 +25,30 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddCustomAuthentication(configuration);
+
+builder.Services.AddMassTransit(busConfigurator =>
+{   
+    busConfigurator.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
+    {
+        var settings = provider.GetRequiredService<RabbitMqSettings>();
+        config.Host(new Uri(settings.Host), h =>
+        {
+            h.Username(settings.UserName);
+            h.Password(settings.Password);
+        });
+    }));
+    
+    // busConfigurator.UsingRabbitMq((context, configurator) =>
+    // {
+    //     RabbitMqSettings settings = context.GetRequiredService<RabbitMqSettings>();
+
+    //     configurator.Host(new Uri(settings.Host), h =>
+    //     {
+    //         h.Username(settings.UserName);
+    //         h.Password(settings.Password);
+    //     });
+    // });
+});
 
 var app = builder.Build();
 

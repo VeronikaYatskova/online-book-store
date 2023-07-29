@@ -1,6 +1,8 @@
 using Auth.Application.Abstractions.Interfaces.Repositories;
+using Auth.Application.Abstractions.Interfaces.Services;
 using Auth.Infrastructure.Database.DataContext;
 using Auth.Infrastructure.Database.Repositories;
+using Auth.Infrastructure.MessageBroker;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,8 +13,9 @@ namespace Auth.Infrastructure.Extensions
     {
         public static void AddInfrastructureLayer(this IServiceCollection services, IConfiguration config)
         {
-            AddDbContext(services, config);
-            AddRepositories(services);
+            services.AddDbContext(config);
+            services.AddRepositories();
+            services.AddTransient<IEventBus, EventBus>();
         }
 
         private static void AddDbContext(this IServiceCollection services, IConfiguration config)
