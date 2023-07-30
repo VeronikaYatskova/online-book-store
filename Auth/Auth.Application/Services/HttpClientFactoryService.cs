@@ -1,17 +1,14 @@
-using System.Text.Json;
 using Auth.Application.Abstractions.Interfaces.Services;
 
 namespace Auth.Application.Services
 {
     public class HttpClientFactoryService : IHttpClientFactoryService
     {
-       private readonly IHttpClientFactory httpClientFactory;
-        private readonly JsonSerializerOptions options;
+       private readonly IHttpClientFactory _httpClientFactory;
         
         public HttpClientFactoryService(IHttpClientFactory httpClientFactory)
         {
-            this.httpClientFactory = httpClientFactory;
-            options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            _httpClientFactory = httpClientFactory;
         }
 
         public async Task<string> Execute(string token)
@@ -21,7 +18,7 @@ namespace Auth.Application.Services
 
         private async Task<string> GetGoogleUserData(string token)
         {
-            var httpClient = httpClientFactory.CreateClient();
+            var httpClient = _httpClientFactory.CreateClient();
             
             string cliUrl = $"https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token={token}";
 

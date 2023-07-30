@@ -7,15 +7,15 @@ namespace Auth.Application.Features.User.Commands.LoginUser
     {
         public LoginUserCommandValidator()
         {
-            RuleFor(u => u.request.Email)
+            RuleFor(u => u.LoginUserData.Email)
                 .NotEmpty()
                 .WithMessage(ValidationMessages.InvalidEmailMessage);
 
-            RuleFor(u => u.request.Email)
+            RuleFor(u => u.LoginUserData.Email)
                 .Must(IsValidEmail)
                 .WithMessage(ValidationMessages.InvalidEmailMessage);
             
-            RuleFor(u => u.request.Password)
+            RuleFor(u => u.LoginUserData.Password)
                 .NotEmpty()
                 .WithMessage(ValidationMessages.InvalidPasswordMessage);
         }

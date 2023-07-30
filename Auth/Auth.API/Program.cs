@@ -22,6 +22,8 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddCustomAuthentication(configuration);
 
+builder.Services.AddOptions(configuration);
+
 var app = builder.Build();
 
 app.ConfigureCustomExceptionMiddleware();

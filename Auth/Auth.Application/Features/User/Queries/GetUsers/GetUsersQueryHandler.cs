@@ -4,29 +4,27 @@ using AutoMapper;
 using MediatR;
 using Auth.Domain.Exceptions;
 
+using UserEntity = Auth.Domain.Models.User;
+
 namespace Auth.Application.Features.User.Queries.GetUsers
 {
     public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IEnumerable<GetUsersResponse>>
     {
-        private readonly IUserRepository userRepository;
-        private readonly IMapper mapper;
+        private readonly IRepository<UserEntity> _userRepository;
+        private readonly IMapper _mapper;
 
-        public GetUsersQueryHandler(IUserRepository userRepository, IMapper mapper)
+        public GetUsersQueryHandler(IRepository<UserEntity> userRepository, IMapper mapper)
         {
-            this.userRepository = userRepository;
-            this.mapper = mapper;
+            _userRepository = userRepository;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<GetUsersResponse>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
         {
-            var users = await userRepository.FindAllUsersAsync();
-
-            if (users is null)
-            {
+            var users = await _userRepository.FindAllAsync()! ??
                 throw new NotFoundException(ExceptionMessages.UserNotFoundMessage);
-            }
 
-            return mapper.Map<IEnumerable<GetUsersResponse>>(users);
+            return _mapper.Map<IEnumerable<GetUsersResponse>>(users);
         }
     }
 }

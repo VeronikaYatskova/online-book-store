@@ -7,6 +7,8 @@ using Auth.Infrastructure.Extensions;
 using Auth.Application.Extensions;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using Auth.Domain.Models;
+using Microsoft.Extensions.Options;
 
 namespace Auth.API.Extensions
 {
@@ -52,6 +54,23 @@ namespace Auth.API.Extensions
                 });
                 options.OperationFilter<SecurityRequirementsOperationFilter>();
             });
+        }
+
+        public static void AddOptions(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<GoogleCredentials>(
+                configuration.GetSection("GoogleAuth")
+            );
+
+            services.AddSingleton(s => 
+                s.GetRequiredService<IOptions<GoogleCredentials>>());
+
+            services.Configure<AppSettings>(
+                configuration.GetSection("AppSettings")
+            );
+
+            services.AddSingleton(s => 
+                s.GetRequiredService<IOptions<AppSettings>>());
         }
 
         public static void AddLayers(this IServiceCollection services, IConfiguration configuration)
