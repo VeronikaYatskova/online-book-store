@@ -5,9 +5,6 @@ namespace Profiles.Application.Interfaces.Repositories
     public interface IUserRepository
     {
         Task<IEnumerable<User>> GetAllUsersAsync();
-        Task<IEnumerable<User>> GetNormalUsersAsync();
-        Task<IEnumerable<User>> GetPublishersAsync();
-        Task<IEnumerable<User>> GetAuthorsAsync();
         Task<User> GetUserByIdAsync(Guid userId);
         Task AddUserAsync(User user);
         Task UpdateUserAsync(User user);
