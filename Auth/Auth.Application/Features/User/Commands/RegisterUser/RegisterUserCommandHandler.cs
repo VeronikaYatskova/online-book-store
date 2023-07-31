@@ -1,43 +1,67 @@
 using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Application.Abstractions.Interfaces.Services;
+using Auth.Domain.Exceptions;
+using Auth.Domain.Models;
 using AutoMapper;
 using FluentValidation;
 using MediatR;
+
+using UserEntity = Auth.Domain.Models.User;
 
 namespace Auth.Application.Features.User.Commands.RegisterUser
 {
     public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, string>
     {
-        private readonly IUserRepository userRepository;
-        private readonly ITokenService tokenService;
-        private readonly IMapper mapper;
-        private readonly IValidator<RegisterUserCommand> validator;
+        private readonly IRepository<UserEntity> _userRepository;
+        private readonly IRepository<UserRole> _userRoleRepository;
+        private readonly ITokenService _tokenService;
+        private readonly IPasswordService _passwordService;
+        private readonly IMapper _mapper;
+        private readonly IValidator<RegisterUserCommand> _validator;
 
         public RegisterUserCommandHandler(
-            IUserRepository userRepository, 
+            IRepository<UserEntity> userRepository,
+            IRepository<UserRole> userRoleRepository,
             ITokenService tokenService, 
+            IPasswordService passwordService,
             IMapper mapper,
             IValidator<RegisterUserCommand> validator)
         {
-            this.userRepository = userRepository;
-            this.tokenService = tokenService;
-            this.mapper = mapper;
-            this.validator = validator;
+            _userRepository = userRepository;
+            _userRoleRepository = userRoleRepository;
+            _tokenService = tokenService;
+            _passwordService = passwordService;
+            _mapper = mapper;
+            _validator = validator;
         }
 
         public async Task<string> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
-            await validator.ValidateAndThrowAsync(request);
+            await _validator.ValidateAndThrowAsync(request);
             
             var userData = request.UserDataRequest;
-            var userEntity = mapper.Map<Domain.Models.User>(userData); 
-            userEntity.AccountDataId = request.AccountData.Id;
 
-            userRepository.AddUser(userEntity);
-            await userRepository.SaveUserChangesAsync();
+            if (await _userRepository.FindByConditionAsync(u => u.Email == userData.Email) is not null)
+            {
+                throw new AlreadyExistsException(ExceptionMessages.UserAlreadyExistsMessage);
+            }
 
-            var token = tokenService.CreateToken(request.AccountData);
-            await tokenService.SetRefreshTokenAsync(request.AccountData);
+            var userEntity = _mapper.Map<Domain.Models.User>(userData); 
+            
+            _passwordService.CreatePasswordHash(userData.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            var role = await _userRoleRepository.FindByConditionAsync(r => r.Name == request.Role) ??
+                throw new NotFoundException(ExceptionMessages.RoleNotFoundMessage);
+
+            userEntity.RoleId = role.Id;
+            userEntity.PasswordHash = passwordHash;
+            userEntity.PasswordSalt = passwordSalt;
+
+            await _userRepository.CreateAsync(userEntity);
+            await _userRepository.SaveChangesAsync();
+
+            var token = _tokenService.CreateToken(userEntity);
+            await _tokenService.SetRefreshTokenAsync(userEntity);
 
             return token;
         }

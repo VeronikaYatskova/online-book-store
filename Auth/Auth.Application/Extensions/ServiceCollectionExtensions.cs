@@ -23,6 +23,7 @@ namespace Auth.Application.Extensions
         {
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IHttpClientFactoryService, HttpClientFactoryService>();
+            services.AddScoped<IPasswordService, PasswordService>();
         }
     }
 }
