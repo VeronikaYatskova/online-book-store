@@ -1,4 +1,5 @@
 using Comments.API.Extensions;
+using Comments.BLL.Extensions;
 using Comments.DAL.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,9 +7,11 @@ var configuration = builder.Configuration;
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+                .AddFluentValidation();
 
 builder.Services.AddDataAccessLayer(configuration);
+builder.Services.AddBusinessLogicLayer();
 builder.Services.AddApiLayer(configuration);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

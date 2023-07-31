@@ -10,6 +10,9 @@ namespace Comments.DAL.Entities
         public string Id { get; set; } = default!;
         public string BookId { get; set; } = default!;
         public string UserId { get; set; } = default!;
+
+        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+        public DateTime Date { get; set; } = default!;
         public string Text { get; set; } = default!;
     }
 }
