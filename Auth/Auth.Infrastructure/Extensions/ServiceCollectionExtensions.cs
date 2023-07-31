@@ -10,15 +10,15 @@ namespace Auth.Infrastructure.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static void AddInfrastructureLayer(this IServiceCollection services, IConfiguration _config)
+        public static void AddInfrastructureLayer(this IServiceCollection services, IConfiguration config)
         {
-            AddDbContext(services, _config);
+            AddDbContext(services, config);
             AddRepositories(services);
         }
 
-        private static void AddDbContext(this IServiceCollection services, IConfiguration _config)
+        private static void AddDbContext(this IServiceCollection services, IConfiguration config)
         {
-            var connectionString = _config.GetConnectionString("DefaultConnection");       
+            var connectionString = config.GetConnectionString("DefaultConnection");       
             ArgumentNullException.ThrowIfNull(connectionString, nameof(connectionString));
             services.AddDbContext<AppDbContext>(options =>
                 options.UseLazyLoadingProxies()
@@ -27,8 +27,7 @@ namespace Auth.Infrastructure.Extensions
 
         private static void AddRepositories(this IServiceCollection services)
         {
-            services.AddScoped<IRepository<User>, Repository<User>>();
-            services.AddScoped<IRepository<UserRole>, Repository<UserRole>>();
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         }
     }
 }

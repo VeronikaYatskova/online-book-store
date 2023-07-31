@@ -62,15 +62,9 @@ namespace Auth.API.Extensions
                 configuration.GetSection("GoogleAuth")
             );
 
-            services.AddSingleton(s => 
-                s.GetRequiredService<IOptions<GoogleCredentials>>());
-
             services.Configure<AppSettings>(
                 configuration.GetSection("AppSettings")
             );
-
-            services.AddSingleton(s => 
-                s.GetRequiredService<IOptions<AppSettings>>());
         }
 
         public static void AddLayers(this IServiceCollection services, IConfiguration configuration)

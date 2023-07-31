@@ -7,6 +7,9 @@ namespace Auth.Infrastructure.Database.DataContext
     {
         public AppDbContext (DbContextOptions<AppDbContext> options) : base(options) { }
 
+        public virtual DbSet<User> Users { get; set; } = default!;
+        public virtual DbSet<UserRole> UserRoles { get; set; } = default!;
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -22,8 +25,5 @@ namespace Auth.Infrastructure.Database.DataContext
             modelBuilder.Entity<UserRole>().HasKey(e => e.Id);
             modelBuilder.Entity<UserRole>().Property(e => e.Id).ValueGeneratedOnAdd();
         }
-        
-        public virtual DbSet<User> Users { get; set; } = default!;
-        public virtual DbSet<UserRole> UserRoles { get; set; } = default!;
     }
 }

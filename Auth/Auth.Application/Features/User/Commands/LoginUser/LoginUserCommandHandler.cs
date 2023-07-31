@@ -43,7 +43,7 @@ namespace Auth.Application.Features.User.Commands.LoginUser
 
             if (user is null)
             {
-                throw new UserNotRegisteredException(ExceptionMessages.UserNotRegisteredMessage);
+                throw new UserNotRegisteredException();
             }
             else
             {

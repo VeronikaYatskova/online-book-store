@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Auth.Infrastructure.Database.Repositories
 {
-    public abstract class Repository<T> : IRepository<T> where T : class
+    public class Repository<T> : IRepository<T> where T : class
     {
         private readonly AppDbContext _dbContext;
         private readonly DbSet<T> _dbSet; 
@@ -22,7 +22,7 @@ namespace Auth.Infrastructure.Database.Repositories
                 await _dbSet.Where(expression).ToListAsync();
 
         public async Task<T?> FindByConditionAsync(Expression<Func<T, bool>> expression) =>
-            await _dbSet.Where(expression).FirstOrDefaultAsync();
+            await _dbSet.FirstOrDefaultAsync(expression);
 
         public async Task CreateAsync(T entity) =>
             await _dbSet.AddAsync(entity);

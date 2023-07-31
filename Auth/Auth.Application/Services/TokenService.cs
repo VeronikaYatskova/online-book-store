@@ -63,7 +63,7 @@ namespace Auth.Application.Services
             {
                 throw new InvalidTokenException(ExceptionMessages.InvalidRefreshTokenMessage);
             }
-            else if (user.TokenExpires < DateTime.Now)
+            else if (user.TokenExpires < DateTime.UtcNow)
             {
                 throw new InvalidTokenException(ExceptionMessages.TokenExpiredMessage);
             }
