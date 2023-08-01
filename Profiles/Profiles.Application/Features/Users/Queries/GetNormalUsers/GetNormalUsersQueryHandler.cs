@@ -6,7 +6,7 @@ using Profiles.Domain.Exceptions;
 
 namespace Profiles.Application.Features.Users.Queries.GetAuthors
 {
-    public class GetNormalUsersQueryHandler : IRequestHandler<GetAuthorsQuery, IEnumerable<GetUsersResponse>>
+    public class GetNormalUsersQueryHandler : IRequestHandler<GetNormalUsersQuery, IEnumerable<GetUsersResponse>>
     {
         private readonly INormalUserRepository _normalUserRepository;
         private readonly IMapper _mapper;
@@ -17,7 +17,7 @@ namespace Profiles.Application.Features.Users.Queries.GetAuthors
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<GetUsersResponse>> Handle(GetAuthorsQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<GetUsersResponse>> Handle(GetNormalUsersQuery request, CancellationToken cancellationToken)
         {
             var users = await _normalUserRepository.GetNormalUsersAsync() ??
                 throw new NotFoundException(ExceptionMessages.UsersNotFoundMessage);
