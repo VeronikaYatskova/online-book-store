@@ -6,6 +6,8 @@ using Comments.DAL.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
+builder.Logging.AddCustomLogger();
+
 // Add services to the container.
 
 builder.Services.AddControllers()

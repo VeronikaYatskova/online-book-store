@@ -42,9 +42,9 @@ namespace Comments.API.Controllers
         }
 
         [HttpDelete("{commentId}")]
-        public async Task<IActionResult> DeleteCommentAsync([FromRoute] string bookId)
+        public async Task<IActionResult> DeleteCommentAsync([FromRoute] string commentId)
         {
-            await _commentsService.DeleteCommentAsync(bookId);
+            await _commentsService.DeleteCommentAsync(commentId);
 
             return NoContent();
         }
