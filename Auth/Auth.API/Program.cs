@@ -26,29 +26,7 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddCustomAuthentication(configuration);
 
-builder.Services.AddMassTransit(busConfigurator =>
-{   
-    busConfigurator.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
-    {
-        var settings = provider.GetRequiredService<RabbitMqSettings>();
-        config.Host(new Uri(settings.Host), h =>
-        {
-            h.Username(settings.UserName);
-            h.Password(settings.Password);
-        });
-    }));
-    
-    // busConfigurator.UsingRabbitMq((context, configurator) =>
-    // {
-    //     RabbitMqSettings settings = context.GetRequiredService<RabbitMqSettings>();
-
-    //     configurator.Host(new Uri(settings.Host), h =>
-    //     {
-    //         h.Username(settings.UserName);
-    //         h.Password(settings.Password);
-    //     });
-    // });
-});
+builder.Services.AddMassTransit();
 
 var app = builder.Build();
 
