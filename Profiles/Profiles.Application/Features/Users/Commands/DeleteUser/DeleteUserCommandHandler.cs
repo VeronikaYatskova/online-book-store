@@ -23,7 +23,7 @@ namespace Profiles.Application.Features.Users.Commands.DeleteUser
             await _validator.ValidateAndThrowAsync(request);
             
             var userId = Guid.Parse(request.UserData.UserId);
-            var userExist = await _userRepository.GetUserByIdAsync(userId) ??
+            var existedUser = await _userRepository.GetUserByIdAsync(userId) ??
                 throw new NotFoundException(ExceptionMessages.UserNotFoundByIdMessage);
 
             await _userRepository.DeleteUserAsync(userId);

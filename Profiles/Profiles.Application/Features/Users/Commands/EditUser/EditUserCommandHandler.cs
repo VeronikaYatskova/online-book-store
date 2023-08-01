@@ -28,7 +28,7 @@ namespace Profiles.Application.Features.Users.Commands.EditUser
             await _validator.ValidateAndThrowAsync(request);
 
             var user = _mapper.Map<User>(request.UserData);
-            var userExist = await _userRepository.GetUserByIdAsync(user.Id) ??
+            var existedUser = await _userRepository.GetUserByIdAsync(user.Id) ??
                 throw new NotFoundException(ExceptionMessages.UserNotFoundByIdMessage);  
 
             await _userRepository.UpdateUserAsync(user);
