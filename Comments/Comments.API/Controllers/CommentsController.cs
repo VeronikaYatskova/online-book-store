@@ -1,23 +1,52 @@
+using Comments.API.Filters;
+using Comments.BLL.DTOs.Request;
+using Comments.BLL.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Comments.API.Controllers
 {
+    [ValidationFilter]
     [ApiController]
     [Route("api/comments")]
     public class CommentsController : ControllerBase
     {
-        public CommentsController()
+        private readonly ICommentsService _commentsService;
+
+        public CommentsController(ICommentsService commentsService)
         {
+            _commentsService = commentsService;
         }
 
-        // [HttpGet]
-        // public async Task<IActionResult> Get()
-        // {
-        // }
+        [HttpGet("{bookId}")]
+        public async Task<IActionResult> GetBookCommentsAsync([FromRoute] string bookId)
+        {
+            var comments = await _commentsService.GetCommentsByBookIdAsync(bookId);
 
-        // [HttpPost]
-        // public async Task Post([FromBody] Comment comment)
-        // {
-        // }
+            return Ok(comments);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddCommentAsync([FromBody] AddCommentRequest addCommentRequest)
+        {
+            await _commentsService.AddCommentAsync(addCommentRequest);
+
+            return Created("", addCommentRequest);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateCommentAsync([FromBody] UpdateCommentRequest updateCommentRequest)
+        {
+            await _commentsService.UpdateCommentAsync(updateCommentRequest);
+
+            return NoContent();
+        }
+
+        [HttpDelete("{commentId}")]
+        public async Task<IActionResult> DeleteCommentAsync([FromRoute] string bookId)
+        {
+            await _commentsService.DeleteCommentAsync(bookId);
+
+            return NoContent();
+        }
     }
 }

@@ -1,4 +1,5 @@
 using Comments.API.Extensions;
+using Comments.API.Middlewares.ExceptionHandlerMiddleware;
 using Comments.BLL.Extensions;
 using Comments.DAL.Extensions;
 
@@ -19,6 +20,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.ConfigureCustomExceptionMiddleware();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
