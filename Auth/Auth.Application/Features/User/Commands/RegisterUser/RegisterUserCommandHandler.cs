@@ -16,22 +16,19 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
         private readonly ITokenService tokenService;
         private readonly IMapper mapper;
         private readonly IValidator<RegisterUserCommand> validator;
-        private readonly IEventBus _eventBus;
 
         public RegisterUserCommandHandler(
             IUserRepository userRepository,
             IUserRoleRepository userRoleRepository,
             ITokenService tokenService, 
             IMapper mapper,
-            IValidator<RegisterUserCommand> validator,
-            IEventBus eventBus)
+            IValidator<RegisterUserCommand> validator)
         {
             this.userRepository = userRepository;
             this.userRoleRepository = userRoleRepository;
             this.tokenService = tokenService;
             this.mapper = mapper;
             this.validator = validator;
-            _eventBus = eventBus;
         }
 
         public async Task<string> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
@@ -63,7 +60,6 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
             await tokenService.SetRefreshTokenAsync(userEntity);
 
             var userRequest = mapper.Map<UserRegisteredDto>(userEntity);
-            await _eventBus.PublishAsync(userRequest);
 
             return token;
         }

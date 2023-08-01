@@ -2,7 +2,6 @@ using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Application.Abstractions.Interfaces.Services;
 using Auth.Infrastructure.Database.DataContext;
 using Auth.Infrastructure.Database.Repositories;
-using Auth.Infrastructure.MessageBroker;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +14,6 @@ namespace Auth.Infrastructure.Extensions
         {
             services.AddDbContext(config);
             services.AddRepositories();
-            services.AddTransient<IEventBus, EventBus>();
         }
 
         private static void AddDbContext(this IServiceCollection services, IConfiguration config)
