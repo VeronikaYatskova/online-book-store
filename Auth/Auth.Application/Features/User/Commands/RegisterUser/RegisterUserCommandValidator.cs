@@ -30,20 +30,8 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
                 .NotEmpty()
                 .Must(IsValidPassword)
                 .WithMessage(ValidationMessages.InvalidPasswordMessage);
-            
-            RuleFor(u => u.UserDataRequest.ReEnteredPassword)
-                .NotEmpty()
-                .Must((user, reEnteredPassword) => 
-                    ReEnteredPasswordIsCoincide(
-                        user.UserDataRequest.Password, reEnteredPassword))
-                .WithMessage(ValidationMessages.ReEnteredPasswordDoesntCoincideWithPasswordMessage);
         }
-
-        private bool ReEnteredPasswordIsCoincide(string password, string reEnteredPassword)
-        {
-            return object.Equals(password, reEnteredPassword);
-        }
-
+        
         private bool IsValidEmail(string email)
         {
             return email.Contains("@");

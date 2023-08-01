@@ -1,9 +1,11 @@
 using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Application.Abstractions.Interfaces.Services;
+using Auth.Domain.Exceptions;
 using Auth.Domain.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -14,33 +16,32 @@ namespace Auth.Application.Services
 {
     public class TokenService : ITokenService
     {
-        private readonly IConfiguration config;
-        private readonly IHttpContextAccessor httpContextAccessor;
-        private readonly IUserRepository userRepository;
-        private readonly string secretKey;
+        private readonly IConfiguration _config;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IRepository<User> _userRepository;
+        private readonly IOptions<AppSettings> _appSetting;
 
         public TokenService (
             IConfiguration config,
             IHttpContextAccessor httpContextAccessor,
-            IUserRepository userRepository)
+            IRepository<User> userRepository,
+            IOptions<AppSettings> appSetting)
         {
-            this.config = config;
-            this.httpContextAccessor = httpContextAccessor;
-            this.userRepository = userRepository;
-            secretKey = config["AppSettings:SecretKey"];
+            _config = config;
+            _httpContextAccessor = httpContextAccessor;
+            _userRepository = userRepository;
+            _appSetting = appSetting;
         }
 
         public string CreateToken(User user)
         {
-            var userId = user.Id;
-
             var claims = new []
             {
-                new Claim("UserId", user.Id.ToString()),
-                new Claim("Role", user.Role.Name)
+                new Claim(TokenClaims.UserIdClaim, user.Id.ToString()),
+                new Claim(TokenClaims.UserRoleClaim, user.Role.Name)
             };
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSetting.Value.SecretKey));
             var creds = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
@@ -56,15 +57,15 @@ namespace Auth.Application.Services
 
         public async Task<string> UpdateRefreshTokenAsync(User user)
         {
-            var refreshToken = httpContextAccessor.HttpContext.Request.Cookies["refresh-token"];
+            var refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refresh-token"];
 
-            if (!object.Equals(user.RefreshToken, refreshToken))
+            if (!string.Equals(user.RefreshToken, refreshToken))
             {
-                throw new ArgumentException("Invalid Refresh Token");
+                throw new InvalidTokenException(ExceptionMessages.InvalidRefreshTokenMessage);
             }
-            else if (user.TokenExpires < DateTime.Now)
+            else if (user.TokenExpires < DateTime.UtcNow)
             {
-                throw new ArgumentException("Token is expired.");
+                throw new InvalidTokenException(ExceptionMessages.TokenExpiredMessage);
             }
 
             string token = CreateToken(user);
@@ -78,12 +79,8 @@ namespace Auth.Application.Services
             var guid = await GetInfoAsync();
             if (guid is not null)
             {
-                var user = await userRepository.FindUserByIdAsync(Guid.Parse(guid));
-
-                if (user is null)
-                {
-                    throw new ArgumentException("User is not found...");
-                }
+                var user = await _userRepository.FindByConditionAsync(u => u.Id == Guid.Parse(guid))! ??
+                    throw new NotFoundException();
 
                 return user;
             }
@@ -99,7 +96,7 @@ namespace Auth.Application.Services
             user.TokenCreated = refreshToken.Created.ToUniversalTime();
             user.TokenExpires = refreshToken.Expired.ToUniversalTime();
 
-            await userRepository.SaveUserChangesAsync();
+            await _userRepository.SaveChangesAsync();
 
             AppendRefreshTokenToCookies(refreshToken);
         }
@@ -113,7 +110,7 @@ namespace Auth.Application.Services
 
         private async Task<string?> GetUserGuidAsync()
         {
-            var token = await httpContextAccessor?.HttpContext?.GetTokenAsync("access_token")!;
+            var token = await _httpContextAccessor?.HttpContext?.GetTokenAsync("access_token")!;
 
             if (token is not null)
             {
@@ -134,7 +131,7 @@ namespace Auth.Application.Services
                 Expires = refreshToken.Expired,
             };
 
-            httpContextAccessor.HttpContext.Response.Cookies.Append("refresh-token", refreshToken.Token, cookieOptions);
+            _httpContextAccessor.HttpContext.Response.Cookies.Append("refresh-token", refreshToken.Token, cookieOptions);
         }
 
         private RefreshToken GenerateRefreshToken()

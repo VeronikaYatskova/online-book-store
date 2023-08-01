@@ -7,8 +7,7 @@ using Auth.Infrastructure.Extensions;
 using Auth.Application.Extensions;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
-using Auth.Domain.Entities;
-using Microsoft.Extensions.Options;
+using Auth.Domain.Models;
 
 namespace Auth.API.Extensions
 {
@@ -56,14 +55,15 @@ namespace Auth.API.Extensions
             });
         }
 
-        public static void AddOptionsConfiguration(
-            this IServiceCollection services, IConfiguration configuration)
+        public static void AddOptions(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<RabbitMqSettings>(
-                configuration.GetSection("RabbitMqConfig"));
+            services.Configure<GoogleCredentials>(
+                configuration.GetSection("GoogleAuth")
+            );
 
-            services.AddSingleton(sp =>
-                sp.GetRequiredService<IOptions<RabbitMqSettings>>().Value);
+            services.Configure<AppSettings>(
+                configuration.GetSection("AppSettings")
+            );
         }
 
         public static void AddLayers(this IServiceCollection services, IConfiguration configuration)

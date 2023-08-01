@@ -1,7 +1,6 @@
 using Auth.API.Middlewares;
 using Auth.API.Extensions;
 using MassTransit;
-using Auth.Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,8 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 builder.Logging.AddCustomLogger();
-
-builder.Services.AddOptionsConfiguration(configuration);
 
 builder.Services.AddControllers();
 
@@ -27,6 +24,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddCustomAuthentication(configuration);
 
 builder.Services.AddMassTransit();
+
+builder.Services.AddOptions(configuration);
 
 var app = builder.Build();
 
