@@ -9,16 +9,16 @@ namespace BookStore.Infrastructure.Persistance.DataContext
             : base(options)
         {
         }
+
+        public DbSet<BookEntity> Books { get; set; } = default!;
+        public DbSet<BookAuthorEntity> BooksAuthors { get; set; } = default!;
+        public DbSet<UserBookEntity> UserBooks { get; set; } = default!; 
+        public DbSet<User> Users { get; set; } = default!;
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.SetModels();
         }
-
-        public DbSet<BookEntity> Books { get; set; } = default!;
-        public DbSet<BookAuthorEntity> BooksAuthors { get; set; } = default!;
-        public DbSet<UserBookEntity> UserBooks { get; set; } = default!; 
-        public DbSet<User> Users { get; set; } = default!;
     }
 }
