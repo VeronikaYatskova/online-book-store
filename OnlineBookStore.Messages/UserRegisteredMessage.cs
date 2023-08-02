@@ -1,9 +1,10 @@
-namespace Auth.Application.Features.User.Commands.RegisterUser
+namespace OnlineBookStore.Messages
 {
-    public record UserRegisteredDto
+    public class UserRegisteredMessage
     {
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-    }
+        public Guid RoleId { get; set; }
+     }
 }

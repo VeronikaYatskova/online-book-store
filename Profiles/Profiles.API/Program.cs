@@ -1,8 +1,8 @@
 using MassTransit;
 using Microsoft.Extensions.Options;
-using Profiles.API.Consumer;
 using Profiles.API.Extensions;
 using Profiles.API.Middlewares.ExceptionMiddleware;
+using Profiles.Application.Consumers;
 using Profiles.Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,20 +24,22 @@ builder.Services.AddLayers();
 builder.Services.AddMassTransit(busConfigurator =>
 {   
     busConfigurator.AddConsumer<UserRegisteredConsumer>();
-    busConfigurator.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(config =>
+    
+    busConfigurator.UsingRabbitMq((context, configuration) => 
     {
-        var settings = provider.GetRequiredService<RabbitMqSettings>();
-        config.Host(new Uri(settings.Host), h =>
+        var rabbitMqSettings = context.GetRequiredService<RabbitMqSettings>();
+
+        configuration.Host(new Uri(rabbitMqSettings.Host!), h =>
         {
-            h.Username(settings.UserName);
-            h.Password(settings.Password);
+           h.Username(rabbitMqSettings.UserName);
+           h.Password(rabbitMqSettings.Password);
         });
 
-        config.ReceiveEndpoint("user-registered-event", e => 
+        configuration.ReceiveEndpoint("user-registered-event", c => 
         {
-             e.ConfigureConsumer<UserRegisteredConsumer>(provider);   
+            c.ConfigureConsumer<UserRegisteredConsumer>(context);   
         });
-    }));
+    });
 });
 
 // builder.Services.AddMassTransit(x => 

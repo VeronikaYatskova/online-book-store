@@ -4,8 +4,9 @@ using Auth.Domain.Exceptions;
 using Auth.Domain.Models;
 using AutoMapper;
 using FluentValidation;
+using MassTransit;
 using MediatR;
-
+using OnlineBookStore.Messages;
 using UserEntity = Auth.Domain.Models.User;
 
 namespace Auth.Application.Features.User.Commands.RegisterUser
@@ -18,14 +19,16 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
         private readonly IPasswordService _passwordService;
         private readonly IMapper _mapper;
         private readonly IValidator<RegisterUserCommand> _validator;
+        private readonly IPublishEndpoint _publishEndpoint;
 
         public RegisterUserCommandHandler(
             IRepository<UserEntity> userRepository,
             IRepository<UserRole> userRoleRepository,
-            ITokenService tokenService, 
+            ITokenService tokenService,
             IPasswordService passwordService,
             IMapper mapper,
-            IValidator<RegisterUserCommand> validator)
+            IValidator<RegisterUserCommand> validator,
+            IPublishEndpoint publishEndpoint)
         {
             _userRepository = userRepository;
             _userRoleRepository = userRoleRepository;
@@ -33,6 +36,7 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
             _passwordService = passwordService;
             _mapper = mapper;
             _validator = validator;
+            _publishEndpoint = publishEndpoint;
         }
 
         public async Task<string> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
@@ -63,7 +67,9 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
             var token = _tokenService.CreateToken(userEntity);
             await _tokenService.SetRefreshTokenAsync(userEntity);
 
-            var userRequest = _mapper.Map<UserRegisteredDto>(userEntity);
+            var userMessage = _mapper.Map<UserRegisteredMessage>(userEntity);
+            
+            await _publishEndpoint.Publish(userMessage);
 
             return token;
         }
