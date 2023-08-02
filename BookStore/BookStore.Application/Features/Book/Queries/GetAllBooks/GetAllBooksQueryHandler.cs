@@ -27,7 +27,7 @@ namespace BookStore.Application.Features.Book.Queries.GetAllBooks
             var policy = SetRetryPolicyAsync();
 
             var books = policy.ExecuteAsync(async () => 
-                await unitOfWork.BooksRepository.GetAllAsync()).Result;
+                await unitOfWork.BooksRepository.FindAllAsync());
             
             if (books is null)
             {

@@ -20,32 +20,34 @@ namespace BookStore.Application.Features.Book.Queries.GetBookByAuthor
 
         public async Task<IEnumerable<BookDto>> Handle(GetBooksByAuthorQuery request, CancellationToken cancellationToken)
         {
-            var books = await unitOfWork.BooksRepository.GetAllAsync();
-            var authors = await unitOfWork.AuthorRepository.GetAllAsync();
-            var authorsBooks = await unitOfWork.AuthorsBooksRepository.GetAllAsync();
+            // var books = await unitOfWork.BooksRepository.FindAllAsync();
+            // var authors = await unitOfWork..GetAllAsync();
+            // var authorsBooks = await unitOfWork.AuthorsBooksRepository.GetAllAsync();
 
-            var author = authors.FirstOrDefault(a => a.AuthorLastName == request.authorName);
-            if (author is null)
-            {
-                throw new NotFoundException(ExceptionMessages.AuthorNotFound);
-            }
+            // var author = authors.FirstOrDefault(a => a.AuthorLastName == request.authorName);
+            // if (author is null)
+            // {
+            //     throw new NotFoundException(ExceptionMessages.AuthorNotFound);
+            // }
             
-            var authorBooksGuids = authorsBooks.Where(ab => ab.AuthorGuid == author.AuthorGuid);
+            // var authorBooksGuids = authorsBooks.Where(ab => ab.AuthorGuid == author.AuthorGuid);
 
-            if (authorBooksGuids is null)
-            {
-                throw new NotFoundException(ExceptionMessages.BookNotFound);
-            }
+            // if (authorBooksGuids is null)
+            // {
+            //     throw new NotFoundException(ExceptionMessages.BookNotFound);
+            // }
 
-            var authorBooksEntities = new List<BookEntity>();
+            // var authorBooksEntities = new List<BookEntity>();
 
-            foreach (var ab in authorBooksGuids)
-            {
-                var book = books.Where(b => b.BookGuid == ab.BookGuid).First();
-                authorBooksEntities.Add(book);
-            }
+            // foreach (var ab in authorBooksGuids)
+            // {
+            //     var book = books.Where(b => b.BookGuid == ab.BookGuid).First();
+            //     authorBooksEntities.Add(book);
+            // }
+            
+            throw new NotImplementedException();
 
-            return (authorBooksEntities as IEnumerable<BookDto>)!;
+            // return (authorBooksEntities as IEnumerable<BookDto>)!;
         }
     }
 }

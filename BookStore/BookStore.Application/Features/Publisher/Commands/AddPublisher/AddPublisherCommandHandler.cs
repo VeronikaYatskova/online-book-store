@@ -18,12 +18,12 @@ namespace BookStore.Application.Features.Publisher.Commands.AddPublisher
 
         public async Task Handle(AddPublisherCommand request, CancellationToken cancellationToken)
         {
-            var publisher = new PublisherEntity()
-            {
-                PublisherName = request.publisher.PublisherName,
-            };
+            // var publisher = new PublisherEntity()
+            // {
+            //     PublisherName = request.publisher.PublisherName,
+            // };
 
-            await unitOfWork.PublishersRepository.AddPublisherAsync(publisher);
+            // await unitOfWork.PublishersRepository.AddPublisherAsync(publisher);
             await unitOfWork.SaveChangesAsync();
         }
     }

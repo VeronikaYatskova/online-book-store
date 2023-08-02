@@ -20,7 +20,7 @@ namespace BookStore.Application.Features.Book.Commands.DeleteBookFromFavorite
             var userId = new Guid(request.userId);
             var bookId = new Guid(request.bookId);
 
-            unitOfWork.FavoriteBooksRepository.RemoveBookFromFavorite(userId, bookId);
+            // unitOfWork.FavoriteBooksRepository.Delete(userId, bookId);
             await unitOfWork.SaveChangesAsync();
         }
     }

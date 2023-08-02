@@ -21,7 +21,7 @@ namespace BookStore.Application.Features.Book.Queries.GetFavoriteBooks
         public async Task<IEnumerable<BookDto>> Handle(GetFavoriteBooksQuery request, CancellationToken cancellationToken)
         {
             var userId = new Guid(request.userId);
-            var favoriteBooks = await unitOfWork.FavoriteBooksRepository.GetFavouriteBooksAsync(userId);
+            var favoriteBooks = await unitOfWork.UserBooksRepository.FindAllAsync(b => b.UserId == userId);
 
             if (!favoriteBooks.Any())
             {
@@ -30,7 +30,7 @@ namespace BookStore.Application.Features.Book.Queries.GetFavoriteBooks
 
             var bookGuids = favoriteBooks.Select(fb => fb.BookId);
             
-            var allBooks = await unitOfWork.BooksRepository.GetAllAsync();
+            var allBooks = await unitOfWork.BooksRepository.FindAllAsync();
             
             var bookEntities = allBooks.Where(b => bookGuids.Contains(b.BookGuid));
 

@@ -7,34 +7,39 @@ namespace BookStore.Infrastructure
 {
     public class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {
-        private readonly AppDbContext dbContext;
+        private readonly AppDbContext _dbContext;
+        private readonly DbSet<T> _dbSet;
 
         public RepositoryBase(AppDbContext dbContext)
         {
-            this.dbContext = dbContext;
+            _dbContext = dbContext;
+            _dbSet = _dbContext.Set<T>();
         }
 
-        public async Task<IEnumerable<T>> FindAllAsync() => await dbContext.Set<T>().ToListAsync();
+        public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>>? expression = null) => 
+            expression is null ? 
+                await _dbSet.ToListAsync() :
+                await _dbSet.Where(expression).ToListAsync();
 
-        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression) =>
-            dbContext.Set<T>().Where(expression);
+        public async Task<T?> FindByConditionAsync(Expression<Func<T, bool>> expression) =>
+            await _dbSet.FirstOrDefaultAsync(expression);
         
         public async Task<T> CreateAsync(T entity)
         {
-            await dbContext.Set<T>().AddAsync(entity);
+            await _dbSet.AddAsync(entity);
 
             return entity;
         }
 
-        public void Delete(T entity) => dbContext.Set<T>().Remove(entity);
+        public void Delete(T entity) => _dbSet.Remove(entity);
 
         public async Task UpdateAsync(T entity)
         {
-            T? searchValue = await dbContext.Set<T>().FindAsync(entity);
+            T? searchValue = await _dbSet.FindAsync(entity);
             
             if (searchValue is not null)
             {
-                dbContext.Entry(searchValue).CurrentValues.SetValues(entity);
+                _dbContext.Entry(searchValue).CurrentValues.SetValues(entity);
             }
         }
     }

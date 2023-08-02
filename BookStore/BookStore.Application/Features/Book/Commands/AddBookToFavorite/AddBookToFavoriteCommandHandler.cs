@@ -20,7 +20,7 @@ namespace BookStore.Application.Features.Book.Commands.AddBookToFavorite
             var userId = new Guid(request.userId);
             var bookId = new Guid(request.bookId);
             
-            await unitOfWork.FavoriteBooksRepository.AddBookToFavoriteAsync(userId, bookId);
+            // await unitOfWork.FavoriteBooksRepository.CreateAsync(userId, bookId);
             await unitOfWork.SaveChangesAsync();
         }
     }

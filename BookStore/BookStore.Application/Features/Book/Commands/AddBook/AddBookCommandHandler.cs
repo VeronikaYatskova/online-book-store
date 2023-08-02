@@ -22,7 +22,7 @@ namespace BookStore.Application.Features.Book.Commands.AddBook
             bookEntity.BookFakeName = request.bookFakeName;
             bookEntity.CategoryGuid = new Guid(request.book.CategotyGuid);
 
-            await unitOfWork.BooksRepository.AddBookAsync(bookEntity);
+            await unitOfWork.BooksRepository.CreateAsync(bookEntity);
             await unitOfWork.SaveChangesAsync();
         }
     }

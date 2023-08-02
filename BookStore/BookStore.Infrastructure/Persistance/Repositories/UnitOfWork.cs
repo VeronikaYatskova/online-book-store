@@ -1,99 +1,88 @@
 using BookStore.Application.Abstractions.Contracts.Interfaces;
+using BookStore.Domain.Entities;
 using BookStore.Infrastructure.Persistance.DataContext;
 
 namespace BookStore.Infrastructure.Persistance.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly AppDbContext dbContext;
-        private IBookRepository bookRepository;
-        private IPublisherRepository publisherRepository;
-        private ICategoryRepository categoryRepository;
-        private IAuthorRepository authorRepository;
-        private IAuthorsBooksRepository authorsBooksRepository;
-        private IFavoriteBooksRepository favoriteBooksRepository;
+        private readonly AppDbContext _dbContext;
+        private IRepositoryBase<BookEntity> _booksRepository;
+        private IRepositoryBase<CategoryEntity> _categoryRepository;
+        private IRepositoryBase<BookAuthorEntity> _authorsBooksRepository;
+        private IRepositoryBase<UserBookEntity> _userBooksRepository;
+        private IRepositoryBase<User> _usersRepository;
 
         public UnitOfWork(
             AppDbContext dbContext, 
-            IBookRepository bookRepository, 
-            IPublisherRepository publisherRepository, 
-            ICategoryRepository categoryRepository,
-            IAuthorRepository authorRepository,
-            IAuthorsBooksRepository authorsBooksRepository,
-            IFavoriteBooksRepository favoriteBooksRepository)
+            IRepositoryBase<BookEntity> booksRepository, 
+            IRepositoryBase<CategoryEntity> categoryRepository, 
+            IRepositoryBase<BookAuthorEntity> authorsBooksRepository, 
+            IRepositoryBase<UserBookEntity> userBooksRepository,
+            IRepositoryBase<User> usersRepository)
         {
-            this.dbContext = dbContext;
-            this.bookRepository = bookRepository;
-            this.publisherRepository = publisherRepository;
-            this.categoryRepository = categoryRepository;
-            this.authorRepository = authorRepository;
-            this.authorsBooksRepository = authorsBooksRepository;
-            this.favoriteBooksRepository = favoriteBooksRepository;
+            _dbContext = dbContext;
+            _booksRepository = booksRepository;
+            _categoryRepository = categoryRepository;
+            _authorsBooksRepository = authorsBooksRepository;
+            _userBooksRepository = userBooksRepository;
+            _usersRepository = usersRepository;
         }
 
-        public IBookRepository BooksRepository
+        public IRepositoryBase<BookEntity> BooksRepository
         {
             get 
             {
-                bookRepository ??= new BookRepository(dbContext);
+                _booksRepository ??= new RepositoryBase<BookEntity>(_dbContext);
 
-                return bookRepository;
+                return _booksRepository; 
             }
+            
         }
 
-        public IPublisherRepository PublishersRepository
+        public IRepositoryBase<CategoryEntity> CategoryRepository
         {
             get 
             {
-                publisherRepository ??= new PublisherRepository(dbContext);
+                _categoryRepository ??= new RepositoryBase<CategoryEntity>(_dbContext);
 
-                return publisherRepository;
+                return _categoryRepository; 
             }
         }
 
-        public ICategoryRepository CategoryRepository
+        public IRepositoryBase<BookAuthorEntity> AuthorsBooksRepository
         {
             get 
             {
-                categoryRepository ??= new CategoryRepository(dbContext);
+                _authorsBooksRepository ??= new RepositoryBase<BookAuthorEntity>(_dbContext);
 
-                return categoryRepository;
+                return _authorsBooksRepository; 
             }
         }
 
-        public IAuthorRepository AuthorRepository
+        public IRepositoryBase<UserBookEntity> UserBooksRepository
+        {
+            get 
+            {
+                _userBooksRepository ??= new RepositoryBase<UserBookEntity>(_dbContext);
+
+                return _userBooksRepository; 
+            }
+        }
+
+        public IRepositoryBase<User> UsersRepository
         {
             get
             {
-                authorRepository ??= new AuthorRepository(dbContext);
+                _usersRepository ??= new RepositoryBase<User>(_dbContext);
 
-                return authorRepository;
-            }
-        }
-
-        public IAuthorsBooksRepository AuthorsBooksRepository
-        {
-            get 
-            {
-                authorsBooksRepository ??= new AuthorsBooksRepository(dbContext);
-
-                return authorsBooksRepository;
-            }
-        }
-
-        public IFavoriteBooksRepository FavoriteBooksRepository
-        {
-            get
-            {
-                favoriteBooksRepository ??= new FavoriteBooksRepository(dbContext);
-
-                return favoriteBooksRepository;
+                return _usersRepository;
             }
         }
 
         public async Task SaveChangesAsync()
         {
-            await dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

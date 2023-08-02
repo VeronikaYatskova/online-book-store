@@ -23,14 +23,14 @@ namespace BookStore.Application.Features.Book.Commands.DeleteBook
         public async Task Handle(DeleteBookCommand request, CancellationToken cancellationToken)
         {
             var bookId = new Guid(request.bookId);
-            var bookToDelete = await unitOfWork.BooksRepository.GetByIdAsync(bookId);
+            var bookToDelete = await unitOfWork.BooksRepository.FindByConditionAsync(b => b.BookGuid == bookId);
 
             if (bookToDelete is null)
             {
                 throw new NotFoundException(ExceptionMessages.BookNotFound);
             }
 
-            unitOfWork.BooksRepository.DeleteBook(bookToDelete);
+            unitOfWork.BooksRepository.Delete(bookToDelete);
             await unitOfWork.SaveChangesAsync();
 
             await DeleteFileFromCloud(request, bookToDelete.BookFakeName!);

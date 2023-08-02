@@ -19,7 +19,7 @@ namespace BookStore.Application.Features.Book.Queries.GetBookById
 
         public async Task<BookDto> Handle(GetBookByIdQuery request, CancellationToken cancellationToken)
         {
-            var book = await unitOfWork.BooksRepository.GetByIdAsync(new Guid(request.id));
+            var book = await unitOfWork.BooksRepository.FindByConditionAsync(b => b.BookGuid == Guid.Parse(request.id));
 
             if (book is null)
             {

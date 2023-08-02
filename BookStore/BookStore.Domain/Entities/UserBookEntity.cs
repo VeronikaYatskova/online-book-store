@@ -1,6 +1,6 @@
 namespace BookStore.Domain.Entities
 {
-    public class UserFavoriteBookEntity
+    public class UserBookEntity
     {
         public Guid? Id { get; set; }
         public Guid BookId { get; set; }

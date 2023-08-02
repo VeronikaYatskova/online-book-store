@@ -18,7 +18,7 @@ namespace BookStore.Application.Features.Book.Queries.GetBooksByName
         
         public Task<IEnumerable<BookDto>> Handle(GetBooksByNameQuery request, CancellationToken cancellationToken)
         {
-            var books = unitOfWork.BooksRepository.GetByName(request.name);
+            var books = unitOfWork.BooksRepository.FindByConditionAsync(b => b.BookName == request.name);
 
             return Task.FromResult(mapper.Map<IEnumerable<BookDto>>(books));
         }

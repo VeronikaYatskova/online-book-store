@@ -18,9 +18,11 @@ namespace BookStore.Application.Features.Publisher.Queries.GetAllPublishers
 
         public async Task<PublisherDto> Handle(GetPublisherByIdQuery request, CancellationToken cancellationToken)
         {
-            var publisher = await unitOfWork.PublishersRepository.GetByIdAsync(new Guid(request.id));
+            // var publisher = await unitOfWork.PublishersRepository.GetByIdAsync(new Guid(request.id));
 
-            return mapper.Map<PublisherDto>(publisher);
+            // return mapper.Map<PublisherDto>(publisher);
+
+            throw new NotImplementedException();
         }
     }
 }

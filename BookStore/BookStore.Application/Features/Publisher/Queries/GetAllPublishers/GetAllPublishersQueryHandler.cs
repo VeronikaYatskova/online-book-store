@@ -19,14 +19,16 @@ namespace BookStore.Application.Features.Publisher.Queries.GetAllPublishers
 
         public async Task<IEnumerable<PublisherDto>> Handle(GetAllPublishersQuery request, CancellationToken cancellationToken)
         {
-            var publishers = await unitOfWork.PublishersRepository.GetAllAsync();
+            // var publishers = await unitOfWork..GetAllAsync();
 
-            if (publishers is null)
-            {
-                throw new NotFoundException(ExceptionMessages.PublishersListIsEmpty);
-            }
+            // if (publishers is null)
+            // {
+            //     throw new NotFoundException(ExceptionMessages.PublishersListIsEmpty);
+            // }
 
-            return mapper.Map<IEnumerable<PublisherDto>>(publishers);
+            // return mapper.Map<IEnumerable<PublisherDto>>(publishers);
+
+            throw new NotImplementedException();
         }
     }
 }

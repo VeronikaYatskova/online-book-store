@@ -16,12 +16,9 @@ namespace BookStore.Infrastructure.Persistance.DataContext
             modelBuilder.SetModels();
         }
 
-        public virtual DbSet<BookEntity> Books { get; set; } = default!;
-        public virtual DbSet<PublisherEntity> Publishers { get; set; } = default!;
-        public virtual DbSet<CategoryEntity> Categories { get; set; } = default!;
-        public virtual DbSet<AuthorEntity> Authors { get; set; } = default!;
-        public virtual DbSet<BookAuthorEntity> BooksAuthors { get; set; } = default!;
-        public virtual DbSet<UserFavoriteBookEntity> FavoriteBooks { get; set; } = default!; 
-        public virtual DbSet<User> Users { get; set; } = default!;
+        public DbSet<BookEntity> Books { get; set; } = default!;
+        public DbSet<BookAuthorEntity> BooksAuthors { get; set; } = default!;
+        public DbSet<UserBookEntity> UserBooks { get; set; } = default!; 
+        public DbSet<User> Users { get; set; } = default!;
     }
 }
