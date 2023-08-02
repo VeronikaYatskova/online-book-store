@@ -1,9 +1,8 @@
 using Auth.Application.DTOs.Request;
 using Auth.Application.DTOs.Response;
-using Auth.Application.Features.User.Commands.RegisterUser;
 using Auth.Domain.Models;
+using AuthProfilesServices.Communication.Models;
 using AutoMapper;
-using OnlineBookStore.Messages;
 
 namespace Auth.Application.AutoMapper
 {
