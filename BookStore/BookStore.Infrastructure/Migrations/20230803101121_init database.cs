@@ -6,24 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookStore.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class changesometables : Migration
+    public partial class initdatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "AuthorBook",
-                columns: table => new
-                {
-                    BookGuid = table.Column<Guid>(type: "uuid", nullable: false),
-                    AuthorGuid = table.Column<Guid>(type: "uuid", nullable: false),
-                    Guid = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AuthorBook", x => new { x.AuthorGuid, x.BookGuid });
-                });
-
             migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
@@ -62,7 +49,6 @@ namespace BookStore.Infrastructure.Migrations
                     PublishYear = table.Column<string>(type: "text", nullable: false),
                     Language = table.Column<string>(type: "text", nullable: false),
                     PublisherGuid = table.Column<Guid>(type: "uuid", nullable: false),
-                    PublisherId = table.Column<Guid>(type: "uuid", nullable: false),
                     CategoryGuid = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
@@ -75,30 +61,61 @@ namespace BookStore.Infrastructure.Migrations
                         principalColumn: "CategoryGuid",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Books_Users_PublisherId",
-                        column: x => x.PublisherId,
+                        name: "FK_Books_Users_PublisherGuid",
+                        column: x => x.PublisherGuid,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "FavoriteBooks",
+                name: "BooksAuthors",
+                columns: table => new
+                {
+                    BookGuid = table.Column<Guid>(type: "uuid", nullable: false),
+                    AuthorGuid = table.Column<Guid>(type: "uuid", nullable: false),
+                    Guid = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BooksAuthors", x => new { x.AuthorGuid, x.BookGuid });
+                    table.ForeignKey(
+                        name: "FK_BooksAuthors_Books_BookGuid",
+                        column: x => x.BookGuid,
+                        principalTable: "Books",
+                        principalColumn: "BookGuid",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BooksAuthors_Users_AuthorGuid",
+                        column: x => x.AuthorGuid,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserBooks",
                 columns: table => new
                 {
                     BookId = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Id = table.Column<Guid>(type: "uuid", nullable: true),
-                    BookEntityBookGuid = table.Column<Guid>(type: "uuid", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FavoriteBooks", x => new { x.BookId, x.UserId });
+                    table.PrimaryKey("PK_UserBooks", x => new { x.BookId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_FavoriteBooks_Books_BookEntityBookGuid",
-                        column: x => x.BookEntityBookGuid,
+                        name: "FK_UserBooks_Books_BookId",
+                        column: x => x.BookId,
                         principalTable: "Books",
-                        principalColumn: "BookGuid");
+                        principalColumn: "BookGuid",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserBooks_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -107,24 +124,29 @@ namespace BookStore.Infrastructure.Migrations
                 column: "CategoryGuid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Books_PublisherId",
+                name: "IX_Books_PublisherGuid",
                 table: "Books",
-                column: "PublisherId");
+                column: "PublisherGuid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FavoriteBooks_BookEntityBookGuid",
-                table: "FavoriteBooks",
-                column: "BookEntityBookGuid");
+                name: "IX_BooksAuthors_BookGuid",
+                table: "BooksAuthors",
+                column: "BookGuid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserBooks_UserId",
+                table: "UserBooks",
+                column: "UserId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AuthorBook");
+                name: "BooksAuthors");
 
             migrationBuilder.DropTable(
-                name: "FavoriteBooks");
+                name: "UserBooks");
 
             migrationBuilder.DropTable(
                 name: "Books");

@@ -3,6 +3,7 @@ namespace BookStore.Application.Exceptions
     public class ExceptionMessages
     {
         public const string BookNotFound = "Book is not found.";
+        public const string BooksNotFoundMessage = "Books are not found.";
         public const string BookListIsEmpty = "Booklist is empty.";
         public const string NoFavoriteBooks = "Favorite books list is empty.";
         public const string CategoriesListIsEmpty = "No categories.";

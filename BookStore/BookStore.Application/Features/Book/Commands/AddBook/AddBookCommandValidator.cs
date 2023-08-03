@@ -6,7 +6,7 @@ namespace BookStore.Application.Features.Book.Commands.AddBook
     {
         public AddBookCommandValidator()
         {
-            RuleFor(b => b.book.BookName).NotNull();
+            RuleFor(b => b.BookData.BookName).NotNull();
             // RuleFor(b => b.book.ISBN10).Custom((value, context) => 
             // {
             //     if (isValidIsbn(value))
@@ -21,11 +21,11 @@ namespace BookStore.Application.Features.Book.Commands.AddBook
             //         context.AddFailure("ISBN13 is incorrect.");
             //     }
             // });
-            RuleFor(b => b.book.PagesCount).NotNull().GreaterThan(0);
-            RuleFor(b => b.book.PublishYear).NotNull();
-            RuleFor(b => b.book.PublisherGuid).NotNull();
-            RuleFor(b => b.book.CategotyGuid).NotNull();
-            RuleFor(b => b.book.Language).NotEmpty();
+            RuleFor(b => b.BookData.PagesCount).NotNull().GreaterThan(0);
+            RuleFor(b => b.BookData.PublishYear).NotNull();
+            RuleFor(b => b.BookData.PublisherGuid).NotNull();
+            RuleFor(b => b.BookData.CategoryGuid).NotNull();
+            RuleFor(b => b.BookData.Language).NotEmpty();
         }
 
         private bool isValidIsbn(string isbn)

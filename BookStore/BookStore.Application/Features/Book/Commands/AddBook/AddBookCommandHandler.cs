@@ -7,23 +7,23 @@ namespace BookStore.Application.Features.Book.Commands.AddBook
 {
     public class AddBookCommandHandler : IRequestHandler<AddBookCommand>
     {
-        private readonly IUnitOfWork unitOfWork; 
-        private readonly IMapper mapper;
+        private readonly IUnitOfWork _unitOfWork; 
+        private readonly IMapper _mapper;
 
         public AddBookCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            this.unitOfWork = unitOfWork;
-            this.mapper = mapper;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task Handle(AddBookCommand request, CancellationToken cancellationToken)
         {
-            var bookEntity = mapper.Map<BookEntity>(request.book);
-            bookEntity.BookFakeName = request.bookFakeName;
-            bookEntity.CategoryGuid = new Guid(request.book.CategotyGuid);
+            var bookEntity = _mapper.Map<BookEntity>(request.BookData);
+            bookEntity.BookFakeName = request.BookFakeName;
+            bookEntity.PublisherGuid = new Guid(request.BookData.PublisherGuid);
 
-            await unitOfWork.BooksRepository.CreateAsync(bookEntity);
-            await unitOfWork.SaveChangesAsync();
+            await _unitOfWork.BooksRepository.CreateAsync(bookEntity);
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

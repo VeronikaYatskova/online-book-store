@@ -18,5 +18,6 @@
         public CategoryEntity Category { get; set; } = default!;
 
         public IEnumerable<UserBookEntity>? UserBooks { get; set; }
+        public IEnumerable<BookAuthorEntity> BookAuthors { get; set; } = default!;
     }
 }

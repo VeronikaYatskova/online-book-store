@@ -10,18 +10,18 @@ namespace BookStore.Application.Services
 {
     public class MessageProducer : IMessageProducer
     {
-        private readonly IMapper mapper;
+        private readonly IMapper _mapper;
 
-        public MessageProducer(IMapper mapper)
+        public MessageProducer(IMapper _mapper)
         {
-            this.mapper = mapper;
+            this._mapper = _mapper;
         }
 
         public void SendingMessage(EmailDataRequest emailData, RabbitMqConnectionData connectionData)
         {
             try
             {
-                var factory = mapper.Map<ConnectionFactory>(connectionData);
+                var factory = _mapper.Map<ConnectionFactory>(connectionData);
 
                 var connection = factory.CreateConnection();
 

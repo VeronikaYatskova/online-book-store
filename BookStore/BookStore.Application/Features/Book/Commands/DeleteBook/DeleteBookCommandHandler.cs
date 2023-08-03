@@ -1,7 +1,3 @@
-using Amazon.Runtime;
-using Amazon.S3;
-using Amazon.S3.Model;
-using Amazon.S3.Transfer;
 using BookStore.Application.Abstractions.Contracts.Interfaces;
 using BookStore.Application.Exceptions;
 using AutoMapper;
@@ -11,58 +7,27 @@ namespace BookStore.Application.Features.Book.Commands.DeleteBook
 {
     public class DeleteBookCommandHandler : IRequestHandler<DeleteBookCommand>
     {
-        private readonly IUnitOfWork unitOfWork; 
-        private readonly IMapper mapper;
+        private readonly IUnitOfWork _unitOfWork; 
+        private readonly IMapper _mapper;
+        private readonly IAwsS3Service _awsS3Service;
 
-        public DeleteBookCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public DeleteBookCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IAwsS3Service awsS3Service)
         {
-            this.unitOfWork = unitOfWork;
-            this.mapper = mapper;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
+            _awsS3Service = awsS3Service;
         }
 
         public async Task Handle(DeleteBookCommand request, CancellationToken cancellationToken)
         {
-            var bookId = new Guid(request.bookId);
-            var bookToDelete = await unitOfWork.BooksRepository.FindByConditionAsync(b => b.BookGuid == bookId);
+            var bookId = Guid.Parse(request.BookId);
+            var bookToDelete = await _unitOfWork.BooksRepository
+                .FindByConditionAsync(b => b.BookGuid == bookId) ??
+                    throw new NotFoundException(ExceptionMessages.BookNotFound);;
 
-            if (bookToDelete is null)
-            {
-                throw new NotFoundException(ExceptionMessages.BookNotFound);
-            }
-
-            unitOfWork.BooksRepository.Delete(bookToDelete);
-            await unitOfWork.SaveChangesAsync();
-
-            await DeleteFileFromCloud(request, bookToDelete.BookFakeName!);
-        }
-
-        private async Task DeleteFileFromCloud(DeleteBookCommand request, string fileName)
-        {
-            var credentials = new BasicAWSCredentials(request.awsCred.AwsKey, request.awsCred.AwsSecretKey);
-
-            var awsS3Config = new AmazonS3Config()
-            {
-                RegionEndpoint = Amazon.RegionEndpoint.EUWest2,
-                ForcePathStyle = true,
-                ServiceURL = request.clientUrl!
-            };
-
-            try
-            {
-                using var client = new AmazonS3Client(credentials, awsS3Config);
-
-                var transferUtility = new TransferUtility(client);
-
-                await transferUtility.S3Client.DeleteObjectAsync(new DeleteObjectRequest()
-                {
-                    BucketName = request.bucketName,
-                    Key = fileName,
-                });
-            }
-            catch(AmazonS3Exception ex)
-            {
-                throw new AmazonS3Exception(ex);
-            }  
+            _unitOfWork.BooksRepository.Delete(bookToDelete);
+            
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

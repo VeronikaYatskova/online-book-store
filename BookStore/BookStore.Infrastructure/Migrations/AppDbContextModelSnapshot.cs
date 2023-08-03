@@ -35,7 +35,9 @@ namespace BookStore.Infrastructure.Migrations
 
                     b.HasKey("AuthorGuid", "BookGuid");
 
-                    b.ToTable("AuthorBook", (string)null);
+                    b.HasIndex("BookGuid");
+
+                    b.ToTable("BooksAuthors");
                 });
 
             modelBuilder.Entity("BookStore.Domain.Entities.BookEntity", b =>
@@ -76,14 +78,11 @@ namespace BookStore.Infrastructure.Migrations
                     b.Property<Guid>("PublisherGuid")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("PublisherId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("BookGuid");
 
                     b.HasIndex("CategoryGuid");
 
-                    b.HasIndex("PublisherId");
+                    b.HasIndex("PublisherGuid");
 
                     b.ToTable("Books", (string)null);
                 });
@@ -129,18 +128,34 @@ namespace BookStore.Infrastructure.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("BookEntityBookGuid")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.HasKey("BookId", "UserId");
 
-                    b.HasIndex("BookEntityBookGuid");
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserBooks");
+                });
+
+            modelBuilder.Entity("BookStore.Domain.Entities.BookAuthorEntity", b =>
+                {
+                    b.HasOne("BookStore.Domain.Entities.User", "Author")
+                        .WithMany("BookAuthors")
+                        .HasForeignKey("AuthorGuid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookStore.Domain.Entities.BookEntity", "Book")
+                        .WithMany("BookAuthors")
+                        .HasForeignKey("BookGuid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Book");
                 });
 
             modelBuilder.Entity("BookStore.Domain.Entities.BookEntity", b =>
@@ -152,8 +167,8 @@ namespace BookStore.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("BookStore.Domain.Entities.User", "Publisher")
-                        .WithMany("Books")
-                        .HasForeignKey("PublisherId")
+                        .WithMany("PublisherBooks")
+                        .HasForeignKey("PublisherGuid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -164,13 +179,27 @@ namespace BookStore.Infrastructure.Migrations
 
             modelBuilder.Entity("BookStore.Domain.Entities.UserBookEntity", b =>
                 {
-                    b.HasOne("BookStore.Domain.Entities.BookEntity", null)
+                    b.HasOne("BookStore.Domain.Entities.BookEntity", "Book")
                         .WithMany("UserBooks")
-                        .HasForeignKey("BookEntityBookGuid");
+                        .HasForeignKey("BookId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BookStore.Domain.Entities.User", "User")
+                        .WithMany("UserBooks")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BookStore.Domain.Entities.BookEntity", b =>
                 {
+                    b.Navigation("BookAuthors");
+
                     b.Navigation("UserBooks");
                 });
 
@@ -181,7 +210,11 @@ namespace BookStore.Infrastructure.Migrations
 
             modelBuilder.Entity("BookStore.Domain.Entities.User", b =>
                 {
-                    b.Navigation("Books");
+                    b.Navigation("BookAuthors");
+
+                    b.Navigation("PublisherBooks");
+
+                    b.Navigation("UserBooks");
                 });
 #pragma warning restore 612, 618
         }

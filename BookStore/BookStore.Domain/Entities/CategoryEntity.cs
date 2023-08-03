@@ -5,6 +5,6 @@
         public Guid CategoryGuid { get; set; }
         public string CategoryName { get; set; } = default!;
 
-        public IEnumerable<BookEntity> Books { get; set; } = default!;
+        public virtual IEnumerable<BookEntity> Books { get; set; } = default!;
     }
 }

@@ -12,7 +12,7 @@ namespace BookStore.Application.DTOs.Request
         public IFormFile File { get; set; } = default!;
         public string PublishYear { get; set; } = default!;
         public string Language { get; set; } = default!;
-        public string CategotyGuid { get; set; } = default!;
+        public string CategoryGuid { get; set; } = default!;
         public string PublisherGuid { get; set; } = default!; 
         public string[] AuthorsGuid { get; set; } = default!;
     }

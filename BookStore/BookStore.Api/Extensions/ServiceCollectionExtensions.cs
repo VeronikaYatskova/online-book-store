@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using Infrastructure.Extensions;
 using BookStore.Application.Extensions;
 using Serilog;
@@ -6,6 +5,11 @@ using Serilog.Events;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using BookStore.Application.Services.CloudServices.Amazon.Models;
 
 namespace BookStore.WebApi.Extensions
 {
@@ -33,36 +37,20 @@ namespace BookStore.WebApi.Extensions
             services.AddInfrastructureLayer(configuration);
         }
 
-        public static void AddCustomLogger(this WebApplicationBuilder builder)
+        public static void AddCustomLogger(this ILoggingBuilder loggingBuilder)
         {
             var logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Information)
                 .CreateLogger();
 
-            builder.Logging.AddSerilog(logger);
+            loggingBuilder.ClearProviders();
+            loggingBuilder.AddSerilog(logger);
         }
 
-        public static void MigrateDatabase<T>(this WebApplication app) where T : DbContext
+        public static void AddOptions(this IServiceCollection services, IConfiguration configuration)
         {
-            using var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
-            var logger = serviceScope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-
-            try
-            {
-                var db = serviceScope.ServiceProvider.GetRequiredService<T>().Database;
-                while (!db.CanConnect())
-                {
-                    logger.LogInformation("Database not ready yet; waiting...");
-                    Thread.Sleep(1000);
-                }
-    
-                db.Migrate();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            services.Configure<MinioConfiguration>(configuration.GetSection("MinioConfiguration"));
         }
     }
 }

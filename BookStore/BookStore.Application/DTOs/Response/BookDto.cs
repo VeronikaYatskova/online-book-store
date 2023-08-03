@@ -12,7 +12,7 @@ namespace BookStore.Application.DTOs.Response
         public string PublishYear { get; set; } = default!;
         public string Language { get; set; } = default!;
         public string FileURL { get; set; } = default!;
-        public string Categoty { get; set; } = default!;
+        public string Category { get; set; } = default!;
         public string Publisher { get; set; } = default!; 
         public string[] Authors { get; set; } = default!;
     }

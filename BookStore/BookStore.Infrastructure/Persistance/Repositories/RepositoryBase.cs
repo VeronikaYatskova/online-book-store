@@ -16,10 +16,30 @@ namespace BookStore.Infrastructure
             _dbSet = _dbContext.Set<T>();
         }
 
-        public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>>? expression = null) => 
-            expression is null ? 
+        public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>>? expression = null)
+        {
+            return expression is null ? 
                 await _dbSet.ToListAsync() :
                 await _dbSet.Where(expression).ToListAsync();
+        }
+
+        public void LoadRelatedDataWithReference<M>(
+            T? entity = null,
+            Expression<Func<T, M?>>? expr = null) where M : class
+        {
+            _dbContext.Entry(entity)
+                      .Reference(expr!)
+                      .Load();
+        }
+
+        public void LoadRelatedDataWithCollection<M>(
+            T? entity = null,
+            Expression<Func<T, IEnumerable<M>>>? propertyExpression = null) where M : class
+        {
+            _dbContext.Entry(entity)
+                      .Collection(propertyExpression!)
+                      .Load();
+        }
 
         public async Task<T?> FindByConditionAsync(Expression<Func<T, bool>> expression) =>
             await _dbSet.FirstOrDefaultAsync(expression);

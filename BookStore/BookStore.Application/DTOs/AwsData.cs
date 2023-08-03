@@ -1,4 +1,4 @@
-using BookStore.Domain.Entities;
+using BookStore.Services.CloudServices.Amazon.Models;
 
 namespace BookStore.Application.DTOs
 {

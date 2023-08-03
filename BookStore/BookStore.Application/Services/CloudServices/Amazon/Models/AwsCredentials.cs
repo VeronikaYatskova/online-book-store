@@ -1,4 +1,4 @@
-namespace BookStore.Domain.Entities
+namespace BookStore.Services.CloudServices.Amazon.Models
 {
     public class AwsCredentials
     {

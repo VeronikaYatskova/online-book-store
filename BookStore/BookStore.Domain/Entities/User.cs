@@ -6,6 +6,8 @@ namespace BookStore.Domain.Entities
         public string Email { get; set; } = default!;
         public Guid RoleId { get; set; } = default!;
 
-        public IEnumerable<BookEntity>? Books { get; set; }
+        public IEnumerable<UserBookEntity>? UserBooks { get; set; }
+        public IEnumerable<BookEntity>? PublisherBooks { get; set; }
+        public IEnumerable<BookAuthorEntity> BookAuthors { get; set; } = default!;
     }
 }
