@@ -1,4 +1,5 @@
 using AutoMapper;
+using BookStoreCommentsServices.Communication.Models;
 using Comments.BLL.DTOs.Request;
 using Comments.BLL.DTOs.Response;
 using Comments.DAL.Entities;
@@ -15,6 +16,7 @@ namespace Comments.BLL.Profiles
 
             CreateMap<AddCommentRequest, Comment>();
             CreateMap<UpdateCommentRequest, Comment>(); 
+            CreateMap<CommentAddedMessage, Comment>(); 
         }
     }
 }

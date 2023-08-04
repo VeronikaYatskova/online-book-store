@@ -1,3 +1,4 @@
+using Comments.BLL.DTOs.General;
 using Comments.DAL.Entities;
 using Serilog;
 using Serilog.Events;
@@ -25,6 +26,7 @@ namespace Comments.API.Extensions
         private static void AddOptions(this IServiceCollection services, IConfiguration config)
         {
             services.Configure<MongoDbSettings>(config.GetSection("MongoDbSettings"));
+            services.Configure<RabbitMqSettings>(config.GetSection("RabbitMqConfig"));
         }
     }
 }

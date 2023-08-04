@@ -11,21 +11,21 @@ namespace BookStore.Application.Features.Book.Commands.AddBook
                 .NotNull()
                 .WithMessage(ValidationMessages.FieldIsRequiredMessage);
             
-            RuleFor(b => b.BookData.ISBN10).Custom((value, context) => 
-            {
-                if (isValidIsbn(value))
-                {
-                    context.AddFailure("ISBN10 is incorrect.");
-                }
-            });
+            // RuleFor(b => b.BookData.ISBN10).Custom((value, context) => 
+            // {
+            //     if (isValidIsbn(value))
+            //     {
+            //         context.AddFailure("ISBN10 is incorrect.");
+            //     }
+            // });
 
-            RuleFor(b => b.BookData.ISBN13).Custom((value, context) => 
-            {
-                if (isValidIsbn(value))
-                {
-                    context.AddFailure("ISBN13 is incorrect.");
-                }
-            });
+            // RuleFor(b => b.BookData.ISBN13).Custom((value, context) => 
+            // {
+            //     if (isValidIsbn(value))
+            //     {
+            //         context.AddFailure("ISBN13 is incorrect.");
+            //     }
+            // });
 
             RuleFor(b => b.BookData.PagesCount)
                 .NotNull()
