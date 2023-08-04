@@ -11,6 +11,7 @@ using BookStore.Application.Features.Book.Queries.GetBookByAuthor;
 using BookStore.Application.Features.Book.Queries.GetBookById;
 using BookStore.Application.Features.Book.Queries.GetBooksByName;
 using BookStore.Application.Features.Book.Queries.GetFavoriteBooks;
+using BookStore.Application.Features.Comment.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -124,6 +125,14 @@ namespace BookStore.WebApi.Controllers
             await _mediator.Send(new DeleteBookFromFavoriteCommand(currentUserGuid, bookId));
 
             return Ok();
+        }
+
+        [HttpPost("comments")]
+        public async Task<IActionResult> AddBookComment([FromBody] BookCommentDto bookCommentDto)
+        {
+            await _mediator.Send(new AddBookCommentCommand(bookCommentDto));
+
+            return Created("", bookCommentDto);
         }
     }
 }

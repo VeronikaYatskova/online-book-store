@@ -3,6 +3,7 @@ using BookStore.WebApi.Extensions;
 using BookStore.Api.Extensions;
 using MassTransit;
 using BookStore.Application.Consumers;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -24,7 +25,7 @@ builder.Services.AddMassTransit(busConfigurator =>
     
     busConfigurator.UsingRabbitMq((context, configuration) => 
     {
-        var rabbitMqSettings = context.GetRequiredService<RabbitMqSettings>();
+        var rabbitMqSettings = context.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
 
         configuration.Host(new Uri(rabbitMqSettings.Host!), h =>
         {

@@ -4,7 +4,6 @@ using Serilog;
 using Serilog.Events;
 using BookStore.Application.Services.CloudServices.Amazon.Models;
 using BookStore.Application.Consumers;
-using Microsoft.Extensions.Options;
 
 namespace BookStore.WebApi.Extensions
 {
@@ -34,9 +33,6 @@ namespace BookStore.WebApi.Extensions
 
             services.Configure<RabbitMqSettings>(
                 configuration.GetSection("RabbitMqConfig"));
-            
-            services.AddSingleton(sp =>
-                 sp.GetRequiredService<IOptions<RabbitMqSettings>>().Value);
         }
     }
 }
