@@ -1,3 +1,4 @@
+using BookStore.Application.PipelineBehaviors;
 using FluentValidation;
 
 namespace BookStore.Application.Features.Book.Commands.AddBook
@@ -6,26 +7,49 @@ namespace BookStore.Application.Features.Book.Commands.AddBook
     {
         public AddBookCommandValidator()
         {
-            RuleFor(b => b.BookData.BookName).NotNull();
-            // RuleFor(b => b.book.ISBN10).Custom((value, context) => 
-            // {
-            //     if (isValidIsbn(value))
-            //     {
-            //         context.AddFailure("ISBN10 is incorrect.");
-            //     }
-            // });
-            // RuleFor(b => b.book.ISBN13).Custom((value, context) => 
-            // {
-            //     if (isValidIsbn(value))
-            //     {
-            //         context.AddFailure("ISBN13 is incorrect.");
-            //     }
-            // });
-            RuleFor(b => b.BookData.PagesCount).NotNull().GreaterThan(0);
-            RuleFor(b => b.BookData.PublishYear).NotNull();
-            RuleFor(b => b.BookData.PublisherGuid).NotNull();
-            RuleFor(b => b.BookData.CategoryGuid).NotNull();
-            RuleFor(b => b.BookData.Language).NotEmpty();
+            RuleFor(b => b.BookData.BookName)
+                .NotNull()
+                .WithMessage(ValidationMessages.FieldIsRequiredMessage);
+            
+            RuleFor(b => b.BookData.ISBN10).Custom((value, context) => 
+            {
+                if (isValidIsbn(value))
+                {
+                    context.AddFailure("ISBN10 is incorrect.");
+                }
+            });
+
+            RuleFor(b => b.BookData.ISBN13).Custom((value, context) => 
+            {
+                if (isValidIsbn(value))
+                {
+                    context.AddFailure("ISBN13 is incorrect.");
+                }
+            });
+
+            RuleFor(b => b.BookData.PagesCount)
+                .NotNull()
+                .WithMessage(ValidationMessages.FieldIsRequiredMessage);
+
+            RuleFor(b => b.BookData.PagesCount)
+                .GreaterThan(0)
+                .WithMessage(ValidationMessages.InvalidPageCountMessage);
+
+            RuleFor(b => b.BookData.PublishYear)
+                .NotNull()
+                .WithMessage(ValidationMessages.FieldIsRequiredMessage);
+
+            RuleFor(b => b.BookData.PublisherGuid)
+                .NotNull()
+                .WithMessage(ValidationMessages.FieldIsRequiredMessage);
+
+            RuleFor(b => b.BookData.CategoryGuid)
+                .NotNull()
+                .WithMessage(ValidationMessages.FieldIsRequiredMessage);
+            
+            RuleFor(b => b.BookData.Language)
+                .NotEmpty()
+                .WithMessage(ValidationMessages.FieldIsRequiredMessage);
         }
 
         private bool isValidIsbn(string isbn)

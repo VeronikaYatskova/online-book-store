@@ -1,5 +1,6 @@
 using BookStore.WebApi.Middlewares;
 using BookStore.WebApi.Extensions;
+using BookStore.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -13,8 +14,6 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddLayers(configuration);
 
-builder.Services.AddCustomAuthentication(configuration);
-
 builder.Services.AddOptions(configuration);
 
 var app = builder.Build();
@@ -23,6 +22,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    await app.SeedDataToDbAsync();
 }
 
 app.ConfigureCustomExceptionMiddleware();

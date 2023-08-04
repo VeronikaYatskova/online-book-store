@@ -23,7 +23,7 @@ namespace BookStore.Application.Features.Book.Commands.DeleteBook
             var bookId = Guid.Parse(request.BookId);
             var bookToDelete = await _unitOfWork.BooksRepository
                 .FindByConditionAsync(b => b.BookGuid == bookId) ??
-                    throw new NotFoundException(ExceptionMessages.BookNotFound);;
+                    throw new NotFoundException(ExceptionMessages.BookNotFoundMessage);;
 
             _unitOfWork.BooksRepository.Delete(bookToDelete);
             

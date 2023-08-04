@@ -22,7 +22,7 @@ namespace BookStore.Application.Features.Book.Queries.GetFavoriteBooks
             var userId = new Guid(request.userId);
             var favoriteBooks = await _unitOfWork.UserBooksRepository
                 .FindAllAsync(b => b.UserId == userId) ??
-                    throw new NotFoundException(ExceptionMessages.NoFavoriteBooks);;
+                    throw new NotFoundException(ExceptionMessages.NoFavoriteBooksMessage);;
 
             var bookGuids = favoriteBooks.Select(fb => fb.BookId);
             

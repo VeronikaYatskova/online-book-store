@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Builder;
-
 namespace BookStore.WebApi.Middlewares
 {
     public static class ExceptionMiddlewareExtension

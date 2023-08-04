@@ -26,14 +26,14 @@ namespace BookStore.Application.Features.Book.Queries.GetBookById
         {
             var book = await _unitOfWork.BooksRepository
                 .FindByConditionAsync(b => b.BookGuid == Guid.Parse(request.id)) ??
-                    throw new NotFoundException(ExceptionMessages.BookNotFound);
+                    throw new NotFoundException(ExceptionMessages.BookNotFoundMessage);
             
             _unitOfWork.BooksRepository.LoadRelatedDataWithReference(book, book => book.Category);
             _unitOfWork.BooksRepository.LoadRelatedDataWithReference(book, book => book.Publisher);
             _unitOfWork.BooksRepository.LoadRelatedDataWithCollection(book, book => book.BookAuthors);
         
             var bookDto = _mapper.Map<BookDto>(book);
-            bookDto.FileURL = _awsS3Service.GetFilePreSignedUrl(book.BookFakeName);
+            bookDto.FileURL = _awsS3Service.GetFilePreSignedUrl(book.BookFakeName!);
 
             return bookDto;
         }

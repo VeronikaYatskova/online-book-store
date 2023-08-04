@@ -1,29 +1,33 @@
+using AutoMapper;
 using BookStore.Application.Abstractions.Contracts.Interfaces;
 using BookStore.Application.DTOs.Response;
 using BookStore.Application.Exceptions;
-using AutoMapper;
 using MediatR;
 
-namespace BookStore.Application.Features.Book.Queries.GetAllBooks
+namespace BookStore.Application.Features.Book.Queries.GetBooksByCategory
 {
-    public class GetAllBooksQueryHandler : IRequestHandler<GetAllBooksQuery, IEnumerable<BookDto>>
+    public class GetBooksByCategoryQueryHandler : IRequestHandler<GetBooksByCategoryQuery, IEnumerable<BookDto>>
     {
         private readonly IUnitOfWork _unitOfWork; 
         private readonly IMapper _mapper;
         private readonly IAwsS3Service _awsS3Service;
 
-        public GetAllBooksQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, IAwsS3Service awsS3Service)
+        public GetBooksByCategoryQueryHandler(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper, 
+            IAwsS3Service awsS3Service)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _awsS3Service = awsS3Service;
         }
-
-        public async Task<IEnumerable<BookDto>> Handle(GetAllBooksQuery request, CancellationToken cancellationToken)
+        
+        public async Task<IEnumerable<BookDto>> Handle(GetBooksByCategoryQuery request, CancellationToken cancellationToken)
         {
-            var books = await _unitOfWork.BooksRepository.FindAllAsync() ??
-                throw new NotFoundException(ExceptionMessages.BookListIsEmptyMessage);
-
+            var books = await _unitOfWork.BooksRepository
+                .FindAllAsync(b => b.CategoryGuid == Guid.Parse(request.CategoryId)) ??
+                    throw new NotFoundException(ExceptionMessages.BooksNotFoundMessage);
+            
             foreach (var book in books)
             {
                 _unitOfWork.BooksRepository.LoadRelatedDataWithReference(book, book => book.Category);

@@ -20,7 +20,7 @@ namespace BookStore.Application.Features.Category.Queries
         public async Task<IEnumerable<CategoryResponse>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
         {
             var categories = await _unitOfWork.CategoryRepository.FindAllAsync() ??
-                throw new NotFoundException(ExceptionMessages.CategoriesListIsEmpty);;
+                throw new NotFoundException(ExceptionMessages.CategoriesListIsEmptyMessage);;
 
             return _mapper.Map<IEnumerable<CategoryResponse>>(categories);
         }

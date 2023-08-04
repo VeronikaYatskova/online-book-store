@@ -18,8 +18,8 @@ namespace BookStore.Application.Features.Book.Commands.DeleteBookFromFavorite
 
         public async Task Handle(DeleteBookFromFavoriteCommand request, CancellationToken cancellationToken)
         {
-            var userId = new Guid(request.userId);
-            var bookId = new Guid(request.bookId);
+            var userId = new Guid(request.UserId);
+            var bookId = new Guid(request.BookId);
             var userBookEntity = new UserBookEntity
             {
                 UserId = userId,

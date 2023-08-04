@@ -177,7 +177,7 @@ namespace BookStore.Application.Services.CloudServices.Amazon
             await using var memoryStream = new MemoryStream();
             await file.CopyToAsync(memoryStream);
 
-            string objName = CreateFileName(file);
+            string fileName = CreateFileName(file);
             
             var clientUrl = _awsDataWithClientUrl.ClientUrl;
 
@@ -204,22 +204,24 @@ namespace BookStore.Application.Services.CloudServices.Amazon
 
             void SetModelsToUploadData()
             {
-                credentials = new BasicAWSCredentials(
+                credentials = new BasicAWSCredentials
+                (
                     _awsDataWithClientUrl.AwsCredentials.AwsKey, 
-                    _awsDataWithClientUrl.AwsCredentials.AwsSecretKey);
+                    _awsDataWithClientUrl.AwsCredentials.AwsSecretKey
+                );
 
                 awsS3Config = new AmazonS3Config()
                 {
                     RegionEndpoint = _regionEndpoint,
                     ForcePathStyle = true,
-                    ServiceURL = _awsDataWithClientUrl.ClientUrl!
+                    ServiceURL = _awsDataWithClientUrl.ClientUrl!,
                 };
 
                 s3obj = new S3ObjectModel()
                 {
                     BucketName = _awsDataWithClientUrl.BucketName!,
                     InputStream = memoryStream,
-                    Name = objName
+                    Name = fileName,
                 };
 
                 uploadRequest = new TransferUtilityUploadRequest()
@@ -227,7 +229,7 @@ namespace BookStore.Application.Services.CloudServices.Amazon
                     InputStream = s3obj.InputStream,
                     Key = s3obj.Name,
                     BucketName = s3obj.BucketName,
-                    CannedACL = S3CannedACL.NoACL
+                    CannedACL = S3CannedACL.NoACL,
                 };
             }
         }
