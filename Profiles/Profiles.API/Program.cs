@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using Profiles.API.Extensions;
 using Profiles.API.Middlewares.ExceptionMiddleware;
 
@@ -10,7 +11,9 @@ builder.Logging.AddCustomLogger();
 
 builder.Services.AddOptionsConfiguration(configuration);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+                .AddFluentValidation();
+                
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
