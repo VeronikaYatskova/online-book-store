@@ -2,7 +2,7 @@ using BookStore.Application.Abstractions.Contracts.Interfaces;
 using BookStore.Application.DTOs.Response;
 using AutoMapper;
 using MediatR;
-using BookStore.Application.Exceptions;
+using BookStore.Domain.Exceptions;
 
 namespace BookStore.Application.Features.Book.Queries.GetBooksByName
 {

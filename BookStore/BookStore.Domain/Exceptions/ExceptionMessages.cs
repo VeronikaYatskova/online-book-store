@@ -1,4 +1,4 @@
-namespace BookStore.Application.Exceptions
+namespace BookStore.Domain.Exceptions
 {
     public class ExceptionMessages
     {
