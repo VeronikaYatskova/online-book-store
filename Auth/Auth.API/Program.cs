@@ -1,5 +1,6 @@
 using Auth.API.Middlewares;
 using Auth.API.Extensions;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +9,8 @@ var configuration = builder.Configuration;
 
 builder.Logging.AddCustomLogger();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+                .AddFluentValidation();
 
 builder.Services.AddLayers(configuration);
 
