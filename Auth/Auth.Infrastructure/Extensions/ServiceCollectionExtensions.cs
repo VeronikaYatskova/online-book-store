@@ -1,4 +1,5 @@
 using Auth.Application.Abstractions.Interfaces.Repositories;
+using Auth.Domain.Models;
 using Auth.Infrastructure.Database.DataContext;
 using Auth.Infrastructure.Database.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -26,11 +27,7 @@ namespace Auth.Infrastructure.Extensions
 
         private static void AddRepositories(this IServiceCollection services)
         {
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IUserRoleRepository, UserRoleRepository>();
-            services.AddScoped<IAccountDataRepository, AccountDataRepository>();
-            services.AddScoped<IPublisherRepository, PublisherRepository>(); 
-            services.AddScoped<IAuthorRepository, AuthorRepository>();
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         }
     }
 }
