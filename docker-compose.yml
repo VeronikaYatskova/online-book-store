@@ -64,3 +64,8 @@ services:
       - "5672:5672"
       # Web interface
       - "15672:15672"
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - 27017:27017
