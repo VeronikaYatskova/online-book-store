@@ -1,3 +1,6 @@
+using MassTransit;
+using Microsoft.Extensions.Options;
+using Requests.BLL.DTOs.General;
 using Requests.DAL.Models;
 using Serilog;
 using Serilog.Events;
@@ -9,6 +12,7 @@ namespace Requests.API.Extension
         public static void AddApiLayer(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddOptions(configuration);
+            services.AddMessageSender();
         }
 
         public static void AddCustomLogger(this ILoggingBuilder loggingBuilder)
@@ -22,9 +26,27 @@ namespace Requests.API.Extension
             loggingBuilder.AddSerilog(logger);
         }
 
+        private static void AddMessageSender(this IServiceCollection services)
+        {
+            services.AddMassTransit(x =>
+            {
+                x.UsingRabbitMq((context, config) =>
+                {
+                    var options = context.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
+
+                    config.Host(options.Host, h => 
+                    {
+                       h.Username(options.UserName);
+                       h.Password(options.Password); 
+                    });
+                });
+            });
+        }
+
         private static void AddOptions(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<MongoDbSettings>(configuration.GetSection("MongoDbSettings"));
+            services.Configure<RabbitMqSettings>(configuration.GetSection("RabbitMqConfig"));
         }
     }
 }

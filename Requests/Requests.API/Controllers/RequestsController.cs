@@ -34,7 +34,7 @@ namespace Requests.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddRequest(AddRequestDto addRequestDto)
+        public async Task<IActionResult> AddRequest([FromForm] AddRequestDto addRequestDto)
         {
             await _requestsService.AddRequestAsync(addRequestDto);
 

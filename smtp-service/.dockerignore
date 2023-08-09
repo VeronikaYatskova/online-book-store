@@ -1,7 +1,0 @@
-**/bin/
-**/bin/sh/
-**/obj/
-**/global.json
-**/Dockerfile*
-**/.dockerignore*
-**/*.user

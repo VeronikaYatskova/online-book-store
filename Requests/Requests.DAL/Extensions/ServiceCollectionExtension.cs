@@ -16,6 +16,7 @@ namespace Requests.DAL.Extensions
         private static void AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<IRequestsRepository, RequestsRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
         }
     }
 }

@@ -9,14 +9,14 @@ namespace Requests.DAL.Repositories.Implementations
     public class RequestsRepository : IRequestsRepository
     {
         private readonly IMongoCollection<Request> _requests;
-        private readonly IOptions<MongoDbSettings> _settings;
+        private readonly MongoDbSettings _settings;
 
         public RequestsRepository(IOptions<MongoDbSettings> settings)
         {
-            _settings = settings;
-            var client = new MongoClient(_settings.Value.ConnectionString);
-            var database = client.GetDatabase(_settings.Value.DatabaseName);
-            _requests = database.GetCollection<Request>(_settings.Value.RequestsCollectionName);
+            _settings = settings.Value;
+            var client = new MongoClient(_settings.ConnectionString);
+            var database = client.GetDatabase(_settings.DatabaseName);
+            _requests = database.GetCollection<Request>(_settings.RequestsCollectionName);
         }
 
         public async Task<IEnumerable<Request>> GetAllAsync(Expression<Func<Request, bool>>? expression = null) =>
