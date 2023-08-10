@@ -27,8 +27,8 @@ namespace Profiles.Infrastructure.Persistance.Repositories
         public async Task<User> GetUserByIdAsync(Guid userId)
         {
             using var connection = new SqlConnection(_databaseSettings.Value.MsSqlConnectionString);
-            var query = "SELECT * FROM Users WHERE Id = @id";
-            var user = await connection.QuerySingleOrDefaultAsync<User>(query, userId);
+            var query = "SELECT * FROM Users WHERE Id = @userId";
+            var user = await connection.QuerySingleOrDefaultAsync<User>(query, new { userId });
 
             return user;
         }
@@ -46,7 +46,7 @@ namespace Profiles.Infrastructure.Persistance.Repositories
             using var connection = new SqlConnection(_databaseSettings.Value.MsSqlConnectionString);
             var query = "DELETE FROM Users WHERE Id=@Id";
 
-            await connection.ExecuteAsync(query, userId);
+            await connection.ExecuteAsync(query, new { userId });
         }
 
         public async Task UpdateUserAsync(User user)
