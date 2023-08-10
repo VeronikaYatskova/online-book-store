@@ -1,5 +1,6 @@
 using MassTransit;
 using Microsoft.Extensions.Options;
+using Requests.API.Consumers;
 using Requests.BLL.DTOs.General;
 using Requests.DAL.Models;
 using Serilog;
@@ -30,6 +31,8 @@ namespace Requests.API.Extension
         {
             services.AddMassTransit(x =>
             {
+                x.AddConsumer<UserCreatedConsumer>();
+                
                 x.UsingRabbitMq((context, config) =>
                 {
                     var options = context.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
@@ -38,6 +41,11 @@ namespace Requests.API.Extension
                     {
                        h.Username(options.UserName);
                        h.Password(options.Password); 
+                    });
+
+                    config.ReceiveEndpoint("user-registered-event", c =>
+                    {
+                        c.ConfigureConsumer<UserCreatedConsumer>(context);
                     });
                 });
             });

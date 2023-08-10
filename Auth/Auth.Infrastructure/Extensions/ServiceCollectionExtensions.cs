@@ -1,4 +1,5 @@
 using Auth.Application.Abstractions.Interfaces.Repositories;
+using Auth.Application.Abstractions.Interfaces.Services;
 using Auth.Domain.Models;
 using Auth.Infrastructure.Database.DataContext;
 using Auth.Infrastructure.Database.Repositories;
@@ -12,8 +13,8 @@ namespace Auth.Infrastructure.Extensions
     {
         public static void AddInfrastructureLayer(this IServiceCollection services, IConfiguration config)
         {
-            AddDbContext(services, config);
-            AddRepositories(services);
+            services.AddDbContext(config);
+            services.AddRepositories();
         }
 
         private static void AddDbContext(this IServiceCollection services, IConfiguration config)

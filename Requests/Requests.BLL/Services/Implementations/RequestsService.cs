@@ -44,6 +44,22 @@ namespace Requests.BLL.Services.Implementations
             return requestDto;
         }
 
+        public async Task<IEnumerable<GetRequestsDto>> GetPublishersRequests(string publisherId)
+        {
+            var requests = await _requestsRepository.GetByConditionAsync(r => r.PublisherId == publisherId);
+            var requestsDto = _mapper.Map<IEnumerable<GetRequestsDto>>(requests);
+
+            return requestsDto;
+        }
+
+        public async Task<IEnumerable<GetRequestsDto>> GetUsersRequests(string userId)
+        {
+            var requests = await _requestsRepository.GetByConditionAsync(r => r.UserId == userId);
+            var requestsDto = _mapper.Map<IEnumerable<GetRequestsDto>>(requests);
+
+            return requestsDto;
+        }
+
         public async Task AddRequestAsync(AddRequestDto addRequestDto)
         {
             var request = _mapper.Map<Request>(addRequestDto);
@@ -63,14 +79,30 @@ namespace Requests.BLL.Services.Implementations
             var requestToUpdate = await _requestsRepository
                 .GetByConditionAsync(r => r.Id == updateRequestDto.RequestId);
             
-            requestToUpdate.IsApproved = true;
+            requestToUpdate.IsApproved = updateRequestDto.IsApproved;
 
             await _requestsRepository.UpdateAsync(requestToUpdate);
+            
+            var requestUpdatedMessage = _mapper.Map<RequestUpdatedMessage>(requestToUpdate);
+            var user = await _userRepository.GetByConditionAsync(u => u.Id == requestToUpdate.UserId);
+
+            requestUpdatedMessage.UserEmail = user.Email;
+            
+            await _publishEndpoint.Publish(requestUpdatedMessage);
         }
 
         public async Task DeleteRequestAsync(DeleteRequestDto deleteRequestDto)
         {
             await _requestsRepository.DeleteAsync(deleteRequestDto.RequestId);
+        }
+
+        public async Task PublishBookAsync(string requestId, AddBookDto addBookDto)
+        {
+            var request = await _requestsRepository.GetByConditionAsync(r => r.Id == requestId);
+            
+            // map to type to send with RabbitMq
+            
+            // await _publishEndpoint.Publish(); send to BookStore
         }
     }
 }

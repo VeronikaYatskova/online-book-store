@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Cosmonaut" Version="2.11.3" />
     <PackageReference Include="Cosmonaut.Extensions.Microsoft.DependencyInjection" Version="2.3.0" />
+    <PackageReference Include="MassTransit" Version="8.0.16" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="7.0.1" />
     <PackageReference Include="MongoDB.Driver" Version="2.20.0" />

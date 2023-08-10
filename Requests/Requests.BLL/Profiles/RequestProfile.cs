@@ -11,6 +11,7 @@ namespace Requests.BLL.Profiles
         public RequestProfile()
         {
             CreateMap<Request, RequestCreatedMessage>();
+            CreateMap<Request, RequestUpdatedMessage>();
             CreateMap<AddRequestDto, Request>();
             CreateMap<Request, GetRequestsDto>();
         }

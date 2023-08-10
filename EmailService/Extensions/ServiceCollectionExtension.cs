@@ -25,6 +25,8 @@ namespace EmailService.Extensions
             services.AddMassTransit(x =>
             {
                 x.AddConsumer<RequestCreatedConsumer>();
+                x.AddConsumer<RequestUpdateConsumer>();
+
                 x.UsingRabbitMq((context, config) =>
                 {
                     var options = context.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
@@ -38,6 +40,11 @@ namespace EmailService.Extensions
                     config.ReceiveEndpoint("request-created-event", c => 
                     {
                         c.ConfigureConsumer<RequestCreatedConsumer>(context);   
+                    });
+
+                    config.ReceiveEndpoint("request-updated-event", c =>
+                    {
+                        c.ConfigureConsumer<RequestUpdateConsumer>(context);
                     });
                 });
             });

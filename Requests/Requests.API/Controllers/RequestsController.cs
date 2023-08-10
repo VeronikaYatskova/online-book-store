@@ -5,7 +5,7 @@ using Requests.BLL.Services.Interfaces;
 namespace Requests.API.Controllers
 {
     [ApiController]
-    [Route("api/requests")]
+    [Route("api")]
     public class RequestsController : ControllerBase
     {
         private readonly IRequestsService _requestsService;
@@ -17,7 +17,7 @@ namespace Requests.API.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
+        [HttpGet("requests")]
         public async Task<IActionResult> GetRequests()
         {
             var requests = await _requestsService.GetRequestsAsync();
@@ -25,7 +25,7 @@ namespace Requests.API.Controllers
             return Ok(requests);
         }
 
-        [HttpGet("{requestId}")]
+        [HttpGet("requests/{requestId}")]
         public async Task<IActionResult> GetRequestById(string requestId)
         {
             var request = await _requestsService.GetRequestByIdAsync(requestId);
@@ -33,7 +33,23 @@ namespace Requests.API.Controllers
             return Ok(request);
         }
 
-        [HttpPost]
+        [HttpGet("publishers/{publisherId}/requests")]
+        public async Task<IActionResult> GetPublishersRequest(string publisherId)
+        {
+            var requests = await _requestsService.GetPublishersRequests(publisherId);
+
+            return Ok(requests);
+        }
+
+        [HttpGet("users/{userId}/requests")]
+        public async Task<IActionResult> GetUsersRequests(string userId)
+        {
+            var requests = await _requestsService.GetUsersRequests(userId);
+
+            return Ok(requests);
+        }
+
+        [HttpPost("requests")]
         public async Task<IActionResult> AddRequest([FromForm] AddRequestDto addRequestDto)
         {
             await _requestsService.AddRequestAsync(addRequestDto);
@@ -41,20 +57,28 @@ namespace Requests.API.Controllers
             return Created("", addRequestDto);
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteRequest(DeleteRequestDto deleteRequestDto)
+        [HttpDelete("requests")]
+        public async Task<IActionResult> DeleteRequest([FromBody] DeleteRequestDto deleteRequestDto)
         {
             await _requestsService.DeleteRequestAsync(deleteRequestDto);
 
             return NoContent();
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateRequest(UpdateRequestDto updateRequestDto)
+        [HttpPut("requests")]
+        public async Task<IActionResult> UpdateRequest([FromBody] UpdateRequestDto updateRequestDto)
         {
             await _requestsService.UpdateRequestAsync(updateRequestDto);
 
             return NoContent();
+        }
+
+        [HttpPost("requests/{requestId}")]
+        public async Task<IActionResult> PublishBook([FromRoute] string requestId, [FromBody] AddBookDto addBookDto)
+        {
+            await _requestsService.PublishBookAsync(requestId, addBookDto);
+
+            return Created("", addBookDto);
         }
     }
 }

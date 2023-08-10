@@ -15,6 +15,7 @@ namespace Requests.BLL.Extensions
         private static void AddServices(this IServiceCollection services)
         {
             services.AddScoped<IRequestsService, RequestsService>();
+            services.AddScoped<IUsersService, UsersService>(); 
         }
     }
 }

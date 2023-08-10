@@ -8,7 +8,6 @@ using Auth.Application.Extensions;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Auth.Domain.Models;
-using Microsoft.Extensions.Options;
 
 namespace Auth.API.Extensions
 {
