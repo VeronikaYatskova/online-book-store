@@ -17,6 +17,7 @@ namespace Requests.DAL.Extensions
         {
             services.AddScoped<IRequestsRepository, RequestsRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IBlobStorageRepository, BlobStorageRepository>();
         }
     }
 }

@@ -84,3 +84,11 @@ services:
     image: mongo:latest
     ports:
       - 27017:27017
+
+  azurite-db:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: azurite-db
+    ports:
+      - 10000:10000
+      - 10001:10001
+      - 10002:10002

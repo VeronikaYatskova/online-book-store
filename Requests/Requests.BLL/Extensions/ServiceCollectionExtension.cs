@@ -16,6 +16,7 @@ namespace Requests.BLL.Extensions
         {
             services.AddScoped<IRequestsService, RequestsService>();
             services.AddScoped<IUsersService, UsersService>(); 
+            services.AddScoped<IBlobStorageService, BlobStorageService>();
         }
     }
 }

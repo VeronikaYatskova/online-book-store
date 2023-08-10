@@ -55,6 +55,7 @@ namespace Requests.API.Extension
         {
             services.Configure<MongoDbSettings>(configuration.GetSection("MongoDbSettings"));
             services.Configure<RabbitMqSettings>(configuration.GetSection("RabbitMqConfig"));
+            services.Configure<BlobStorageSettings>(configuration.GetSection("BlobStorage"));
         }
     }
 }

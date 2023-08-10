@@ -9,12 +9,17 @@ namespace Requests.API.Controllers
     public class RequestsController : ControllerBase
     {
         private readonly IRequestsService _requestsService;
+        private readonly IBlobStorageService _blobStorageService;
         private readonly ILogger<RequestsController> _logger;
 
-        public RequestsController(IRequestsService requestsService, ILogger<RequestsController> logger)
+        public RequestsController(
+            IRequestsService requestsService, 
+            ILogger<RequestsController> logger, 
+            IBlobStorageService blobStorageService)
         {
             _requestsService = requestsService;
             _logger = logger;
+            _blobStorageService = blobStorageService;
         }
 
         [HttpGet("requests")]
@@ -79,6 +84,18 @@ namespace Requests.API.Controllers
             await _requestsService.PublishBookAsync(requestId, addBookDto);
 
             return Created("", addBookDto);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetFromCloud()
+        {
+            return Ok(await _blobStorageService.GetAllAsync());
+        }
+
+        [HttpGet("{fileName}")]
+        public async Task<IActionResult> GetBlobFromCloud([FromRoute] string fileName)
+        {
+            return Ok(await _blobStorageService.GetBlobByNameAsync(fileName));
         }
     }
 }

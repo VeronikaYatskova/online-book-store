@@ -13,11 +13,13 @@ namespace Requests.BLL.Services.Implementations
     {
         private readonly IRequestsRepository _requestsRepository;
         private readonly IUserRepository _userRepository;
+        private readonly IBlobStorageService _blobStorageService;
         private readonly IMapper _mapper;
         private readonly IPublishEndpoint _publishEndpoint;
 
         public RequestsService(
             IRequestsRepository requestsRepository,
+            IBlobStorageService blobStorageService,
             IMapper mapper,
             IUserRepository userRepository,
             IPublishEndpoint publishEndpoint)
@@ -26,6 +28,7 @@ namespace Requests.BLL.Services.Implementations
             _mapper = mapper;
             _userRepository = userRepository;
             _publishEndpoint = publishEndpoint;
+            _blobStorageService = blobStorageService;
         }
 
         public async Task<IEnumerable<GetRequestsDto>> GetRequestsAsync()
@@ -63,8 +66,15 @@ namespace Requests.BLL.Services.Implementations
         public async Task AddRequestAsync(AddRequestDto addRequestDto)
         {
             var request = _mapper.Map<Request>(addRequestDto);
+            
+            var fileFakeName = Guid.NewGuid();
+            var fileExtension = Path.GetExtension(addRequestDto.File.FileName);
+
+            request.BookFakeName = string.Format("{0}{1}", fileFakeName, fileExtension);
 
             await _requestsRepository.AddAsync(request);
+
+            await _blobStorageService.UploadAsync(addRequestDto.File, request.BookFakeName);
 
             var publisher = await _userRepository.GetByConditionAsync(c => c.Id == addRequestDto.PublisherId);
             
