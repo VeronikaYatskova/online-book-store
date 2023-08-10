@@ -2,8 +2,13 @@ using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Application.Abstractions.Interfaces.Services;
 using Auth.Application.DTOs.Request;
 using Auth.Application.DTOs.Response;
+<<<<<<< HEAD:Auth/Auth.Application/Features/User/Commands/LoginUserViaGoogle/LoginUserViaGoogleCommandHandler.cs
 using Auth.Application.Features.User.Commands.LoginUser;
 using Auth.Application.Features.User.Commands.RegisterUser;
+=======
+using Auth.Application.Features.Account.Commands.RegisterAccount;
+using Auth.Application.Features.Account.Commands.LoginUser;
+>>>>>>> us-2-sign-in:Auth/Auth.Application/Features/Account/Commands/LoginUserViaGoogle/LoginUserViaGoogleCommandHandler.cs
 using Auth.Domain.Models;
 using AutoMapper;
 using Google.Apis.Auth.OAuth2;
@@ -14,6 +19,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
+<<<<<<< HEAD:Auth/Auth.Application/Features/User/Commands/LoginUserViaGoogle/LoginUserViaGoogleCommandHandler.cs
 using UserEntity = Auth.Domain.Models.User;
 
 namespace Auth.Application.Features.User.Commands.LoginUserViaGoogle
@@ -31,12 +37,32 @@ namespace Auth.Application.Features.User.Commands.LoginUserViaGoogle
         public LoginUserViaGoogleCommandHandler(
             ITokenService tokenService, 
             IRepository<UserEntity> userRepository,
+=======
+namespace Auth.Application.Features.Account.Commands.LoginUserViaGoogle
+{
+    public class LoginUserViaGoogleCommandHandler : IRequestHandler<LoginUserViaGoogleCommand, string>
+    {
+        private readonly ITokenService tokenService;
+        private readonly IAccountDataRepository accountDataRepository;
+        private readonly IMapper mapper;
+        private readonly IConfiguration config;
+        private readonly IMediator mediator;
+        private readonly IHttpClientFactoryService httpClientService;
+        private readonly string clientId;
+        private readonly string clientSecret;
+        private readonly string redirectUrl;
+
+        public LoginUserViaGoogleCommandHandler(
+            ITokenService tokenService, 
+            IAccountDataRepository accountDataRepository,
+>>>>>>> us-2-sign-in:Auth/Auth.Application/Features/Account/Commands/LoginUserViaGoogle/LoginUserViaGoogleCommandHandler.cs
             IMapper mapper, 
             IConfiguration config,
             IMediator mediator,
             IHttpClientFactoryService httpClientService,
             IOptions<GoogleCredentials> googleCredentials)
         {
+<<<<<<< HEAD:Auth/Auth.Application/Features/User/Commands/LoginUserViaGoogle/LoginUserViaGoogleCommandHandler.cs
             _tokenService = tokenService;
             _userRepository = userRepository;
             _mapper = mapper;
@@ -44,6 +70,18 @@ namespace Auth.Application.Features.User.Commands.LoginUserViaGoogle
             _mediator = mediator;
             _httpClientService = httpClientService;
             _googleCredentials = googleCredentials;           
+=======
+            this.tokenService = tokenService;
+            this.accountDataRepository = accountDataRepository;
+            this.mapper = mapper;
+            this.config = config;
+            this.mediator = mediator;
+            this.httpClientService = httpClientService;
+
+            clientId = config["GoogleAuth:ClientId"];
+            clientSecret = config["GoogleAuth:ClientSecret"];
+            redirectUrl = config["GoogleAuth:RedirectUrl"];
+>>>>>>> us-2-sign-in:Auth/Auth.Application/Features/Account/Commands/LoginUserViaGoogle/LoginUserViaGoogleCommandHandler.cs
         }
 
         public async Task<string> Handle(LoginUserViaGoogleCommand request, CancellationToken cancellationToken)

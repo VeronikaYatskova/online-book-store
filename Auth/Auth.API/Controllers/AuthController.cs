@@ -2,9 +2,8 @@ using Auth.Application.DTOs.Request;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Auth.Application.Features.User.Queries.GetUsers;
-using Auth.Application.Features.User.Commands.LoginUser;
+using Auth.Application.Features.Account.Commands.LoginUser;
 using Auth.Application.Features.User.Queries.GetRedirectUrl;
-using Auth.Application.Features.User.Commands.LoginUserViaGoogle;
 using Auth.Domain.Models;
 using Auth.Application.Features.User.Commands.RegisterUser;
 using Auth.Application.Features.User.Commands.GetRefreshToken;
@@ -85,14 +84,6 @@ namespace Auth.API.Controllers
             Response.Redirect(redirectUrl);
 
             return Ok(redirectUrl);
-        }
-
-        [HttpPost("google/sign-in")]
-        public async Task<IActionResult> LoginWithGoogle([FromQuery] string code, [FromBody] string roleId)
-        {
-            var token = await _mediator.Send(new LoginUserViaGoogleCommand(code, roleId));
-
-            return Ok(token);
         }
     }
 }

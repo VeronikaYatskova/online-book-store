@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Application.Abstractions.Interfaces.Services;
 using Auth.Application.DTOs.Request;
+using Auth.Application.Features.Account.Commands.LoginUser;
 using Auth.Domain.Exceptions;
 using AutoMapper;
 using FluentValidation;
