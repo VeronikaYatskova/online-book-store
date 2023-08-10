@@ -1,5 +1,6 @@
 using MassTransit;
 using Microsoft.Extensions.Options;
+using FluentValidation.AspNetCore;
 using Profiles.API.Extensions;
 using Profiles.API.Middlewares.ExceptionMiddleware;
 using Profiles.Application.Consumers;
@@ -14,7 +15,9 @@ builder.Logging.AddCustomLogger();
 
 builder.Services.AddOptionsConfiguration(configuration);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+                .AddFluentValidation();
+         
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

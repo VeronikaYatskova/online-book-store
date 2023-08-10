@@ -1,7 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Profiles.Application.DTOs.Request;
-using Profiles.Application.Features.Users.Commands.AddUser;
 using Profiles.Application.Features.Users.Commands.DeleteUser;
 using Profiles.Application.Features.Users.Commands.EditUser;
 using Profiles.Application.Features.Users.Queries.GetAllUsers;
@@ -54,14 +53,6 @@ namespace Profiles.API.Controllers
             var publishers = await _mediator.Send(new GetPublishersQuery());
 
             return Ok(publishers);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddUserAsync([FromBody] AddUserRequest user)
-        {
-            await _mediator.Send(new AddUserCommand(user));
-
-            return Created("User is created", user);
         }
 
         [HttpPut]
