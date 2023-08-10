@@ -7,18 +7,23 @@ namespace Auth.Infrastructure.Database.DataContext
     {
         public AppDbContext (DbContextOptions<AppDbContext> options) : base(options) { }
 
+        public virtual DbSet<User> Users { get; set; } = default!;
+        public virtual DbSet<UserRole> UserRoles { get; set; } = default!;
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>().HasKey(u => u.UserGuid);
-            modelBuilder.Entity<User>().Property(u => u.UserGuid).ValueGeneratedOnAdd();
-            modelBuilder.Entity<User>().HasOne(u => u.Role).WithMany(u => u.Users);
+            modelBuilder.Entity<User>().HasKey(e => e.Id);
+            modelBuilder.Entity<User>().Property(e => e.Id).ValueGeneratedOnAdd();
+            modelBuilder.Entity<User>()
+                .HasOne(e => e.Role)
+                .WithMany(e => e.Users)
+                .HasForeignKey(e => e.RoleId);
+            modelBuilder.Entity<User>().HasIndex(e => e.Email).IsUnique();
 
-            modelBuilder.Entity<UserRole>().HasKey(u => u.UserRoleGuid);
+            modelBuilder.Entity<UserRole>().HasKey(e => e.Id);
+            modelBuilder.Entity<UserRole>().Property(e => e.Id).ValueGeneratedOnAdd();
         }
-        
-        public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<UserRole> UserRoles { get; set; }
     }
 }

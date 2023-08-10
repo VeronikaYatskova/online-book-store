@@ -1,6 +1,11 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Ocelot.DependencyInjection;
+using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
 // Add services to the container.
 
@@ -13,7 +18,30 @@ builder.Services.AddOcelot(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+                            .GetBytes(configuration.GetSection("AppSettings:SecretKey").Value!)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                    };
+                });
+
 var app = builder.Build();
+
+var ocelotConfiguration = new OcelotPipelineConfiguration
+{
+    AuthenticationMiddleware = async (cpt, est) =>
+    {
+        await est.Invoke();
+    }
+};
+
+app.UseOcelot().Wait();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -24,6 +52,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

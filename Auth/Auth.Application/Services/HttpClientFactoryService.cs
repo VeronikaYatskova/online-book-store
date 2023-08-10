@@ -1,17 +1,14 @@
-using System.Text.Json;
-using Auth.Application.Abstractions.Services;
+using Auth.Application.Abstractions.Interfaces.Services;
 
 namespace Auth.Application.Services
 {
     public class HttpClientFactoryService : IHttpClientFactoryService
     {
        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly JsonSerializerOptions _options;
         
         public HttpClientFactoryService(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
-            _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         }
 
         public async Task<string> Execute(string token)

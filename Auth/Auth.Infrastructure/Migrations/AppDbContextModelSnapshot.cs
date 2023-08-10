@@ -24,7 +24,7 @@ namespace Auth.Infrastructure.Migrations
 
             modelBuilder.Entity("Auth.Domain.Models.User", b =>
                 {
-                    b.Property<Guid>("UserGuid")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
@@ -32,10 +32,6 @@ namespace Auth.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -60,7 +56,10 @@ namespace Auth.Infrastructure.Migrations
                     b.Property<DateTime?>("TokenExpires")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("UserGuid");
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
 
                     b.HasIndex("RoleId");
 
@@ -69,7 +68,7 @@ namespace Auth.Infrastructure.Migrations
 
             modelBuilder.Entity("Auth.Domain.Models.UserRole", b =>
                 {
-                    b.Property<Guid>("UserRoleGuid")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
@@ -77,7 +76,7 @@ namespace Auth.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("UserRoleGuid");
+                    b.HasKey("Id");
 
                     b.ToTable("UserRoles");
                 });

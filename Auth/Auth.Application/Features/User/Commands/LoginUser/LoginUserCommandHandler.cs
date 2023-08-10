@@ -1,65 +1,59 @@
 using System.Security.Cryptography;
-using Auth.Application.Abstractions.Repositories;
-using Auth.Application.Abstractions.Services;
+using Auth.Application.Abstractions.Interfaces.Repositories;
+using Auth.Application.Abstractions.Interfaces.Services;
 using Auth.Application.DTOs.Request;
 using Auth.Domain.Exceptions;
 using AutoMapper;
+using FluentValidation;
 using MediatR;
+
+using UserEntity = Auth.Domain.Models.User;
 
 namespace Auth.Application.Features.User.Commands.LoginUser
 {
     public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, string>
     {
-        private readonly IUserRepository userRepository;
-        private readonly ITokenService tokenService;
-        private readonly IMapper mapper;
+        private readonly IRepository<UserEntity> _userRepository;
+        private readonly ITokenService _tokenService;
+        private readonly IMapper _mapper;
+        private readonly IValidator<LoginUserCommand> _validator;
+        private readonly IPasswordService _passwordService;
 
-        public LoginUserCommandHandler(IUserRepository userRepository, ITokenService tokenService, IMapper mapper)
+        public LoginUserCommandHandler(
+            IRepository<UserEntity> userRepository, 
+            ITokenService tokenService, 
+            IMapper mapper,
+            IValidator<LoginUserCommand> validator,
+            IPasswordService passwordService)
         {
-            this.userRepository = userRepository;
-            this.tokenService = tokenService;
-            this.mapper = mapper;
+            _userRepository = userRepository;
+            _tokenService = tokenService;
+            _mapper = mapper;
+            _validator = validator;
+            _passwordService = passwordService;
         }
 
         public async Task<string> Handle(LoginUserCommand request, CancellationToken cancellationToken)
         {
-            var userData = request.request;
+            await _validator.ValidateAndThrowAsync(request);
 
-            var user = userRepository.FindUserBy(u => u.Email == userData.Email);
+            var userData = request.LoginUserData;
+
+            var user = await _userRepository.FindByConditionAsync(u => u.Email == userData.Email);
 
             if (user is null)
             {
-                throw Exceptions.UserNotRegistered;
+                throw new UserNotRegisteredException();
             }
             else
             {
-                VerifyData(user, userData);
+                _passwordService.VerifyPassword(user, userData);
 
-                var token = tokenService.CreateToken(user);
-                await tokenService.SetRefreshTokenAsync(user);
-
+                var token = _tokenService.CreateToken(user);
+                await _tokenService.SetRefreshTokenAsync(user);
+                
                 return token;
             }
-        }
-
-        private void VerifyData(Domain.Models.User user, LoginUserRequest loginModel)
-        {
-            if (user!.Email != loginModel.Email)
-            {
-                throw new ArgumentException("Not found.");
-            }
-
-            if (!VerifyPasswordHash(loginModel.Password, user.PasswordHash!, user.PasswordSalt!))
-            {
-                throw new ArgumentException("Wrong password");
-            }
-        }
-
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-        {
-            using var hmac = new HMACSHA512(passwordSalt);
-            var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            return computedHash.SequenceEqual(passwordHash);
         }
     }
 }

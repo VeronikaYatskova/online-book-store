@@ -1,49 +1,49 @@
-using Auth.Application.Abstractions.Repositories;
-using Auth.Application.Abstractions.Services;
+using Auth.Application.Abstractions.Interfaces.Repositories;
+using Auth.Application.Abstractions.Interfaces.Services;
 using Auth.Application.DTOs.Request;
 using Auth.Application.DTOs.Response;
 using Auth.Application.Features.User.Commands.LoginUser;
 using Auth.Application.Features.User.Commands.RegisterUser;
+using Auth.Domain.Models;
 using AutoMapper;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
 using MediatR;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+
+using UserEntity = Auth.Domain.Models.User;
 
 namespace Auth.Application.Features.User.Commands.LoginUserViaGoogle
 {
     public class LoginUserViaGoogleCommandHandler : IRequestHandler<LoginUserViaGoogleCommand, string>
     {
-        private readonly ITokenService tokenService;
-        private readonly IUserRepository userRepository;
-        private readonly IMapper mapper;
-        private readonly IConfiguration config;
-        private readonly IMediator mediator;
-        private readonly IHttpClientFactoryService httpClientService;
-        private readonly string clientId;
-        private readonly string clientSecret;
-        private readonly string redirectUrl;
+        private readonly ITokenService _tokenService;
+        private readonly IRepository<UserEntity> _userRepository;
+        private readonly IMapper _mapper;
+        private readonly IConfiguration _config;
+        private readonly IMediator _mediator;
+        private readonly IHttpClientFactoryService _httpClientService;
+        private readonly IOptions<GoogleCredentials> _googleCredentials;
 
         public LoginUserViaGoogleCommandHandler(
             ITokenService tokenService, 
-            IUserRepository userRepository, 
+            IRepository<UserEntity> userRepository,
             IMapper mapper, 
             IConfiguration config,
             IMediator mediator,
-            IHttpClientFactoryService httpClientService)
+            IHttpClientFactoryService httpClientService,
+            IOptions<GoogleCredentials> googleCredentials)
         {
-            this.tokenService = tokenService;
-            this.userRepository = userRepository;
-            this.mapper = mapper;
-            this.config = config;
-            this.mediator = mediator;
-            this.httpClientService = httpClientService;
-
-            clientId = config["GoogleAuth:ClientId"];
-            clientSecret = config["GoogleAuth:ClientSecret"];
-            redirectUrl = config["GoogleAuth:RedirectUrl"];
+            _tokenService = tokenService;
+            _userRepository = userRepository;
+            _mapper = mapper;
+            _config = config;
+            _mediator = mediator;
+            _httpClientService = httpClientService;
+            _googleCredentials = googleCredentials;           
         }
 
         public async Task<string> Handle(LoginUserViaGoogleCommand request, CancellationToken cancellationToken)
@@ -51,21 +51,19 @@ namespace Auth.Application.Features.User.Commands.LoginUserViaGoogle
             var googleToken = await GetGoogleAccessTokenAsync(request.Code);
             var userGoogleRegistrationDto = await GetUserInfoByToken(googleToken);
 
-            var userExists = userRepository.FindUserBy(u => u.Email == userGoogleRegistrationDto.Email);
+            var user = await _userRepository.FindByConditionAsync(u => u.Email == userGoogleRegistrationDto.Email);
 
-            if (userExists is null)
+            if (user is null)
             {
-                var userData = mapper.Map<RegisterUserRequest>(userGoogleRegistrationDto);
-                userData.RoleId = request.RoleId;
-
-                var token = await mediator.Send(new RegisterUserCommand(userData));
+                var userData = _mapper.Map<RegisterUserRequest>(userGoogleRegistrationDto);
+                var token = await _mediator.Send(new RegisterUserCommand(userData, UserRolesConstants.UserRole));
                 
                 return token;
             }
             else
             {
-                var loginUserDto = mapper.Map<LoginUserRequest>(userGoogleRegistrationDto);
-                var token = await mediator.Send(new LoginUserCommand(loginUserDto));
+                var loginUserDto = _mapper.Map<LoginUserRequest>(userGoogleRegistrationDto);
+                var token = await _mediator.Send(new LoginUserCommand(loginUserDto));
 
                 return token;
             }
@@ -75,8 +73,8 @@ namespace Auth.Application.Features.User.Commands.LoginUserViaGoogle
         {
             var clientSecrets = new ClientSecrets
             {
-                ClientId = clientId,
-                ClientSecret = clientSecret,
+                ClientId = _googleCredentials.Value.ClientId,
+                ClientSecret = _googleCredentials.Value.ClientSecret,
             };
 
             var credential = new GoogleAuthorizationCodeFlow(
@@ -88,7 +86,7 @@ namespace Auth.Application.Features.User.Commands.LoginUserViaGoogle
             TokenResponse token = await credential.ExchangeCodeForTokenAsync(
                 "",
                 code,
-                redirectUrl,
+                _googleCredentials.Value.RedirectUrl,
                 CancellationToken.None
             );
 
@@ -97,10 +95,10 @@ namespace Auth.Application.Features.User.Commands.LoginUserViaGoogle
 
         private async Task<RegisterUserGoogleRequest> GetUserInfoByToken(string token)
         {
-            var jsonUserData = await httpClientService.Execute(token);
+            var jsonUserData = await _httpClientService.Execute(token);
             var user = JsonConvert.DeserializeObject<GoogleDataResponse>(jsonUserData);
 
-            var userGoogleRegistrationDto = mapper.Map<RegisterUserGoogleRequest>(user);
+            var userGoogleRegistrationDto = _mapper.Map<RegisterUserGoogleRequest>(user);
 
             return userGoogleRegistrationDto;
         }
