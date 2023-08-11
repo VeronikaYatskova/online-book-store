@@ -1,5 +1,4 @@
 ﻿using BookStore.Application.Abstractions.Contracts.Interfaces;
-using BookStore.Application.DTOs;
 using BookStore.Application.DTOs.Request;
 using BookStore.Application.Features.Book.Commands.AddBook;
 using BookStore.Application.Features.Book.Commands.AddBookToFavorite;
@@ -23,14 +22,14 @@ namespace BookStore.WebApi.Controllers
     public class BooksController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IAwsS3Service _awsS3Service;
+        private readonly IAzureService _azureService;
 
         public BooksController(
             IMediator mediator,
-            IAwsS3Service awsS3Service)
+            IAzureService azureService)
         {
             _mediator = mediator;
-            _awsS3Service = awsS3Service;
+            _azureService = azureService;
         }
 
         [HttpGet]
@@ -65,17 +64,23 @@ namespace BookStore.WebApi.Controllers
             return Ok(books);
         }
 
+        [HttpGet("azurite")]
+        public async Task<IActionResult> GetBookFromCloud()
+        {
+            return Ok(await _azureService.GetAllAsync());
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddBookAsync([FromForm] AddBookDto newBook)
         {
-            var result = await _awsS3Service.UploadFileToBucketAsync(newBook.File);
+            var result = await _azureService.UploadAsync(newBook.File);
 
             if (result.StatusCode != 200)
             {
                 return BadRequest();
             }
 
-            await _mediator.Send(new AddBookCommand(newBook, result.BookFakeName));
+            await _mediator.Send(new AddBookCommand(newBook, result.Blob.Name!));
 
             return Created("", newBook);
         }

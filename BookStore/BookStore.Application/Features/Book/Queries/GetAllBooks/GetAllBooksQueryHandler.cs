@@ -10,13 +10,13 @@ namespace BookStore.Application.Features.Book.Queries.GetAllBooks
     {
         private readonly IUnitOfWork _unitOfWork; 
         private readonly IMapper _mapper;
-        private readonly IAwsS3Service _awsS3Service;
+        // private readonly IAwsS3Service _awsS3Service;
 
         public GetAllBooksQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, IAwsS3Service awsS3Service)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _awsS3Service = awsS3Service;
+            // _awsS3Service = awsS3Service;
         }
 
         public async Task<IEnumerable<BookDto>> Handle(GetAllBooksQuery request, CancellationToken cancellationToken)
@@ -33,10 +33,10 @@ namespace BookStore.Application.Features.Book.Queries.GetAllBooks
 
             var booksDto = _mapper.Map<IEnumerable<BookDto>>(books);
 
-            foreach (var book in booksDto)
-            {
-                book.FileURL = _awsS3Service.GetFilePreSignedUrl(book.BookFakeName);
-            }
+            // foreach (var book in booksDto)
+            // {
+            //     book.FileURL = _awsS3Service.GetFilePreSignedUrl(book.BookFakeName);
+            // }
 
             return booksDto;
         }

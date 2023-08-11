@@ -4,6 +4,7 @@ using Serilog;
 using Serilog.Events;
 using BookStore.Application.Services.CloudServices.Amazon.Models;
 using BookStore.Application.Consumers;
+using BookStore.Application.Services.CloudServices.Azurite.Models;
 
 namespace BookStore.WebApi.Extensions
 {
@@ -33,6 +34,9 @@ namespace BookStore.WebApi.Extensions
 
             services.Configure<RabbitMqSettings>(
                 configuration.GetSection("RabbitMqConfig"));
+        
+            services.Configure<BlobStorageSettings>(
+                configuration.GetSection("BlobStorage"));
         }
     }
 }

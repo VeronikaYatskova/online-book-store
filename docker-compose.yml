@@ -84,3 +84,11 @@ services:
       - "5672:5672"
       # Web interface
       - "15672:15672"
+
+  azurite-db:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: azurite-db
+    ports:
+      - 10000:10000
+      - 10001:10001
+      - 10002:10002

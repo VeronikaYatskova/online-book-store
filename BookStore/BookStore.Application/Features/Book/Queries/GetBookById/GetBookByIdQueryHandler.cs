@@ -10,16 +10,13 @@ namespace BookStore.Application.Features.Book.Queries.GetBookById
     {
         private readonly IUnitOfWork _unitOfWork; 
         private readonly IMapper _mapper;
-        private readonly IAwsS3Service _awsS3Service;
 
         public GetBookByIdQueryHandler(
             IUnitOfWork unitOfWork, 
-            IMapper mapper, 
-            IAwsS3Service awsS3Service)
+            IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _awsS3Service = awsS3Service;
         }
 
         public async Task<BookDto> Handle(GetBookByIdQuery request, CancellationToken cancellationToken)
@@ -33,7 +30,7 @@ namespace BookStore.Application.Features.Book.Queries.GetBookById
             _unitOfWork.BooksRepository.LoadRelatedDataWithCollection(book, book => book.BookAuthors);
         
             var bookDto = _mapper.Map<BookDto>(book);
-            bookDto.FileURL = _awsS3Service.GetFilePreSignedUrl(book.BookFakeName!);
+            // bookDto.FileURL = _awsS3Service.GetFilePreSignedUrl(book.BookFakeName!);
 
             return bookDto;
         }

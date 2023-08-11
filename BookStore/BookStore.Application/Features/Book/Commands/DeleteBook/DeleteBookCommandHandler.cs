@@ -9,13 +9,16 @@ namespace BookStore.Application.Features.Book.Commands.DeleteBook
     {
         private readonly IUnitOfWork _unitOfWork; 
         private readonly IMapper _mapper;
-        private readonly IAwsS3Service _awsS3Service;
+        private readonly IAzureService _azureService;
 
-        public DeleteBookCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IAwsS3Service awsS3Service)
+        public DeleteBookCommandHandler(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper, 
+            IAzureService azureService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _awsS3Service = awsS3Service;
+            _azureService = azureService;
         }
 
         public async Task Handle(DeleteBookCommand request, CancellationToken cancellationToken)
@@ -25,8 +28,9 @@ namespace BookStore.Application.Features.Book.Commands.DeleteBook
                 .FindByConditionAsync(b => b.BookGuid == bookId) ??
                     throw new NotFoundException(ExceptionMessages.BookNotFoundMessage);;
 
+            await _azureService.DeleteAsync(bookToDelete.BookFakeName!);
+
             _unitOfWork.BooksRepository.Delete(bookToDelete);
-            
             await _unitOfWork.SaveChangesAsync();
         }
     }
