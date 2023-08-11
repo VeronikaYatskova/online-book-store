@@ -8,25 +8,21 @@ namespace BookStore.Application.Features.Category.Queries
 {
     public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllCategoriesQuery, IEnumerable<CategoryResponse>>
     {
-        private readonly IMapper mapper;
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
 
         public GetAllCategoriesQueryHandler(IMapper mapper, IUnitOfWork unitOfWork)
         {
-            this.mapper = mapper;
-            this.unitOfWork = unitOfWork;
+            _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IEnumerable<CategoryResponse>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
         {
-            var categories = await unitOfWork.CategoryRepository.GetCategoriesAsync();
+            var categories = await _unitOfWork.CategoryRepository.FindAllAsync() ??
+                throw new NotFoundException(ExceptionMessages.CategoriesListIsEmptyMessage);;
 
-            if (categories is null)
-            {
-                 throw new NotFoundException(ExceptionMessages.CategoriesListIsEmpty);
-            }
-
-            return mapper.Map<IEnumerable<CategoryResponse>>(categories);
+            return _mapper.Map<IEnumerable<CategoryResponse>>(categories);
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Reflection;
 using BookStore.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,19 +10,18 @@ namespace BookStore.Infrastructure.Persistance.DataContext
             : base(options)
         {
         }
+
+        public DbSet<BookEntity> Books { get; set; } = default!;
+        public DbSet<BookAuthorEntity> BooksAuthors { get; set; } = default!;
+        public DbSet<UserBookEntity> UserBooks { get; set; } = default!; 
+        public DbSet<User> Users { get; set; } = default!;
+        public DbSet<CategoryEntity> Categories { get; set; } = default!;
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.SetModels();
-        }
 
-        public virtual DbSet<BookEntity> Books { get; set; } = default!;
-        public virtual DbSet<PublisherEntity> Publishers { get; set; } = default!;
-        public virtual DbSet<CategoryEntity> Categories { get; set; } = default!;
-        public virtual DbSet<AuthorEntity> Authors { get; set; } = default!;
-        public virtual DbSet<BookAuthorEntity> BooksAuthors { get; set; } = default!;
-        public virtual DbSet<UserFavoriteBookEntity> FavoriteBooks { get; set; } = default!; 
-        public virtual DbSet<User> Users { get; set; } = default!;
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        }
     }
 }

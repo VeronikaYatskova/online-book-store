@@ -1,11 +1,14 @@
 using BookStore.WebApi.Middlewares;
 using BookStore.WebApi.Extensions;
+using BookStore.Api.Extensions;
+using MassTransit;
+using BookStore.Application.Consumers;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-// builder.AddCustomLogger();
-builder.Logging.ClearProviders();
+builder.Logging.AddCustomLogger();
 
 builder.Services.AddControllers();
 
@@ -14,7 +17,28 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddLayers(configuration);
 
-builder.Services.AddCustomAuthentication(configuration);
+builder.Services.AddOptions(configuration);
+
+builder.Services.AddMassTransit(busConfigurator =>
+{   
+    busConfigurator.AddConsumer<UserRegisteredConsumer>();
+    
+    busConfigurator.UsingRabbitMq((context, configuration) => 
+    {
+        var rabbitMqSettings = context.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
+
+        configuration.Host(new Uri(rabbitMqSettings.Host!), h =>
+        {
+           h.Username(rabbitMqSettings.UserName);
+           h.Password(rabbitMqSettings.Password);
+        });
+
+        configuration.ReceiveEndpoint("user-registered-event", c => 
+        {
+            c.ConfigureConsumer<UserRegisteredConsumer>(context);   
+        });
+    });
+});
 
 var app = builder.Build();
 
@@ -22,6 +46,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    await app.SeedDataToDbAsync();
 }
 
 app.ConfigureCustomExceptionMiddleware();
@@ -35,4 +61,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-

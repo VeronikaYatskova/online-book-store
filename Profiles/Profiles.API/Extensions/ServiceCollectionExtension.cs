@@ -32,14 +32,8 @@ namespace Profiles.API.Extensions
             services.Configure<DatabaseSettings>(
                 configuration.GetSection("ConnectionStrings"));
 
-            services.AddSingleton(sp => 
-                sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
-
             services.Configure<RabbitMqSettings>(
                 configuration.GetSection("RabbitMqConfig"));
-
-            services.AddSingleton(sp =>
-                sp.GetRequiredService<IOptions<RabbitMqSettings>>().Value);
         }
     }
 }

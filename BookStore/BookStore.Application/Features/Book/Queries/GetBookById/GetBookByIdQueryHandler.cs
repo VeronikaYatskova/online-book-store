@@ -8,25 +8,31 @@ namespace BookStore.Application.Features.Book.Queries.GetBookById
 {
     public class GetBookByIdQueryHandler : IRequestHandler<GetBookByIdQuery, BookDto>
     {
-        private readonly IUnitOfWork unitOfWork; 
-        private readonly IMapper mapper;
+        private readonly IUnitOfWork _unitOfWork; 
+        private readonly IMapper _mapper;
 
-        public GetBookByIdQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        public GetBookByIdQueryHandler(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper)
         {
-            this.unitOfWork = unitOfWork;
-            this.mapper = mapper;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<BookDto> Handle(GetBookByIdQuery request, CancellationToken cancellationToken)
         {
-            var book = await unitOfWork.BooksRepository.GetByIdAsync(new Guid(request.id));
+            var book = await _unitOfWork.BooksRepository
+                .FindByConditionAsync(b => b.BookGuid == Guid.Parse(request.id)) ??
+                    throw new NotFoundException(ExceptionMessages.BookNotFoundMessage);
+            
+            _unitOfWork.BooksRepository.LoadRelatedDataWithReference(book, book => book.Category);
+            _unitOfWork.BooksRepository.LoadRelatedDataWithReference(book, book => book.Publisher);
+            _unitOfWork.BooksRepository.LoadRelatedDataWithCollection(book, book => book.BookAuthors);
+        
+            var bookDto = _mapper.Map<BookDto>(book);
+            // bookDto.FileURL = _awsS3Service.GetFilePreSignedUrl(book.BookFakeName!);
 
-            if (book is null)
-            {
-                throw new NotFoundException(ExceptionMessages.BookNotFound);
-            }
-
-            return mapper.Map<BookDto>(book);
+            return bookDto;
         }
     }
 }

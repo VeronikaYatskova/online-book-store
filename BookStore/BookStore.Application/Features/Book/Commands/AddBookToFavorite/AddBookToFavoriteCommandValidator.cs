@@ -6,8 +6,11 @@ namespace BookStore.Application.Features.Book.Commands.AddBookToFavorite
     {
         public AddBookToFavoriteCommandValidator()
         {
-            RuleFor(fb => fb.userId).NotEmpty();
-            RuleFor(fb => fb.bookId).NotEmpty();
+            RuleFor(fb => fb.UserId)
+                .NotEmpty();
+
+            RuleFor(fb => fb.BookId)
+                .NotEmpty();
         }
     }
 }

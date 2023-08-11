@@ -5,20 +5,20 @@ namespace BookStore.WebApi.Middlewares
 {
     public class ExceptionHandlerMiddleware
     {
-        private readonly RequestDelegate next;
-        private readonly IExceptionsService exceptionService;
+        private readonly RequestDelegate _next;
+        private readonly IExceptionsService _exceptionService;
 
         public ExceptionHandlerMiddleware(RequestDelegate next, IExceptionsService exceptionService)
         {
-            this.next = next;
-            this.exceptionService = exceptionService;
+            _next = next;
+            _exceptionService = exceptionService;
         }
 
         public async Task InvokeAsync(HttpContext context)
         {
             try
             {
-                await next(context);
+                await _next(context);
             }
             catch (Exception ex)
             {
@@ -28,7 +28,7 @@ namespace BookStore.WebApi.Middlewares
 
         private Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
-            var code = exceptionService.GetStatusCodeOnException(ex);
+            var code = _exceptionService.GetStatusCodeOnException(ex);
 
             var result = JsonSerializer.Serialize(new { error = ex.Message });
             context.Response.ContentType = "application/json";

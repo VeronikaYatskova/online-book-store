@@ -42,26 +42,6 @@ builder.Services.AddMassTransit(busConfigurator =>
     });
 });
 
-// builder.Services.AddMassTransit(x => 
-// {
-//     x.AddConsumer<UserRegisteredConsumer>();
-//     x.UsingRabbitMq((context, configuration) => 
-//     {
-//         RabbitMqSettings rabbitMqSettings = context.GetRequiredService<RabbitMqSettings>();
-
-//         configuration.Host(new Uri(rabbitMqSettings.Host!), h =>
-//         {
-//            h.Username(rabbitMqSettings.UserName);
-//            h.Password(rabbitMqSettings.Password);
-//         });
-
-//         configuration.ReceiveEndpoint("user-registered-event", e => 
-//         {
-//             e.ConfigureConsumer<UserRegisteredConsumer>(context);   
-//         });
-//     });
-// });
-
 var app = builder.Build();
 
 app.ConfigureCustomExceptionMiddleware();

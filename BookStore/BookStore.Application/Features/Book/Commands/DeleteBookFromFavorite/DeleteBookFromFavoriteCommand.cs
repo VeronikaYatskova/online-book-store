@@ -2,5 +2,5 @@ using MediatR;
 
 namespace BookStore.Application.Features.Book.Commands.DeleteBookFromFavorite
 {
-    public record DeleteBookFromFavoriteCommand(string userId, string bookId) : IRequest;
+    public record DeleteBookFromFavoriteCommand(string UserId, string BookId) : IRequest;
 }

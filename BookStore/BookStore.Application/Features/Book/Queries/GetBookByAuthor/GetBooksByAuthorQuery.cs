@@ -3,5 +3,5 @@ using MediatR;
 
 namespace BookStore.Application.Features.Book.Queries.GetBookByAuthor
 {
-    public record GetBooksByAuthorQuery(string authorName) : IRequest<IEnumerable<BookDto>>;
+    public record GetBooksByAuthorQuery(string AuthorId) : IRequest<IEnumerable<BookDto>>;
 }
