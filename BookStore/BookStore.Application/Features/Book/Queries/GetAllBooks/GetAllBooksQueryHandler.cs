@@ -38,10 +38,12 @@ namespace BookStore.Application.Features.Book.Queries.GetAllBooks
 
             foreach (var book in booksDto)
             {
-                var blob = await _azureService.GetBlobByAsync(b => b.Name == book.BookFakeName)
-                    ?? throw new FileDoesNotExistException();
+                var blob = await _azureService.GetBlobByAsync(b => b.Name == book.BookFakeName);
                     
-                book.FileURL = blob.Uri!;
+                if (blob is not null)
+                {
+                    book.FileURL = blob.Uri!;
+                }
             }
 
             return booksDto;

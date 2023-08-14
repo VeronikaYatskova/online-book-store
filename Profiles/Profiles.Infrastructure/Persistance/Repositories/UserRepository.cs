@@ -36,7 +36,7 @@ namespace Profiles.Infrastructure.Persistance.Repositories
         public async Task AddUserAsync(User user)
         {
             using var connection = new SqlConnection(_databaseSettings.Value.MsSqlConnectionString);
-            var query = "INSERT INTO USERS (Id, Email, FirstName, LastName, RoleId) VALUES (NEWID(), @Email, @FirstName, @LastName, @RoleId)";
+            var query = "INSERT INTO Users (Id, Email, FirstName, LastName, RoleId) VALUES (NEWID(), @Email, @FirstName, @LastName, @RoleId)";
 
             await connection.ExecuteAsync(query, user);
         }

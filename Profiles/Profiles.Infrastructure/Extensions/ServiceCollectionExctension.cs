@@ -13,7 +13,10 @@ namespace Profiles.Infrastructure.Extensions
 
         private static void AddRepositories(this IServiceCollection services)
         {
-            services.AddScoped<IUserRepository, UserRepository>(); 
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAuthorRepository, AuthorRepository>();
+            services.AddScoped<INormalUserRepository, NormalUserRepository>();
+            services.AddScoped<IPublisherRepository, PublisherRepository>();
         }
     }
 }

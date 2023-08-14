@@ -22,6 +22,7 @@ namespace BookStore.Application.Features.Book.Commands.AddBookToFavorite
             var bookId = new Guid(request.BookId);
             var userBookEntity = new UserBookEntity
             {
+                Id = Guid.NewGuid(),
                 UserId = userId,
                 BookId = bookId,
             };

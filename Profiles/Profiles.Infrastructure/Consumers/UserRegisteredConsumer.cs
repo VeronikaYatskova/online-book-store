@@ -5,7 +5,7 @@ using Profiles.Application.Interfaces.Repositories;
 using Profiles.Domain.Entities;
 using AuthProfilesServices.Communication.Models;
 
-namespace Profiles.Application.Consumers
+namespace Profiles.Infrastructure.Consumers
 {
     public class UserRegisteredConsumer : IConsumer<UserRegisteredMessage>
     {

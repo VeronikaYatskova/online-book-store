@@ -34,10 +34,12 @@ namespace BookStore.Application.Features.Book.Queries.GetBookById
         
             var bookDto = _mapper.Map<BookDto>(book);
             
-            var blob = await _azureService.GetBlobByAsync(b => b.Name == book.BookFakeName!) 
-                ?? throw new FileDoesNotExistException();
-            
-            bookDto.FileURL = blob.Uri!;
+            var blob = await _azureService.GetBlobByAsync(b => b.Name == book.BookFakeName);
+                    
+            if (blob is not null)
+            {
+                bookDto.FileURL = blob.Uri!;
+            }
 
             return bookDto;
         }

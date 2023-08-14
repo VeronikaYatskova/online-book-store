@@ -7,6 +7,7 @@ using BookStore.Application.Features.Book.Queries.DownloadFile;
 using BookStore.Application.Features.Book.Queries.GetAllBooks;
 using BookStore.Application.Features.Book.Queries.GetBookByAuthor;
 using BookStore.Application.Features.Book.Queries.GetBookById;
+using BookStore.Application.Features.Book.Queries.GetBooksByCategory;
 using BookStore.Application.Features.Book.Queries.GetBooksByName;
 using BookStore.Application.Features.Book.Queries.GetFavoriteBooks;
 using BookStore.Application.Features.Comment.Commands;
@@ -39,7 +40,7 @@ namespace BookStore.WebApi.Controllers
             return Ok(books);
         }
 
-        [HttpGet("books-id/{id}")]
+        [HttpGet("ids/{id}")]
         public async Task<IActionResult> GetBookById([FromRoute] string id)
         {
             var book = await _mediator.Send(new GetBookByIdQuery(id));
@@ -47,7 +48,7 @@ namespace BookStore.WebApi.Controllers
             return Ok(book);
         }
 
-        [HttpGet("books-name/{bookName}")]
+        [HttpGet("names/{bookName}")]
         public async Task<IActionResult> GetBookByName([FromRoute] string bookName)
         {
             var books = await _mediator.Send(new GetBooksByNameQuery(bookName));
@@ -63,13 +64,21 @@ namespace BookStore.WebApi.Controllers
             return Ok(books);
         }
 
+        [HttpGet("categories/{categoryId}")]
+        public async Task<IActionResult> GetBooksByCategory([FromRoute] string categoryId)
+        {
+            var books = await _mediator.Send(new GetBooksByCategoryQuery(categoryId));
+
+            return Ok(books);
+        }
+
         [HttpGet("azurite")]
-        public async Task<IActionResult> GetBookFromCloud()
+        public async Task<IActionResult> GetBooksFromCloud()
         {
             return Ok(await _azureService.GetAllAsync());
         }
 
-        [HttpDelete("{bookId}")]
+        [HttpDelete("bookIds/{bookId}")]
         public async Task<IActionResult> DeleteBookAsync([FromRoute] string bookId)
         {
             var request = new DeleteBookCommand(bookId);
@@ -78,7 +87,7 @@ namespace BookStore.WebApi.Controllers
             return Ok();
         }
 
-        [HttpGet("books/{documentName}")]
+        [HttpGet("documents/{documentName}")]
         public async Task<IActionResult> DownloadBook([FromRoute] string documentName)
         {
             var document = await _mediator.Send(new DownloadFileQuery(documentName));
@@ -86,7 +95,7 @@ namespace BookStore.WebApi.Controllers
             return File(document, "application/octet-stream", documentName);
         }
 
-        [HttpGet("books/favorites")]
+        [HttpGet("favorites")]
         public async Task<IActionResult> GetFavoriteBooks()
         {
             var currentUserGuid = "56602e1c-541a-44ee-8280-03d4662101bb";
@@ -96,7 +105,7 @@ namespace BookStore.WebApi.Controllers
             return Ok(favoriteBooks);
         }
 
-        [HttpPost("books/favorites/{bookId}")]
+        [HttpPost("favorites/{bookId}")]
         public async Task<IActionResult> AddBookToFavourite([FromRoute] string bookId)
         {
             var currentUserGuid = "56602e1c-541a-44ee-8280-03d4662101bb";
@@ -106,7 +115,7 @@ namespace BookStore.WebApi.Controllers
             return Created("", bookId);
         }
 
-        [HttpDelete("books/favorites/{bookId}")]
+        [HttpDelete("favorites/{bookId}")]
         public async Task<IActionResult> DeleteBookFromFavourite([FromRoute] string bookId)
         {
             var currentUserGuid = "56602e1c-541a-44ee-8280-03d4662101bb";

@@ -4,6 +4,8 @@ using Serilog;
 using Serilog.Events;
 using Profiles.Domain.Entities;
 using Microsoft.Extensions.Options;
+using MassTransit;
+using Profiles.Infrastructure.Consumers;
 
 namespace Profiles.API.Extensions
 {
@@ -34,6 +36,31 @@ namespace Profiles.API.Extensions
 
             services.Configure<RabbitMqSettings>(
                 configuration.GetSection("RabbitMqConfig"));
+        }
+
+        public static void AddMassTransitConfig(
+            this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddMassTransit(busConfigurator =>
+            {   
+                busConfigurator.AddConsumer<UserRegisteredConsumer>();
+                
+                busConfigurator.UsingRabbitMq((context, configuration) => 
+                {
+                    var rabbitMqSettings = context.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
+
+                    configuration.Host(new Uri(rabbitMqSettings.Host!), h =>
+                    {
+                        h.Username(rabbitMqSettings.UserName);
+                        h.Password(rabbitMqSettings.Password);
+                    });
+
+                    configuration.ReceiveEndpoint("user-registered-event", c => 
+                    {
+                        c.ConfigureConsumer<UserRegisteredConsumer>(context);   
+                    });
+                });
+            });
         }
     }
 }

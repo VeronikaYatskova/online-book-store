@@ -28,9 +28,6 @@ namespace BookStore.Infrastructure.Consumers
 
         public async Task Consume(ConsumeContext<BookPublishingMessage> context)
         {
-            // get current user's id
-            var currentUserId = new Guid("d86b60c0-7733-441c-a24f-f8b45469c280");
-
             _logger.LogInformation("Book publishing message is recevied.");
 
             var bookInfo = context.Message;
@@ -40,11 +37,6 @@ namespace BookStore.Infrastructure.Consumers
             var bookEntity = _mapper.Map<BookEntity>(bookInfo);
 
             await _unitOfWork.BooksRepository.CreateAsync(bookEntity);
-            await _unitOfWork.UserBooksRepository.CreateAsync(new UserBookEntity
-            {
-                UserId = currentUserId,
-                BookId = bookEntity.BookGuid,
-            });
 
             if (bookInfo.AuthorsGuid.Count() > 1)
             {
