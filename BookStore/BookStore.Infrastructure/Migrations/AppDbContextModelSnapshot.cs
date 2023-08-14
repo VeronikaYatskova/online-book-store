@@ -31,6 +31,7 @@ namespace BookStore.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("Guid")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.HasKey("AuthorGuid", "BookGuid");

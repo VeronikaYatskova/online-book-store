@@ -5,6 +5,7 @@ using Requests.BLL.DTOs.Responses;
 using Requests.BLL.Services.Interfaces;
 using Requests.DAL.Models;
 using Requests.DAL.Repositories.Interfaces;
+using RequestsBookStore.Communication.Models;
 using RequestsEmailServices.Communication.Models;
 
 namespace Requests.BLL.Services.Implementations
@@ -110,9 +111,10 @@ namespace Requests.BLL.Services.Implementations
         {
             var request = await _requestsRepository.GetByConditionAsync(r => r.Id == requestId);
             
-            // map to type to send with RabbitMq
-            
-            // await _publishEndpoint.Publish(); send to BookStore
+            var bookPublishingMessage = _mapper.Map<BookPublishingMessage>(addBookDto);
+            bookPublishingMessage.BookFakeName = request.BookFakeName;
+
+            await _publishEndpoint.Publish(bookPublishingMessage);
         }
     }
 }

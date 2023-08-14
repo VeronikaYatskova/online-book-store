@@ -5,6 +5,7 @@ namespace Requests.BLL.DTOs.Requests
     public class AddBookDto
     {
         public string BookName { get; set; } = default!;
+        public string BookFakeName { get; set; } = default!;
         public string ISBN10 { get; set; } = default!;
         public string ISBN13 { get; set; } = default!;
         public int PagesCount { get; set; }

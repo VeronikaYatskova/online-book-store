@@ -5,6 +5,9 @@ using Serilog.Events;
 using BookStore.Application.Services.CloudServices.Amazon.Models;
 using BookStore.Application.Consumers;
 using BookStore.Application.Services.CloudServices.Azurite.Models;
+using MassTransit;
+using BookStore.Infrastructure.Consumers;
+using Microsoft.Extensions.Options;
 
 namespace BookStore.WebApi.Extensions
 {
@@ -37,6 +40,36 @@ namespace BookStore.WebApi.Extensions
         
             services.Configure<BlobStorageSettings>(
                 configuration.GetSection("BlobStorage"));
+        }
+
+        public static void AddMassTrasitConfig(this IServiceCollection services)
+        {
+            services.AddMassTransit(busConfigurator =>
+            {   
+                busConfigurator.AddConsumer<UserRegisteredConsumer>();
+                busConfigurator.AddConsumer<BookPublishingConsumer>();
+                
+                busConfigurator.UsingRabbitMq((context, configuration) => 
+                {
+                    var rabbitMqSettings = context.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
+
+                    configuration.Host(new Uri(rabbitMqSettings.Host!), h =>
+                    {
+                    h.Username(rabbitMqSettings.UserName);
+                    h.Password(rabbitMqSettings.Password);
+                    });
+
+                    configuration.ReceiveEndpoint("user-registered-event", c => 
+                    {
+                        c.ConfigureConsumer<UserRegisteredConsumer>(context);   
+                    });
+
+                    configuration.ReceiveEndpoint("book-publishing-event", c =>
+                    {
+                        c.ConfigureConsumer<BookPublishingConsumer>(context);
+                    });
+                });
+            });
         }
     }
 }

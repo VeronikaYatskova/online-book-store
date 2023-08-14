@@ -1,7 +1,9 @@
+using System.Linq.Expressions;
 using Azure.Storage.Blobs;
 using BookStore.Application.Abstractions.Contracts.Interfaces;
 using BookStore.Application.Services.CloudServices.Azurite.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace BookStore.Application.Services.CloudServices.Azurite
@@ -9,10 +11,12 @@ namespace BookStore.Application.Services.CloudServices.Azurite
     public class AzureService : IAzureService
     {
         private readonly BlobStorageSettings _blobStorageSettings;
+        private readonly ILogger<AzureService> _logger;
 
-        public AzureService(IOptions<BlobStorageSettings> blobStorageSettings)
+        public AzureService(IOptions<BlobStorageSettings> blobStorageSettings, ILogger<AzureService> logger)
         {
             _blobStorageSettings = blobStorageSettings.Value;
+            _logger = logger;
         }
 
         public async Task<IEnumerable<Blob>> GetAllAsync()
@@ -40,6 +44,13 @@ namespace BookStore.Application.Services.CloudServices.Azurite
             }
 
             return files;
+        }
+
+        public async Task<Blob?> GetBlobByAsync(Func<Blob, bool> expression)
+        {
+            var blobs = await GetAllAsync();
+
+            return blobs.FirstOrDefault(expression);
         }
 
         public async Task<byte[]> DownloadAsync(string blobFilename)
@@ -98,6 +109,26 @@ namespace BookStore.Application.Services.CloudServices.Azurite
             var file = client.GetBlobClient(blobFileName);
 
             await file.DeleteAsync();
+        }
+
+        public async Task CopyFileAsync(string fileName)
+        {
+            var requestedBooksContainer = new BlobContainerClient(
+                _blobStorageSettings.ConnectionString, 
+                _blobStorageSettings.RequestedBooksContainerName);
+
+            var publishedBooksContainer = new BlobContainerClient(
+                _blobStorageSettings.ConnectionString, 
+                _blobStorageSettings.PublishedBooksContainerName);
+
+            await publishedBooksContainer.CreateIfNotExistsAsync();
+
+            var file = requestedBooksContainer.GetBlobClient(fileName);
+            var publishedFile = publishedBooksContainer.GetBlobClient(fileName);
+
+            await publishedFile.StartCopyFromUriAsync(file.Uri);
+            
+            await DeleteAsync(fileName);
         }
     }
 }

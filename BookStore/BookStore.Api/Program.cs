@@ -1,9 +1,6 @@
 using BookStore.WebApi.Middlewares;
 using BookStore.WebApi.Extensions;
 using BookStore.Api.Extensions;
-using MassTransit;
-using BookStore.Application.Consumers;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -19,26 +16,7 @@ builder.Services.AddLayers(configuration);
 
 builder.Services.AddOptions(configuration);
 
-builder.Services.AddMassTransit(busConfigurator =>
-{   
-    busConfigurator.AddConsumer<UserRegisteredConsumer>();
-    
-    busConfigurator.UsingRabbitMq((context, configuration) => 
-    {
-        var rabbitMqSettings = context.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
-
-        configuration.Host(new Uri(rabbitMqSettings.Host!), h =>
-        {
-           h.Username(rabbitMqSettings.UserName);
-           h.Password(rabbitMqSettings.Password);
-        });
-
-        configuration.ReceiveEndpoint("user-registered-event", c => 
-        {
-            c.ConfigureConsumer<UserRegisteredConsumer>(context);   
-        });
-    });
-});
+builder.Services.AddMassTrasitConfig();
 
 var app = builder.Build();
 

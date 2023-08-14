@@ -10,6 +10,9 @@ namespace BookStore.Infrastructure.Persistance.Configurations
         {
             builder.HasKey(ba => new { ba.AuthorGuid, ba.BookGuid});
 
+            builder.Property(ba => ba.Guid)
+                .ValueGeneratedOnAdd();
+
             builder.HasOne(b => b.Book)
                    .WithMany(p => p.BookAuthors)
                    .HasForeignKey(b => b.BookGuid);

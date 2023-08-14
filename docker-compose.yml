@@ -2,13 +2,14 @@ version: '3'
 
 services:
   
-  api:
-    image: book-store-api:latest
+  bookstore:
+    image: book-store-api
     ports:
       - "7223:80"
     depends_on:
       - postgres
-      - minio
+      - azurite-db
+      - rabbitmq
     environment:
       - ConnectionString:Host=postgres;User ID =admin;Password=admin;Port=5432;Database=books;Integrated Security=true;Pooling=true;
 
@@ -18,6 +19,7 @@ services:
       - "7198:80"
     depends_on:
       - postgres
+      - rabbitmq
 
   profiles:
     image: profiles:latest
@@ -25,7 +27,38 @@ services:
       - "7034:80"
     depends_on:
       - mssql
+      - rabbitmq
   
+  requests:
+    build:
+      context: .
+      dockerfile: Requests/Dockerfile
+    ports:
+      - "7024:80"
+    depends_on:
+      - mongo
+      - azurite-db
+      - rabbitmq
+
+  comments:
+    build:
+      context: .
+      dockerfile: Comments/Dockerfile
+    ports:
+      - "7045:80"
+    depends_on:
+      - mongo
+      - rabbitmq
+
+  email:
+    build:
+      context: .
+      dockerfile: EmailService/Dockerfile
+    ports:
+      - "7265:80"
+    depends_on:
+      - rabbitmq
+
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
@@ -60,19 +93,6 @@ services:
     ports:
       - "8082:80"
 
-  minio:
-    image: minio/minio
-    command: server --console-address ":9001" /data/
-    ports:
-      - '9000:9000'
-      - '9001:9001'
-    environment:
-      MINIO_ROOT_USER: asdasdj132sd1sasd12edasdqw212ed123ad1s12
-      MINIO_ROOT_PASSWORD: asdaasasdasddasdj132sd1sasd12edasdqw212ed123ad1s12asd1231nfasd
-    volumes:
-      - ./volumes/minio/.minio/data:/export
-      - ./volumes/minio/.minio/config:/root/.minio
-
   rabbitmq:
     container_name: "rabbitmq"
     image: rabbitmq:3.8-management-alpine
@@ -84,11 +104,6 @@ services:
       - "5672:5672"
       # Web interface
       - "15672:15672"
-
-  mongo:
-    image: mongo:latest
-    ports:
-      - 27017:27017
 
   azurite-db:
     image: mcr.microsoft.com/azure-storage/azurite

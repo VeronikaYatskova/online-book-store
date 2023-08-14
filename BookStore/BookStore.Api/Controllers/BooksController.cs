@@ -1,6 +1,5 @@
 ﻿using BookStore.Application.Abstractions.Contracts.Interfaces;
 using BookStore.Application.DTOs.Request;
-using BookStore.Application.Features.Book.Commands.AddBook;
 using BookStore.Application.Features.Book.Commands.AddBookToFavorite;
 using BookStore.Application.Features.Book.Commands.DeleteBook;
 using BookStore.Application.Features.Book.Commands.DeleteBookFromFavorite;
@@ -68,21 +67,6 @@ namespace BookStore.WebApi.Controllers
         public async Task<IActionResult> GetBookFromCloud()
         {
             return Ok(await _azureService.GetAllAsync());
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddBookAsync([FromForm] AddBookDto newBook)
-        {
-            var result = await _azureService.UploadAsync(newBook.File);
-
-            if (result.StatusCode != 200)
-            {
-                return BadRequest();
-            }
-
-            await _mediator.Send(new AddBookCommand(newBook, result.Blob.Name!));
-
-            return Created("", newBook);
         }
 
         [HttpDelete("{bookId}")]

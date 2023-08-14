@@ -10,13 +10,16 @@ namespace BookStore.Application.Features.Book.Queries.GetBookById
     {
         private readonly IUnitOfWork _unitOfWork; 
         private readonly IMapper _mapper;
+        private readonly IAzureService _azureService;
 
         public GetBookByIdQueryHandler(
-            IUnitOfWork unitOfWork, 
-            IMapper mapper)
+            IUnitOfWork unitOfWork,
+            IMapper mapper,
+            IAzureService azureService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _azureService = azureService;
         }
 
         public async Task<BookDto> Handle(GetBookByIdQuery request, CancellationToken cancellationToken)
@@ -30,7 +33,11 @@ namespace BookStore.Application.Features.Book.Queries.GetBookById
             _unitOfWork.BooksRepository.LoadRelatedDataWithCollection(book, book => book.BookAuthors);
         
             var bookDto = _mapper.Map<BookDto>(book);
-            // bookDto.FileURL = _awsS3Service.GetFilePreSignedUrl(book.BookFakeName!);
+            
+            var blob = await _azureService.GetBlobByAsync(b => b.Name == book.BookFakeName!) 
+                ?? throw new FileDoesNotExistException();
+            
+            bookDto.FileURL = blob.Uri!;
 
             return bookDto;
         }

@@ -10,13 +10,16 @@ namespace BookStore.Application.Features.Book.Queries.GetAllBooks
     {
         private readonly IUnitOfWork _unitOfWork; 
         private readonly IMapper _mapper;
-        // private readonly IAwsS3Service _awsS3Service;
+        private readonly IAzureService _azureService;
 
-        public GetAllBooksQueryHandler(IUnitOfWork unitOfWork, IMapper mapper, IAwsS3Service awsS3Service)
+        public GetAllBooksQueryHandler(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper, 
+            IAzureService azureService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            // _awsS3Service = awsS3Service;
+            _azureService = azureService;
         }
 
         public async Task<IEnumerable<BookDto>> Handle(GetAllBooksQuery request, CancellationToken cancellationToken)
@@ -33,10 +36,13 @@ namespace BookStore.Application.Features.Book.Queries.GetAllBooks
 
             var booksDto = _mapper.Map<IEnumerable<BookDto>>(books);
 
-            // foreach (var book in booksDto)
-            // {
-            //     book.FileURL = _awsS3Service.GetFilePreSignedUrl(book.BookFakeName);
-            // }
+            foreach (var book in booksDto)
+            {
+                var blob = await _azureService.GetBlobByAsync(b => b.Name == book.BookFakeName)
+                    ?? throw new FileDoesNotExistException();
+                    
+                book.FileURL = blob.Uri!;
+            }
 
             return booksDto;
         }

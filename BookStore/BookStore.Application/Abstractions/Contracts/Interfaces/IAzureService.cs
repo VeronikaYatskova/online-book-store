@@ -9,5 +9,7 @@ namespace BookStore.Application.Abstractions.Contracts.Interfaces
         Task<byte[]> DownloadAsync(string blobFileName);
         Task DeleteAsync(string blobFileName);
         Task<IEnumerable<Blob>> GetAllAsync();
+        Task CopyFileAsync(string fileName);
+        Task<Blob?> GetBlobByAsync(Func<Blob, bool> expression);
     }
 }

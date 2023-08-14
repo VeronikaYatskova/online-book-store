@@ -2,6 +2,7 @@ using BookStore.Application.DTOs.Request;
 using BookStore.Application.DTOs.Response;
 using AutoMapper;
 using BookStore.Domain.Entities;
+using RequestsBookStore.Communication.Models;
 
 namespace BookStore.Application.AutoMapper
 {
@@ -20,6 +21,12 @@ namespace BookStore.Application.AutoMapper
             CreateMap<AddBookDto, BookDto>();
 
             CreateMap<AddBookDto, BookEntity>()
+                .ForMember(b => b.CategoryGuid,
+                    m => m.MapFrom(ab => Guid.Parse(ab.CategoryGuid)))
+                .ForMember(b => b.PublisherGuid,
+                    m => m.MapFrom(ab => Guid.Parse(ab.PublisherGuid)));
+
+            CreateMap<BookPublishingMessage, BookEntity>()
                 .ForMember(b => b.CategoryGuid,
                     m => m.MapFrom(ab => Guid.Parse(ab.CategoryGuid)))
                 .ForMember(b => b.PublisherGuid,
