@@ -2,7 +2,7 @@ using AutoMapper;
 using BookStore.Application.DTOs.Request;
 using BookStoreCommentsServices.Communication.Models;
 
-namespace BookStore.Application.AutoMapper
+namespace BookStore.Application.Profiles
 {
     public class BookCommentProfile : Profile
     {

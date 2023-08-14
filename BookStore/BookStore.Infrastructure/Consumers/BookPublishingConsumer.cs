@@ -38,32 +38,38 @@ namespace BookStore.Infrastructure.Consumers
 
             await _unitOfWork.BooksRepository.CreateAsync(bookEntity);
 
-            if (bookInfo.AuthorsGuid.Count() > 1)
+            var book = await _unitOfWork.BooksRepository
+                .FindByConditionAsync(b => b.BookGuid == bookEntity.BookGuid);
+            
+            if (book is null)
             {
-                foreach (var authorId in bookInfo.AuthorsGuid)
+                if (bookInfo.AuthorsGuid.Count() > 1)
+                {
+                    foreach (var authorId in bookInfo.AuthorsGuid)
+                    {
+                        var bookAuthorEntity = new BookAuthorEntity
+                        {
+                            Guid = Guid.NewGuid(),
+                            BookGuid = bookEntity.BookGuid,
+                            AuthorGuid = Guid.Parse(authorId),
+                        };
+
+                        await _unitOfWork.AuthorsBooksRepository.CreateAsync(bookAuthorEntity);
+                    }
+                }
+                else
                 {
                     var bookAuthorEntity = new BookAuthorEntity
                     {
                         Guid = Guid.NewGuid(),
                         BookGuid = bookEntity.BookGuid,
-                        AuthorGuid = Guid.Parse(authorId),
+                        AuthorGuid = Guid.Parse(bookInfo.AuthorsGuid.First()),
                     };
 
                     await _unitOfWork.AuthorsBooksRepository.CreateAsync(bookAuthorEntity);
                 }
-            }
-            else
-            {
-                var bookAuthorEntity = new BookAuthorEntity
-                {
-                    Guid = Guid.NewGuid(),
-                    BookGuid = bookEntity.BookGuid,
-                    AuthorGuid = Guid.Parse(bookInfo.AuthorsGuid.First()),
-                };
+            }           
 
-                await _unitOfWork.AuthorsBooksRepository.CreateAsync(bookAuthorEntity);
-            }
-            
             await _unitOfWork.SaveChangesAsync();
         }
     }

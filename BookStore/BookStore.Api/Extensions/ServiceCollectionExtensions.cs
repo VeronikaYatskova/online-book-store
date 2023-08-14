@@ -3,7 +3,7 @@ using BookStore.Application.Extensions;
 using Serilog;
 using Serilog.Events;
 using BookStore.Application.Services.CloudServices.Amazon.Models;
-using BookStore.Application.Consumers;
+using BookStore.Infrastructure.Consumers;
 using BookStore.Application.Services.CloudServices.Azurite.Models;
 using MassTransit;
 using BookStore.Infrastructure.Consumers;
@@ -42,7 +42,7 @@ namespace BookStore.WebApi.Extensions
                 configuration.GetSection("BlobStorage"));
         }
 
-        public static void AddMassTrasitConfig(this IServiceCollection services)
+        public static void AddMassTransitConfig(this IServiceCollection services)
         {
             services.AddMassTransit(busConfigurator =>
             {   

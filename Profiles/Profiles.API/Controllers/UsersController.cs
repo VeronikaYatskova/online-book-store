@@ -8,6 +8,7 @@ using Profiles.Application.Features.Users.Queries.GetAllUsers;
 using Profiles.Application.Features.Users.Queries.GetAuthors;
 using Profiles.Application.Features.Users.Queries.GetNormalUsers;
 using Profiles.Application.Features.Users.Queries.GetPublishers;
+using Profiles.Application.Features.Users.Queries.GetUserById;
 
 namespace Profiles.API.Controllers
 {
@@ -54,6 +55,14 @@ namespace Profiles.API.Controllers
             var publishers = await _mediator.Send(new GetPublishersQuery());
 
             return Ok(publishers);
+        }
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUserById([FromRoute] string userId)
+        {
+            var user = await _mediator.Send(new GetUserByIdQuery(userId));
+
+            return Ok(user);
         }
 
         [HttpPost]

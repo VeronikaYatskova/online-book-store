@@ -2,11 +2,11 @@ using BookStore.Application.DTOs.Response;
 using AutoMapper;
 using BookStore.Domain.Entities;
 
-namespace BookStore.Application.AutoMapper
+namespace BookStore.Application.Profiles
 {
-    public class CategoryEntityMapperProfile : Profile
+    public class CategoryEntityProfile : Profile
     {
-        public CategoryEntityMapperProfile()
+        public CategoryEntityProfile()
         {
             CreateMap<CategoryEntity, CategoryResponse>();
         }

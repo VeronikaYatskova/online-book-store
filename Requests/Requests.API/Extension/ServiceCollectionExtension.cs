@@ -1,6 +1,6 @@
 using MassTransit;
 using Microsoft.Extensions.Options;
-using Requests.API.Consumers;
+using Requests.BLL.Consumers;
 using Requests.BLL.DTOs.General;
 using Requests.DAL.Models;
 using Serilog;

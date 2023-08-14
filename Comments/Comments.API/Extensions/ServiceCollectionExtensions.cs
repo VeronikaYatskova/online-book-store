@@ -23,6 +23,30 @@ namespace Comments.API.Extensions
             loggingBuilder.AddSerilog(logger);
         }
 
+        public static void AddMassTransitConfig(this IServiceCollection services, IConfiguration config)
+        {
+            services.AddMassTransit(busConfigurator =>
+            {   
+                busConfigurator.AddConsumer<CommentAddedConsumer>();
+                
+                busConfigurator.UsingRabbitMq((context, configuration) => 
+                {
+                    var rabbitMqSettings = context.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
+
+                    configuration.Host(new Uri(rabbitMqSettings.Host!), h =>
+                    {
+                        h.Username(rabbitMqSettings.UserName);
+                        h.Password(rabbitMqSettings.Password);
+                    });
+
+                    configuration.ReceiveEndpoint("comment-added-event", c => 
+                    {
+                        c.ConfigureConsumer<CommentAddedConsumer>(context);   
+                    });
+                });
+            });
+        }
+
         private static void AddOptions(this IServiceCollection services, IConfiguration config)
         {
             services.Configure<MongoDbSettings>(config.GetSection("MongoDbSettings"));

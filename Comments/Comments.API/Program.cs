@@ -25,26 +25,7 @@ builder.Services.AddApiLayer(configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddMassTransit(busConfigurator =>
-{   
-    busConfigurator.AddConsumer<CommentAddedConsumer>();
-    
-    busConfigurator.UsingRabbitMq((context, configuration) => 
-    {
-        var rabbitMqSettings = context.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
-
-        configuration.Host(new Uri(rabbitMqSettings.Host!), h =>
-        {
-           h.Username(rabbitMqSettings.UserName);
-           h.Password(rabbitMqSettings.Password);
-        });
-
-        configuration.ReceiveEndpoint("comment-added-event", c => 
-        {
-            c.ConfigureConsumer<CommentAddedConsumer>(context);   
-        });
-    });
-});
+builder.Services.AddMassTransitConfig(configuration);
 
 var app = builder.Build();
 

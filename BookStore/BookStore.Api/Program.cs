@@ -16,7 +16,7 @@ builder.Services.AddLayers(configuration);
 
 builder.Services.AddOptions(configuration);
 
-builder.Services.AddMassTrasitConfig();
+builder.Services.AddMassTransitConfig();
 
 var app = builder.Build();
 

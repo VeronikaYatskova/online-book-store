@@ -5,7 +5,7 @@ using BookStore.Domain.Entities;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
-namespace BookStore.Application.Consumers
+namespace BookStore.Infrastructure.Consumers
 {
     public class UserRegisteredConsumer : IConsumer<UserRegisteredMessage>
     {

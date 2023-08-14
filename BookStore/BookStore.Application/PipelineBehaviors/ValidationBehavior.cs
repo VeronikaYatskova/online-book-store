@@ -38,7 +38,7 @@ namespace BookStore.Application.PipelineBehaviors
 
             if (failures.Any())
             {
-                throw new Exceptions.ValidationException(JsonSerializer.Serialize(failures));
+                throw new ValidationException(JsonSerializer.Serialize(failures));
             }
 
             return await next();

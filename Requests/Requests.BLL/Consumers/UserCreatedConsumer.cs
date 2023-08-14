@@ -4,7 +4,7 @@ using MassTransit;
 using Requests.BLL.DTOs.Requests;
 using Requests.BLL.Services.Interfaces;
 
-namespace Requests.API.Consumers
+namespace Requests.BLL.Consumers
 {
     public class UserCreatedConsumer : IConsumer<UserRegisteredMessage>
     {

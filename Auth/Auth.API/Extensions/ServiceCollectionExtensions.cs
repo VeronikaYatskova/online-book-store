@@ -8,6 +8,9 @@ using Auth.Application.Extensions;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Auth.Domain.Models;
+using MassTransit;
+using Microsoft.Extensions.Options;
+using Auth.Domain.Entities;
 
 namespace Auth.API.Extensions
 {
@@ -64,6 +67,23 @@ namespace Auth.API.Extensions
             services.Configure<AppSettings>(
                 configuration.GetSection("AppSettings")
             );
+        }
+
+        public static void AddMassTransitConfig(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddMassTransit(x =>
+            {
+                x.UsingRabbitMq((context, config) =>
+                {
+                        var options = context.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
+
+                        config.Host(options.Host, h =>
+                        {
+                            h.Username(options.UserName);
+                            h.Password(options.Password);
+                        });
+                });
+            });
         }
 
         public static void AddLayers(this IServiceCollection services, IConfiguration configuration)

@@ -21,6 +21,7 @@ namespace Profiles.Application.Features.Users.Queries.GetAllUsers
         {
             var users = await _userRepository.GetAllUsersAsync() ??
                 throw new NotFoundException(ExceptionMessages.UsersNotFoundMessage);
+                
             var usersResponse = _mapper.Map<IEnumerable<GetUsersResponse>>(users);
 
             return usersResponse;

@@ -4,11 +4,11 @@ using AutoMapper;
 using BookStore.Domain.Entities;
 using RequestsBookStore.Communication.Models;
 
-namespace BookStore.Application.AutoMapper
+namespace BookStore.Application.Profiles
 {
-    public class BookEntityMapperProfile : Profile
+    public class BookEntityProfile : Profile
     {
-        public BookEntityMapperProfile()
+        public BookEntityProfile()
         {
             CreateMap<BookEntity, BookDto>()
                 .ForMember(b => b.Category,

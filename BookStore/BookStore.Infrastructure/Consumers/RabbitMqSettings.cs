@@ -1,4 +1,4 @@
-namespace BookStore.Application.Consumers
+namespace BookStore.Infrastructure.Consumers
 {
     public class RabbitMqSettings
     {

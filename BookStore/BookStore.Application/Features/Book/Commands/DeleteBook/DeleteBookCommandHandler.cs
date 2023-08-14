@@ -1,5 +1,5 @@
 using BookStore.Application.Abstractions.Contracts.Interfaces;
-using BookStore.Application.Exceptions;
+using BookStore.Domain.Exceptions;
 using AutoMapper;
 using MediatR;
 
