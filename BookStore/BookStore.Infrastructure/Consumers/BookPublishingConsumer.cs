@@ -1,3 +1,5 @@
+using System.Net;
+using AuthProfilesServices.Communication.Additional;
 using AutoMapper;
 using BookStore.Application.Abstractions.Contracts.Interfaces;
 using BookStore.Domain.Entities;
@@ -71,6 +73,8 @@ namespace BookStore.Infrastructure.Consumers
             }           
 
             await _unitOfWork.SaveChangesAsync();
+
+            await context.RespondAsync(new BookPublishedEvent { StatusCode = 200 });
         }
     }
 }

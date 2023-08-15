@@ -2,10 +2,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Auth.Domain\Auth.Domain.csproj" />
+    <ProjectReference Include="..\..\Packages\Nugets\Shared\AuthProfilesServices.Communication.Models\AuthProfilesServices.Communication.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AuthProfilesServices.Communication.Models" Version="1.0.0" />
+    <PackageReference Include="AuthProfilesServices.Communication.Additional" Version="1.0.0" />
+    <PackageReference Include="AuthProfilesServices.Communication.Models" Version="1.0.2" />
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="FluentValidation" Version="11.5.2" />

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Requests.BLL.Consumers;
 using Requests.BLL.DTOs.General;
 using Requests.DAL.Models;
+using RequestsBookStore.Communication.Models;
 using Serilog;
 using Serilog.Events;
 
@@ -48,6 +49,8 @@ namespace Requests.API.Extension
                         c.ConfigureConsumer<UserCreatedConsumer>(context);
                     });
                 });
+
+                x.AddRequestClient<BookPublishingMessage>();
             });
         }
 

@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AuthProfilesServices.Communication.Additional" Version="1.0.0" />
     <PackageReference Include="AuthProfilesServices.Communication.Models" Version="1.0.0" />
     <PackageReference Include="MassTransit" Version="8.0.16" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.16" />

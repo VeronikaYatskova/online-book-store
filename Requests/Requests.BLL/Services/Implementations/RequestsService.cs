@@ -1,3 +1,5 @@
+using System.Net;
+using AuthProfilesServices.Communication.Additional;
 using AutoMapper;
 using MassTransit;
 using Requests.BLL.DTOs.Requests;
@@ -17,19 +19,22 @@ namespace Requests.BLL.Services.Implementations
         private readonly IBlobStorageService _blobStorageService;
         private readonly IMapper _mapper;
         private readonly IPublishEndpoint _publishEndpoint;
+        private readonly IRequestClient<BookPublishingMessage> _requestClient;
 
         public RequestsService(
             IRequestsRepository requestsRepository,
             IBlobStorageService blobStorageService,
             IMapper mapper,
             IUserRepository userRepository,
-            IPublishEndpoint publishEndpoint)
+            IPublishEndpoint publishEndpoint,
+            IRequestClient<BookPublishingMessage> requestClient)
         {
             _requestsRepository = requestsRepository;
             _mapper = mapper;
             _userRepository = userRepository;
             _publishEndpoint = publishEndpoint;
             _blobStorageService = blobStorageService;
+            _requestClient = requestClient;
         }
 
         public async Task<IEnumerable<GetRequestsDto>> GetRequestsAsync()
@@ -113,8 +118,13 @@ namespace Requests.BLL.Services.Implementations
             
             var bookPublishingMessage = _mapper.Map<BookPublishingMessage>(addBookDto);
             bookPublishingMessage.BookFakeName = request.BookFakeName;
+            
+            var response = await _requestClient.GetResponse<BookPublishedEvent>(bookPublishingMessage);
 
-            await _publishEndpoint.Publish(bookPublishingMessage);
+            if (response.Message.StatusCode == 200)
+            {
+                await _requestsRepository.DeleteAsync(requestId);
+            }
         }
     }
 }
