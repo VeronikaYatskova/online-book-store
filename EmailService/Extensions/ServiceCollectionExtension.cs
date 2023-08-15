@@ -26,6 +26,7 @@ namespace EmailService.Extensions
             {
                 x.AddConsumer<RequestCreatedConsumer>();
                 x.AddConsumer<RequestUpdateConsumer>();
+                x.AddConsumer<EmailConfirmationConsumer>();
 
                 x.UsingRabbitMq((context, config) =>
                 {
@@ -45,6 +46,11 @@ namespace EmailService.Extensions
                     config.ReceiveEndpoint("request-updated-event", c =>
                     {
                         c.ConfigureConsumer<RequestUpdateConsumer>(context);
+                    });
+
+                    config.ReceiveEndpoint("email-confirmation-event", c =>
+                    {
+                       c.ConfigureConsumer<EmailConfirmationConsumer>(context); 
                     });
                 });
             });

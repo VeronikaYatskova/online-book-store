@@ -3,12 +3,14 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Auth.Application.Features.User.Queries.GetUsers;
 using Auth.Application.Features.User.Commands.LoginUser;
-using Auth.Application.Features.User.Queries.GetRedirectUrl;
-using Auth.Application.Features.User.Commands.LoginUserViaGoogle;
 using Auth.Domain.Models;
 using Auth.Application.Features.User.Commands.RegisterUser;
 using Auth.Application.Features.User.Commands.GetRefreshToken;
 using Auth.Application.Features.User.Commands.DeleteUser;
+using Auth.Application.Abstractions.Interfaces.Services;
+using Auth.Application.Features.User.Commands.ConfirmEmail;
+using MassTransit;
+using AuthEmailService.Communication.Models;
 
 namespace Auth.API.Controllers
 {
@@ -17,10 +19,17 @@ namespace Auth.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ITokenService _tokenService;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public AuthController(IMediator _mediator)
+        public AuthController(
+            IMediator _mediator, 
+            ITokenService tokenService, 
+            IPublishEndpoint publishEndpoint)
         {
             this._mediator = _mediator;
+            _tokenService = tokenService;
+            _publishEndpoint = publishEndpoint;
         }
 
         [HttpGet("users")]
@@ -42,27 +51,42 @@ namespace Auth.API.Controllers
         [HttpPost("users/sign-up")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserRequest request)
         {
-            var token = await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.UserRole));
-            
-            return Created("User was created.", token);
+            await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.UserRole));
+
+            await ConfirmEmail(request.Email);
+
+            return Created("User was created.", request);
         }
 
         [HttpPost("publishers/sign-up")]
         public async Task<IActionResult> RegisterPublisher([FromBody] RegisterUserRequest request)
         {
-            var token = await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.PublisherRole));
+            await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.PublisherRole));
             
-            return Created("User was created.", token);
+            await ConfirmEmail(request.Email);
+
+            return Created("User was created.", request);
         }
 
         [HttpPost("authors/sign-up")]
         public async Task<IActionResult> RegisterAuthor([FromBody] RegisterUserRequest request)
         {
-            var token = await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.AuthorRole));
-            
-            return Created("User was created.", token);
+            await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.AuthorRole));
+
+            await ConfirmEmail(request.Email);
+
+            return Created("User was created.", request);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string verificationToken, string email)
+        {
+            var result = await _mediator.Send(new ConfirmEmailCommand(verificationToken, email));
+
+            return Ok(result);
+        }
+
+        [HttpDelete]
         public async Task<IActionResult> DeleteUser(DeleteUserRequest request)
         {
             await _mediator.Send(new DeleteUserCommand(request.Email));
@@ -78,21 +102,14 @@ namespace Auth.API.Controllers
             return Ok(token);
         }
 
-        [HttpGet("google")]
-        public async Task<IActionResult> GetRedirectUrlAsync()
+        private async Task ConfirmEmail(string email)
         {
-            var redirectUrl = await _mediator.Send(new GetRedirectUrlQuery());
-            Response.Redirect(redirectUrl);
+            var verificationToken = _tokenService.CreateVerificationToken();
+            var confirmationLink = Url.Action(nameof(ConfirmEmail), "Auth", 
+                new { verificationToken, email = email }, Request.Scheme);
 
-            return Ok(redirectUrl);
-        }
-
-        [HttpPost("google/sign-in")]
-        public async Task<IActionResult> LoginWithGoogle([FromQuery] string code, [FromBody] string roleId)
-        {
-            var token = await _mediator.Send(new LoginUserViaGoogleCommand(code, roleId));
-
-            return Ok(token);
+            await _publishEndpoint.Publish(new EmailConfirmationMessage { ConfirmationLink = confirmationLink!,
+                To = email });
         }
     }
 }

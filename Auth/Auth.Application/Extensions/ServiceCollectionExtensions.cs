@@ -16,13 +16,11 @@ namespace Auth.Application.Extensions
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddServices();
-            services.AddHttpClient();
         }
 
         private static void AddServices(this IServiceCollection services)
         {
             services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IHttpClientFactoryService, HttpClientFactoryService>();
             services.AddScoped<IPasswordService, PasswordService>();
         }
     }

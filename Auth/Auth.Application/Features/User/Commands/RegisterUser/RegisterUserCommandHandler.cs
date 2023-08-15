@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Application.Abstractions.Interfaces.Services;
 using Auth.Domain.Exceptions;
@@ -11,7 +12,7 @@ using UserEntity = Auth.Domain.Models.User;
 
 namespace Auth.Application.Features.User.Commands.RegisterUser
 {
-    public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, string>
+    public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand>
     {
         private readonly IRepository<UserEntity> _userRepository;
         private readonly IRepository<UserRole> _userRoleRepository;
@@ -39,7 +40,7 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
             _publishEndpoint = publishEndpoint;
         }
 
-        public async Task<string> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+        public async Task Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
             await _validator.ValidateAndThrowAsync(request);
             
@@ -62,16 +63,7 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
             userEntity.PasswordSalt = passwordSalt;
 
             await _userRepository.CreateAsync(userEntity);
-            await _userRepository.SaveChangesAsync();
-
-            var token = _tokenService.CreateToken(userEntity);
-            await _tokenService.SetRefreshTokenAsync(userEntity);
-
-            var userMessage = _mapper.Map<UserRegisteredMessage>(userEntity);
-            
-            await _publishEndpoint.Publish(userMessage);
-
-            return token;
+            await _userRepository.SaveChangesAsync();            
         }
     }
 }

@@ -101,6 +101,11 @@ namespace Auth.Application.Services
             AppendRefreshTokenToCookies(refreshToken);
         }
 
+        public string CreateVerificationToken()
+        {
+            return Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
+        }
+
         private async Task<string?> GetInfoAsync()
         {
             var guid = await GetUserGuidAsync();
