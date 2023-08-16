@@ -4,10 +4,11 @@ using AutoMapper;
 using MediatR;
 using OnlineBookStore.Exceptions.Exceptions;
 using BookStore.Domain.Exceptions;
+using BookStore.Application.Features.Paging;
 
 namespace BookStore.Application.Features.Book.Queries.GetAllBooks
 {
-    public class GetAllBooksQueryHandler : IRequestHandler<GetAllBooksQuery, IEnumerable<BookDto>>
+    public class GetAllBooksQueryHandler : IRequestHandler<GetAllBooksQuery, PagedList<BookDto>>
     {
         private readonly IUnitOfWork _unitOfWork; 
         private readonly IMapper _mapper;
@@ -23,10 +24,12 @@ namespace BookStore.Application.Features.Book.Queries.GetAllBooks
             _azureService = azureService;
         }
 
-        public async Task<IEnumerable<BookDto>> Handle(GetAllBooksQuery request, CancellationToken cancellationToken)
+        public async Task<PagedList<BookDto>> Handle(GetAllBooksQuery request, CancellationToken cancellationToken)
         {
             var books = await _unitOfWork.BooksRepository.FindAllAsync() ??
                 throw new NotFoundException(ExceptionMessages.BookListIsEmptyMessage);
+            
+            var bookPagedParameters = request.BookPagesParametersDto;
 
             foreach (var book in books)
             {
@@ -47,7 +50,8 @@ namespace BookStore.Application.Features.Book.Queries.GetAllBooks
                 }
             }
 
-            return booksDto;
+            return PagedList<BookDto>
+                .ToPagedList(booksDto, bookPagedParameters.PageNumber, bookPagedParameters.PageSize);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BookStore.Application.Abstractions.Contracts.Interfaces;
+using BookStore.Application.DTOs.General;
 using BookStore.Application.DTOs.Request;
 using BookStore.Application.Features.Book.Commands.AddBookToFavorite;
 using BookStore.Application.Features.Book.Commands.DeleteBook;
@@ -33,9 +34,9 @@ namespace BookStore.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllBooks()
+        public async Task<IActionResult> GetAllBooks([FromQuery] BookPagesParametersDto bookPagesParametersDto)
         {
-            var books = await _mediator.Send(new GetAllBooksQuery());
+            var books = await _mediator.Send(new GetAllBooksQuery(bookPagesParametersDto));
 
             return Ok(books);
         }
