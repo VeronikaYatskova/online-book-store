@@ -49,6 +49,7 @@ services:
     depends_on:
       - mongo
       - rabbitmq
+      - redis
 
   email:
     build:
@@ -112,3 +113,13 @@ services:
       - 10000:10000
       - 10001:10001
       - 10002:10002
+
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - '6379:6379'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes: 
+      - ./volumes/redis/cache:/data

@@ -1,6 +1,7 @@
 using Comments.BLL.Consumers;
 using Comments.BLL.DTOs.General;
 using Comments.DAL.Entities;
+using Comments.DAL.Repositories.Implementations;
 using MassTransit;
 using Microsoft.Extensions.Options;
 using OnlineBookStore.Queues;
@@ -55,6 +56,7 @@ namespace Comments.API.Extensions
         {
             services.Configure<MongoDbSettings>(config.GetSection("MongoDbSettings"));
             services.Configure<RabbitMqSettings>(config.GetSection("RabbitMqConfig"));
+            services.Configure<CacheSettings>(config.GetSection("RedisConfig"));
         }
     }
 }
