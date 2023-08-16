@@ -1,8 +1,9 @@
 using Auth.Application.Abstractions.Interfaces.Repositories;
-using Auth.Domain.Exceptions;
-using AuthProfilesServices.Communication.Models;
+using OnlineBookStore.Exceptions.Exceptions;
 using MassTransit;
 using MediatR;
+using Auth.Domain.Exceptions;
+using OnlineBookStore.Messages.Models.Messages;
 
 using UserEntity = Auth.Domain.Models.User;
 

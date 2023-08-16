@@ -1,5 +1,3 @@
-using System;
-
 namespace Profiles.Domain.Entities
 {
     public class User

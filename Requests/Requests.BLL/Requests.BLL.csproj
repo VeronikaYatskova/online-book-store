@@ -7,16 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AuthProfilesServices.Communication.Additional" Version="1.0.0" />
-    <PackageReference Include="AuthProfilesServices.Communication.Models" Version="1.0.0" />
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Cosmonaut" Version="2.11.3" />
     <PackageReference Include="MassTransit" Version="8.0.16" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="RequestsBookStore.Communication.Models" Version="1.0.0" />
-    <PackageReference Include="RequestsEmailServices.Communication.Models" Version="1.0.0" />
+    <PackageReference Include="OnlineBookStore.Messages.Models" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>

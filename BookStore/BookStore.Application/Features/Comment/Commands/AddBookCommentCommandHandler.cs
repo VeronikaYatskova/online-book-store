@@ -1,7 +1,7 @@
 using AutoMapper;
-using BookStoreCommentsServices.Communication.Models;
 using MassTransit;
 using MediatR;
+using OnlineBookStore.Messages.Models.Messages;
 
 namespace BookStore.Application.Features.Comment.Commands
 {

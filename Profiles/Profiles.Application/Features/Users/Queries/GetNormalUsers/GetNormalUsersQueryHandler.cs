@@ -3,7 +3,7 @@ using MediatR;
 using Profiles.Application.DTOs.Response;
 using Profiles.Application.Features.Users.Queries.GetNormalUsers;
 using Profiles.Application.Interfaces.Repositories;
-using Profiles.Domain.Exceptions;
+using OnlineBookStore.Exceptions.Exceptions;
 
 namespace Profiles.Application.Features.Users.Queries.GetAuthors
 {

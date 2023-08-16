@@ -1,8 +1,9 @@
 using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Application.DTOs.Response;
+using Auth.Domain.Exceptions;
 using AutoMapper;
 using MediatR;
-using Auth.Domain.Exceptions;
+using OnlineBookStore.Exceptions.Exceptions;
 
 using UserEntity = Auth.Domain.Models.User;
 

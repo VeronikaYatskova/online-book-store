@@ -1,11 +1,9 @@
-using System.Net;
-using AuthProfilesServices.Communication.Additional;
 using AutoMapper;
 using BookStore.Application.Abstractions.Contracts.Interfaces;
 using BookStore.Domain.Entities;
 using MassTransit;
 using Microsoft.Extensions.Logging;
-using RequestsBookStore.Communication.Models;
+using OnlineBookStore.Messages.Models.Messages;
 
 namespace BookStore.Infrastructure.Consumers
 {
@@ -74,7 +72,7 @@ namespace BookStore.Infrastructure.Consumers
 
             await _unitOfWork.SaveChangesAsync();
 
-            await context.RespondAsync(new BookPublishedEvent { StatusCode = 200 });
+            await context.RespondAsync(new BookPublishedMessage { StatusCode = 200 });
         }
     }
 }

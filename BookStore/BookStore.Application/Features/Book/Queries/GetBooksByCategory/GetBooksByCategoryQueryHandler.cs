@@ -1,8 +1,9 @@
 using AutoMapper;
 using BookStore.Application.Abstractions.Contracts.Interfaces;
 using BookStore.Application.DTOs.Response;
-using BookStore.Domain.Exceptions;
 using MediatR;
+using OnlineBookStore.Exceptions.Exceptions;
+using BookStore.Domain.Exceptions;
 
 namespace BookStore.Application.Features.Book.Queries.GetBooksByCategory
 {

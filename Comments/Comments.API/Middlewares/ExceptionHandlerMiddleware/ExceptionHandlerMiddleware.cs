@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using Comments.BLL.Exceptions;
+using OnlineBookStore.Exceptions.Exceptions;
 
 namespace Comments.API.Middlewares.ExceptionHandlerMiddleware
 {

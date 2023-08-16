@@ -1,6 +1,7 @@
 using AutoMapper;
 using MassTransit;
 using Microsoft.Extensions.Logging;
+using OnlineBookStore.Messages.Models.Messages;
 using Profiles.Application.Interfaces.Repositories;
 
 namespace Profiles.Infrastructure.Consumers

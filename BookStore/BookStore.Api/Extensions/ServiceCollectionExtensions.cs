@@ -8,6 +8,7 @@ using BookStore.Application.Services.CloudServices.Azurite.Models;
 using MassTransit;
 using BookStore.Infrastructure.Consumers;
 using Microsoft.Extensions.Options;
+using OnlineBookStore.Queues;
 
 namespace BookStore.WebApi.Extensions
 {
@@ -55,16 +56,16 @@ namespace BookStore.WebApi.Extensions
 
                     configuration.Host(new Uri(rabbitMqSettings.Host!), h =>
                     {
-                    h.Username(rabbitMqSettings.UserName);
-                    h.Password(rabbitMqSettings.Password);
+                        h.Username(rabbitMqSettings.UserName);
+                        h.Password(rabbitMqSettings.Password);
                     });
 
-                    configuration.ReceiveEndpoint("user-registered-event", c => 
+                    configuration.ReceiveEndpoint(Queues.UserRegisteredQueue, c => 
                     {
                         c.ConfigureConsumer<UserRegisteredConsumer>(context);   
                     });
 
-                    configuration.ReceiveEndpoint("book-publishing-event", c =>
+                    configuration.ReceiveEndpoint(Queues.BookPublishedQueue, c =>
                     {
                         c.ConfigureConsumer<BookPublishingConsumer>(context);
                     });

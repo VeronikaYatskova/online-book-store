@@ -1,6 +1,6 @@
 using AutoMapper;
+using OnlineBookStore.Messages.Models.Messages;
 using Requests.BLL.DTOs.Requests;
-using RequestsBookStore.Communication.Models;
 
 namespace Requests.BLL.Profiles
 {

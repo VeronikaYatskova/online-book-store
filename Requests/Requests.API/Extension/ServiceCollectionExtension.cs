@@ -1,9 +1,10 @@
 using MassTransit;
 using Microsoft.Extensions.Options;
+using OnlineBookStore.Messages.Models.Messages;
+using OnlineBookStore.Queues;
 using Requests.BLL.Consumers;
 using Requests.BLL.DTOs.General;
 using Requests.DAL.Models;
-using RequestsBookStore.Communication.Models;
 using Serilog;
 using Serilog.Events;
 
@@ -44,7 +45,7 @@ namespace Requests.API.Extension
                        h.Password(options.Password); 
                     });
 
-                    config.ReceiveEndpoint("user-registered-event", c =>
+                    config.ReceiveEndpoint(Queues.UserRegisteredQueue, c =>
                     {
                         c.ConfigureConsumer<UserCreatedConsumer>(context);
                     });

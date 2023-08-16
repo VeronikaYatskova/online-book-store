@@ -1,6 +1,6 @@
-using AuthProfilesServices.Communication.Models;
 using AutoMapper;
 using MassTransit;
+using OnlineBookStore.Messages.Models.Messages;
 using Requests.BLL.DTOs.Requests;
 using Requests.BLL.Services.Interfaces;
 

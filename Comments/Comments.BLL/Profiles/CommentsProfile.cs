@@ -1,8 +1,8 @@
 using AutoMapper;
-using BookStoreCommentsServices.Communication.Models;
 using Comments.BLL.DTOs.Request;
 using Comments.BLL.DTOs.Response;
 using Comments.DAL.Entities;
+using OnlineBookStore.Messages.Models.Messages;
 
 namespace Comments.BLL.Profiles
 {

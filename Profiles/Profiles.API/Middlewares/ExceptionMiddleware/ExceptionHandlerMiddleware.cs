@@ -1,6 +1,6 @@
 using System.Net;
 using System.Text.Json;
-using Profiles.Domain.Exceptions;
+using OnlineBookStore.Exceptions.Exceptions;
 
 namespace Profiles.API.Middlewares.ExceptionMiddleware
 {

@@ -3,6 +3,7 @@ using EmailService.Models;
 using EmailService.Services;
 using MassTransit;
 using Microsoft.Extensions.Options;
+using OnlineBookStore.Queues;
 using Serilog;
 
 namespace EmailService.Extensions
@@ -38,17 +39,17 @@ namespace EmailService.Extensions
                        h.Password(options.Password); 
                     });
 
-                    config.ReceiveEndpoint("request-created-event", c => 
+                    config.ReceiveEndpoint(Queues.RequestCreatedQueue, c => 
                     {
                         c.ConfigureConsumer<RequestCreatedConsumer>(context);   
                     });
 
-                    config.ReceiveEndpoint("request-updated-event", c =>
+                    config.ReceiveEndpoint(Queues.RequestUpdatedQueue, c =>
                     {
                         c.ConfigureConsumer<RequestUpdateConsumer>(context);
                     });
 
-                    config.ReceiveEndpoint("email-confirmation-event", c =>
+                    config.ReceiveEndpoint(Queues.EmailConfirmationQueue, c =>
                     {
                        c.ConfigureConsumer<EmailConfirmationConsumer>(context); 
                     });

@@ -1,9 +1,9 @@
 using AutoMapper;
-using BookStoreCommentsServices.Communication.Models;
 using Comments.DAL.Entities;
 using Comments.DAL.Repositories.Interfaces;
 using MassTransit;
 using Microsoft.Extensions.Logging;
+using OnlineBookStore.Messages.Models.Messages;
 
 namespace Comments.BLL.Consumers
 {

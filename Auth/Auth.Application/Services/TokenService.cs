@@ -1,6 +1,6 @@
 using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Application.Abstractions.Interfaces.Services;
-using Auth.Domain.Exceptions;
+using OnlineBookStore.Exceptions.Exceptions;
 using Auth.Domain.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
@@ -11,6 +11,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Auth.Domain.Exceptions;
 
 namespace Auth.Application.Services
 {

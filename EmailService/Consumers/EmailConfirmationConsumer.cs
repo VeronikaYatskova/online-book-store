@@ -1,7 +1,7 @@
-using AuthEmailService.Communication.Models;
 using EmailService.Models;
 using EmailService.Services;
 using MassTransit;
+using OnlineBookStore.Messages.Models.Messages;
 using Serilog;
 
 namespace EmailService.Consumers

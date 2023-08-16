@@ -1,8 +1,9 @@
 using BookStore.Application.Abstractions.Contracts.Interfaces;
 using BookStore.Application.DTOs.Response;
-using BookStore.Domain.Exceptions;
 using AutoMapper;
 using MediatR;
+using OnlineBookStore.Exceptions.Exceptions;
+using BookStore.Domain.Exceptions;
 
 namespace BookStore.Application.Features.Book.Queries.GetFavoriteBooks
 {

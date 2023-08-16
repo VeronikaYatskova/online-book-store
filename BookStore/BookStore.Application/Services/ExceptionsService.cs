@@ -1,6 +1,6 @@
 using System.Net;
 using BookStore.Application.Abstractions.Contracts.Interfaces;
-using BookStore.Domain.Exceptions;
+using OnlineBookStore.Exceptions.Exceptions;
 
 namespace BookStore.Application.Services
 {

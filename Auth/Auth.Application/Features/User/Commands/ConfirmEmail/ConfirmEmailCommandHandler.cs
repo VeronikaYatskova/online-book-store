@@ -1,12 +1,12 @@
 using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Application.Abstractions.Interfaces.Services;
-using Auth.Domain.Exceptions;
-using AuthProfilesServices.Communication.Models;
+using OnlineBookStore.Exceptions.Exceptions;
 using AutoMapper;
 using MassTransit;
 using MediatR;
 
 using UserEntity = Auth.Domain.Models.User;
+using OnlineBookStore.Messages.Models.Messages;
 
 namespace Auth.Application.Features.User.Commands.ConfirmEmail
 {

@@ -5,6 +5,7 @@ using Comments.BLL.Exceptions;
 using Comments.BLL.Services.Interfaces;
 using Comments.DAL.Entities;
 using Comments.DAL.Repositories.Interfaces;
+using OnlineBookStore.Exceptions.Exceptions;
 
 namespace Comments.BLL.Services.Implementation
 {

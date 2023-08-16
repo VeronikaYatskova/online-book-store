@@ -6,8 +6,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AuthProfilesServices.Communication.Additional" Version="1.0.0" />
-    <PackageReference Include="AuthProfilesServices.Communication.Models" Version="1.0.2" />
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="FluentValidation" Version="11.5.2" />
@@ -19,6 +17,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.30.1" />
+    <PackageReference Include="OnlineBookStore.Exceptions" Version="1.0.0" />
+    <PackageReference Include="OnlineBookStore.Messages.Models" Version="1.0.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.30.1" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.2" />
   </ItemGroup>

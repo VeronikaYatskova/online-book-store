@@ -1,9 +1,9 @@
 using AutoMapper;
 using MassTransit;
 using Microsoft.Extensions.Logging;
+using OnlineBookStore.Messages.Models.Messages;
 using Profiles.Application.Interfaces.Repositories;
 using Profiles.Domain.Entities;
-using AuthProfilesServices.Communication.Models;
 
 namespace Profiles.Infrastructure.Consumers
 {

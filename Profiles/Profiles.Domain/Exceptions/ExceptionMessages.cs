@@ -1,4 +1,4 @@
-namespace Profiles.Domain.Exceptions
+namespace OnlineBookStore.Exceptions.Exceptions
 {
     public class ExceptionMessages
     {

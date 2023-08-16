@@ -10,7 +10,7 @@ using Auth.Application.Features.User.Commands.DeleteUser;
 using Auth.Application.Abstractions.Interfaces.Services;
 using Auth.Application.Features.User.Commands.ConfirmEmail;
 using MassTransit;
-using AuthEmailService.Communication.Models;
+using OnlineBookStore.Messages.Models.Messages;
 
 namespace Auth.API.Controllers
 {
@@ -23,11 +23,11 @@ namespace Auth.API.Controllers
         private readonly IPublishEndpoint _publishEndpoint;
 
         public AuthController(
-            IMediator _mediator, 
+            IMediator mediator, 
             ITokenService tokenService, 
             IPublishEndpoint publishEndpoint)
         {
-            this._mediator = _mediator;
+            _mediator = mediator;
             _tokenService = tokenService;
             _publishEndpoint = publishEndpoint;
         }

@@ -3,7 +3,7 @@ using FluentValidation;
 using MediatR;
 using Profiles.Application.Interfaces.Repositories;
 using Profiles.Domain.Entities;
-using Profiles.Domain.Exceptions;
+using OnlineBookStore.Exceptions.Exceptions;
 
 namespace Profiles.Application.Features.Users.Commands.EditUser
 {

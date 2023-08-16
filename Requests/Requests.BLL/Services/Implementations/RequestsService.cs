@@ -1,14 +1,11 @@
-using System.Net;
-using AuthProfilesServices.Communication.Additional;
 using AutoMapper;
 using MassTransit;
+using OnlineBookStore.Messages.Models.Messages;
 using Requests.BLL.DTOs.Requests;
 using Requests.BLL.DTOs.Responses;
 using Requests.BLL.Services.Interfaces;
 using Requests.DAL.Models;
 using Requests.DAL.Repositories.Interfaces;
-using RequestsBookStore.Communication.Models;
-using RequestsEmailServices.Communication.Models;
 
 namespace Requests.BLL.Services.Implementations
 {
@@ -119,7 +116,7 @@ namespace Requests.BLL.Services.Implementations
             var bookPublishingMessage = _mapper.Map<BookPublishingMessage>(addBookDto);
             bookPublishingMessage.BookFakeName = request.BookFakeName;
             
-            var response = await _requestClient.GetResponse<BookPublishedEvent>(bookPublishingMessage);
+            var response = await _requestClient.GetResponse<BookPublishedMessage>(bookPublishingMessage);
 
             if (response.Message.StatusCode == 200)
             {

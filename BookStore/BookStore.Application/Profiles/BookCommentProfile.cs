@@ -1,6 +1,6 @@
 using AutoMapper;
 using BookStore.Application.DTOs.Request;
-using BookStoreCommentsServices.Communication.Models;
+using OnlineBookStore.Messages.Models.Messages;
 
 namespace BookStore.Application.Profiles
 {

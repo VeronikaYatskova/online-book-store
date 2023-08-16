@@ -1,14 +1,14 @@
 using System.Security.Cryptography;
 using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Application.Abstractions.Interfaces.Services;
-using Auth.Domain.Exceptions;
+using OnlineBookStore.Exceptions.Exceptions;
 using Auth.Domain.Models;
-using AuthProfilesServices.Communication.Models;
 using AutoMapper;
 using FluentValidation;
 using MassTransit;
 using MediatR;
 using UserEntity = Auth.Domain.Models.User;
+using Auth.Domain.Exceptions;
 
 namespace Auth.Application.Features.User.Commands.RegisterUser
 {

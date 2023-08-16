@@ -2,7 +2,7 @@ using BookStore.Application.DTOs.Request;
 using BookStore.Application.DTOs.Response;
 using AutoMapper;
 using BookStore.Domain.Entities;
-using RequestsBookStore.Communication.Models;
+using OnlineBookStore.Messages.Models.Messages;
 
 namespace BookStore.Application.Profiles
 {

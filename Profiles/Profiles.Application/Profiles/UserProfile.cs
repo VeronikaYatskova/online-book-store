@@ -1,8 +1,8 @@
 using AutoMapper;
+using OnlineBookStore.Messages.Models.Messages;
 using Profiles.Application.DTOs.Request;
 using Profiles.Application.DTOs.Response;
 using Profiles.Domain.Entities;
-using AuthProfilesServices.Communication.Models;
 
 namespace Profiles.Application.Profiles
 {

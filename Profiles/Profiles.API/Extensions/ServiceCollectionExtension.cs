@@ -6,6 +6,7 @@ using Profiles.Domain.Entities;
 using Microsoft.Extensions.Options;
 using MassTransit;
 using Profiles.Infrastructure.Consumers;
+using OnlineBookStore.Queues;
 
 namespace Profiles.API.Extensions
 {
@@ -55,7 +56,7 @@ namespace Profiles.API.Extensions
                         h.Password(rabbitMqSettings.Password);
                     });
 
-                    configuration.ReceiveEndpoint("user-registered-event", c => 
+                    configuration.ReceiveEndpoint(Queues.UserRegisteredQueue, c => 
                     {
                         c.ConfigureConsumer<UserRegisteredConsumer>(context);   
                     });

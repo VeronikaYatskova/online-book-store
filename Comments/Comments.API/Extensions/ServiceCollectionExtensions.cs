@@ -1,5 +1,9 @@
+using Comments.BLL.Consumers;
 using Comments.BLL.DTOs.General;
 using Comments.DAL.Entities;
+using MassTransit;
+using Microsoft.Extensions.Options;
+using OnlineBookStore.Queues;
 using Serilog;
 using Serilog.Events;
 
@@ -39,7 +43,7 @@ namespace Comments.API.Extensions
                         h.Password(rabbitMqSettings.Password);
                     });
 
-                    configuration.ReceiveEndpoint("comment-added-event", c => 
+                    configuration.ReceiveEndpoint(Queues.CommentAddedQueue, c => 
                     {
                         c.ConfigureConsumer<CommentAddedConsumer>(context);   
                     });
