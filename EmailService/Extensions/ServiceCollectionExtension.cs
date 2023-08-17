@@ -1,6 +1,10 @@
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using EmailService.Consumers;
 using EmailService.Models;
 using EmailService.Services;
+using EmailService.Services.PdfGeneration;
+using EmailService.Services.PdfGeneration.Interfaces;
 using MassTransit;
 using Microsoft.Extensions.Options;
 using OnlineBookStore.Queues;
@@ -19,6 +23,9 @@ namespace EmailService.Extensions
         public static void AddServices(this IServiceCollection services)
         {
             services.AddScoped<IEmailService, Services.EmailService>();
+            services.AddScoped<ITemplateGenerator, TemplateGenerator>();
+            services.AddScoped<IPdfGenerator, PdfGenerator>();
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
         }
 
         public static void AddMessageSender(this IServiceCollection services)

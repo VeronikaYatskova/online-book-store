@@ -1,5 +1,6 @@
 using EmailService.Models;
 using EmailService.Services;
+using EmailService.Services.PdfGeneration.Interfaces;
 using MassTransit;
 using OnlineBookStore.Messages.Models.Messages;
 using Serilog;

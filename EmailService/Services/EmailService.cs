@@ -1,4 +1,5 @@
 using EmailService.Models;
+using EmailService.Services.PdfGeneration.Interfaces;
 using Microsoft.Extensions.Options;
 using MimeKit;
 
@@ -9,30 +10,48 @@ namespace EmailService.Services
     public class EmailService : IEmailService
     {
         private readonly EmailConfiguration _emailConfig;
+        private readonly IPdfGenerator _pdfGenerator;
 
-        public EmailService(IOptions<EmailConfiguration> emailConfig)
+        public EmailService(IOptions<EmailConfiguration> emailConfig, IPdfGenerator pdfGenerator)
         {
             _emailConfig = emailConfig.Value;
+            _pdfGenerator = pdfGenerator;
         }
 
-        public async Task SendEmailAsync(Message message)
+        public async Task SendEmailAsync(Message message, string? template = null)
         {
-            var emailMessage = CreateMessage(message);
+            MimeMessage emailMessage = new MimeMessage();
+
+            if (template is null)
+            {
+                emailMessage = CreateMessage(message);
+            }
+            else
+            {
+                var pdfFile = _pdfGenerator.CreatePDF(template);
+                emailMessage = CreateMessage(message, pdfFile);
+            }
 
             await Send(emailMessage);
         }
 
-        private MimeMessage CreateMessage(Message message)
+        private MimeMessage CreateMessage(Message message, byte[]? pdfFile = null)
         {
             var emailMessage = new MimeMessage();
             emailMessage.From.Add(new MailboxAddress("email", _emailConfig.From));
             emailMessage.To.AddRange(message.To);
             emailMessage.Subject = message.Subject;
-            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text)
-            {
-                Text = message.Content,
-            };
 
+            var builder = new BodyBuilder();
+            builder.TextBody = message.Content;
+            
+            if (pdfFile is not null)
+            {
+                builder.Attachments.Add("Request.pdf", pdfFile);
+            }
+
+            emailMessage.Body = builder.ToMessageBody();
+            
             return emailMessage;
         }
 
