@@ -6,9 +6,11 @@ using BookStore.Application.Services.CloudServices.Amazon.Models;
 using BookStore.Infrastructure.Consumers;
 using BookStore.Application.Services.CloudServices.Azurite.Models;
 using MassTransit;
-using BookStore.Infrastructure.Consumers;
 using Microsoft.Extensions.Options;
 using OnlineBookStore.Queues;
+using Serilog.Exceptions;
+using Serilog.Sinks.Elasticsearch;
+using System.Reflection;
 
 namespace BookStore.WebApi.Extensions
 {
@@ -20,15 +22,18 @@ namespace BookStore.WebApi.Extensions
             services.AddInfrastructureLayer(configuration);
         }
 
-        public static void AddCustomLogger(this ILoggingBuilder loggingBuilder)
+        public static void AddCustomLogger(this ILoggingBuilder loggingBuilder, IConfiguration configuration)
         {
-            var logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Information)
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .Enrich.WithExceptionDetails()
+                .WriteTo.Debug()
+                .WriteTo.Console()
+                .WriteTo.Elasticsearch(ConfigureElasticSink(configuration, environment))
+                .Enrich.WithProperty("Environment", environment)
+                .ReadFrom.Configuration(configuration)
                 .CreateLogger();
-
-            loggingBuilder.ClearProviders();
-            loggingBuilder.AddSerilog(logger);
         }
 
         public static void AddOptions(this IServiceCollection services, IConfiguration configuration)
@@ -71,6 +76,17 @@ namespace BookStore.WebApi.Extensions
                     });
                 });
             });
+        }
+
+        private static ElasticsearchSinkOptions ConfigureElasticSink(IConfiguration configuration, string environment)
+        {
+            return new ElasticsearchSinkOptions(new Uri(configuration["ElasticConfig:Uri"]))    
+            {
+                AutoRegisterTemplate = true,
+                IndexFormat = $"{Assembly.GetExecutingAssembly().GetName().Name.ToLower().Replace(".", "-")}-{environment.ToLower()}-{DateTime.UtcNow:yyyy-MM}",
+                NumberOfReplicas = 2,
+                NumberOfShards = 2,  
+            };
         }
     }
 }
