@@ -1,5 +1,4 @@
 using EmailService.Models;
-using EmailService.Services.PdfGeneration.Interfaces;
 using Microsoft.Extensions.Options;
 using MimeKit;
 
@@ -10,32 +9,21 @@ namespace EmailService.Services
     public class EmailService : IEmailService
     {
         private readonly EmailConfiguration _emailConfig;
-        private readonly IPdfGenerator _pdfGenerator;
 
-        public EmailService(IOptions<EmailConfiguration> emailConfig, IPdfGenerator pdfGenerator)
+        public EmailService(IOptions<EmailConfiguration> emailConfig)
         {
             _emailConfig = emailConfig.Value;
-            _pdfGenerator = pdfGenerator;
         }
 
-        public async Task SendEmailAsync(Message message, string? template = null)
+        public async Task SendEmailAsync(Message message)
         {
             MimeMessage emailMessage = new MimeMessage();
-
-            if (template is null)
-            {
-                emailMessage = CreateMessage(message);
-            }
-            else
-            {
-                var pdfFile = _pdfGenerator.CreatePDF(template);
-                emailMessage = CreateMessage(message, pdfFile);
-            }
+            emailMessage = CreateMessage(message);
 
             await Send(emailMessage);
         }
 
-        private MimeMessage CreateMessage(Message message, byte[]? pdfFile = null)
+        private MimeMessage CreateMessage(Message message)
         {
             var emailMessage = new MimeMessage();
             emailMessage.From.Add(new MailboxAddress("email", _emailConfig.From));
@@ -44,11 +32,6 @@ namespace EmailService.Services
 
             var builder = new BodyBuilder();
             builder.TextBody = message.Content;
-            
-            if (pdfFile is not null)
-            {
-                builder.Attachments.Add("Request.pdf", pdfFile);
-            }
 
             emailMessage.Body = builder.ToMessageBody();
             

@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Azure.Storage.Blobs;
 using BookStore.Application.Abstractions.Contracts.Interfaces;
 using BookStore.Application.Services.CloudServices.Azurite.Models;
@@ -75,11 +74,11 @@ namespace BookStore.Application.Services.CloudServices.Azurite
             throw new FileNotFoundException();
         }
 
-        public async Task<BlobResponse> UploadAsync(IFormFile blob, string? fileFakeName = null)
+        public async Task<BlobResponse> UploadAsync(IFormFile blob, string containerName, string? fileFakeName = null)
         {
             var container = new BlobContainerClient(
                 _blobStorageSettings.ConnectionString, 
-                _blobStorageSettings.PublishedBooksContainerName);
+                containerName);
 
             await container.CreateIfNotExistsAsync();
 

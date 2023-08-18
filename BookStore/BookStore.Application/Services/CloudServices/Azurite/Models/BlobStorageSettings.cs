@@ -4,6 +4,7 @@ namespace BookStore.Application.Services.CloudServices.Azurite.Models
     {
         public string ConnectionString { get; set; } = default!;
         public string RequestedBooksContainerName { get; set; } = default!; 
-        public string PublishedBooksContainerName { get; set; } = default!; 
+        public string PublishedBooksContainerName { get; set; } = default!;
+        public string RequestReportsContainerName { get; set; } = default!;
     }
 }

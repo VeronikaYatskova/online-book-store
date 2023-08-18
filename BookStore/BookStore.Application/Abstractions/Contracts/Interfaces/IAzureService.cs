@@ -5,7 +5,7 @@ namespace BookStore.Application.Abstractions.Contracts.Interfaces
 {
     public interface IAzureService
     {
-        Task<BlobResponse> UploadAsync(IFormFile blob, string? fileFakeName = null);
+        Task<BlobResponse> UploadAsync(IFormFile blob, string containerName, string? fileFakeName = null);
         Task<byte[]> DownloadAsync(string blobFileName);
         Task DeleteAsync(string blobFileName);
         Task<IEnumerable<Blob>> GetAllAsync();

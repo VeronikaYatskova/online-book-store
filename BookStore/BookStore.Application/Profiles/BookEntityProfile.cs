@@ -3,6 +3,7 @@ using BookStore.Application.DTOs.Response;
 using AutoMapper;
 using BookStore.Domain.Entities;
 using OnlineBookStore.Messages.Models.Messages;
+using PdfGenerator.Models;
 
 namespace BookStore.Application.Profiles
 {
@@ -31,6 +32,8 @@ namespace BookStore.Application.Profiles
                     m => m.MapFrom(ab => Guid.Parse(ab.CategoryGuid)))
                 .ForMember(b => b.PublisherGuid,
                     m => m.MapFrom(ab => Guid.Parse(ab.PublisherGuid)));
+
+            CreateMap<BookEntity, BookInPdf>();
         }
     }
 }
