@@ -38,7 +38,7 @@ namespace BookStore.Application.Services.BackgroundServices
 
             var link = $"https://localhost:7025/api/books/ids/{recommendedBook.BookGuid}";
 
-            var recommendedBookEmail = new RecommendedBookEmail
+            var recommendedBookEmail = new BookRecommendationMessage
             {
                 SendTo = usersToSendEmailTo.Select(u => u.Email).ToArray(),
                 Content = "Here is your daily book recomendation.",
@@ -54,14 +54,6 @@ namespace BookStore.Application.Services.BackgroundServices
             var randomNumberGenerator = new Random();
             
             return randomNumberGenerator.Next(0, length);
-        }
-
-        class RecommendedBookEmail
-        {
-            public string[] SendTo { get; set; } = default!;
-            public string Content { get; set; } = default!;
-            public string EmailTitle { get; set; } = default!;
-            public string BookLink { get; set; } = default!;
         }
     }
 }
