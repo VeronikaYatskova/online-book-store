@@ -6,8 +6,8 @@ using BookStore.Application.PipelineBehaviors;
 using BookStore.Application.Abstractions.Contracts.Interfaces;
 using BookStore.Application.Services;
 using BookStore.Application.Services.CloudServices.Amazon;
-using BookStore.Application.Services.CloudServices.Amazon.Models;
 using BookStore.Application.Services.CloudServices.Azurite;
+using BookStore.Application.Services.BackgroundServices;
 
 namespace BookStore.Application.Extensions
 {
@@ -25,6 +25,7 @@ namespace BookStore.Application.Extensions
             services.AddSingleton<IExceptionsService, ExceptionsService>();
             services.AddScoped<IAwsS3Service, AwsS3Service>();
             services.AddScoped<IAzureService, AzureService>();
+            services.AddScoped<IBackgroudService, BackgroudService>();
         }
     }
 }
