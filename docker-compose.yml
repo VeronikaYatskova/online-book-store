@@ -3,18 +3,20 @@ version: '3'
 services:
   
   bookstore:
-    image: book-store-api
+    build:
+      context: .
+      dockerfile: BookStore/Dockerfile
     ports:
       - "7223:80"
     depends_on:
       - postgres
       - azurite-db
       - rabbitmq
-    environment:
-      - ConnectionString:Host=postgres;User ID =admin;Password=admin;Port=5432;Database=books;Integrated Security=true;Pooling=true;
-
+    
   auth:
-    image: book-store-auth:latest
+    build:
+      context: .
+      dockerfile: Auth/Dockerfile
     ports:
       - "7198:80"
     depends_on:
@@ -22,7 +24,9 @@ services:
       - rabbitmq
 
   profiles:
-    image: profiles:latest
+    build:
+      context: .
+      dockerfile: Profiles/Dockerfile
     ports:
       - "7034:80"
     depends_on:
@@ -104,6 +108,7 @@ services:
       - "5672:5672"
       # Web interface
       - "15672:15672"
+    restart: on-failure
 
   azurite-db:
     image: mcr.microsoft.com/azure-storage/azurite

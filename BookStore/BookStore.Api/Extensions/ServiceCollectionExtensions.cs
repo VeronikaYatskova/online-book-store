@@ -6,14 +6,13 @@ using BookStore.Application.Services.CloudServices.Amazon.Models;
 using BookStore.Infrastructure.Consumers;
 using BookStore.Application.Services.CloudServices.Azurite.Models;
 using MassTransit;
-using BookStore.Infrastructure.Consumers;
 using Microsoft.Extensions.Options;
 using OnlineBookStore.Queues;
 
 namespace BookStore.WebApi.Extensions
 {
     public static class ServiceCollectionExtensions
-    {
+    {   
         public static void AddLayers(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddApplicationLayer();
@@ -22,13 +21,13 @@ namespace BookStore.WebApi.Extensions
 
         public static void AddCustomLogger(this ILoggingBuilder loggingBuilder)
         {
-            var logger = new LoggerConfiguration()
+            Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Information)
                 .CreateLogger();
 
             loggingBuilder.ClearProviders();
-            loggingBuilder.AddSerilog(logger);
+            loggingBuilder.AddSerilog(Log.Logger);
         }
 
         public static void AddOptions(this IServiceCollection services, IConfiguration configuration)
@@ -43,7 +42,7 @@ namespace BookStore.WebApi.Extensions
                 configuration.GetSection("BlobStorage"));
         }
 
-        public static void AddMassTransitConfig(this IServiceCollection services)
+        public static void AddMassTransitConfig(this IServiceCollection services, IConfiguration config)
         {
             services.AddMassTransit(busConfigurator =>
             {   
@@ -54,7 +53,9 @@ namespace BookStore.WebApi.Extensions
                 {
                     var rabbitMqSettings = context.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
 
-                    configuration.Host(new Uri(rabbitMqSettings.Host!), h =>
+                    // Log.Logger.Information("RabbitMq host: ", rabbitMqSettings.Host);
+
+                    configuration.Host(rabbitMqSettings.Host, h =>
                     {
                         h.Username(rabbitMqSettings.UserName);
                         h.Password(rabbitMqSettings.Password);
