@@ -1,8 +1,10 @@
 using AutoMapper;
 using BookStore.Application.Abstractions.Contracts.Interfaces;
 using BookStore.Domain.Entities;
+using MassTransit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using OnlineBookStore.Messages.Models.Messages;
 
 namespace BookStore.Application.Services.BackgroundServices
 {
@@ -12,17 +14,20 @@ namespace BookStore.Application.Services.BackgroundServices
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IPublishEndpoint _publishEndpoint;
 
         public BackgroudService(
             ILogger<BackgroudService> logger,
             IUnitOfWork unitOfWork,
             IMapper mapper,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IPublishEndpoint publishEndpoint)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
+            _publishEndpoint = publishEndpoint;
         }
 
         public async Task SendDailyEmail()
@@ -45,6 +50,8 @@ namespace BookStore.Application.Services.BackgroundServices
                 EmailTitle = "Daily book recommendation.",
                 BookLink = link,
             };
+
+            await _publishEndpoint.Publish(recommendedBookEmail);
 
             _logger.LogInformation("Sending daily email from host " + link);
         }

@@ -9,6 +9,7 @@ using MassTransit;
 using MediatR;
 using UserEntity = Auth.Domain.Models.User;
 using Auth.Domain.Exceptions;
+using OnlineBookStore.Messages.Models.Messages;
 
 namespace Auth.Application.Features.User.Commands.RegisterUser
 {
@@ -51,7 +52,7 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
                 throw new AlreadyExistsException(ExceptionMessages.UserAlreadyExistsMessage);
             }
 
-            var userEntity = _mapper.Map<Domain.Models.User>(userData); 
+            var userEntity = _mapper.Map<UserEntity>(userData); 
             
             _passwordService.CreatePasswordHash(userData.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -63,7 +64,10 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
             userEntity.PasswordSalt = passwordSalt;
 
             await _userRepository.CreateAsync(userEntity);
-            await _userRepository.SaveChangesAsync();            
+            await _userRepository.SaveChangesAsync();
+
+            var userRegisteredMessage = _mapper.Map<UserRegisteredMessage>(userEntity);
+            await _publishEndpoint.Publish(userRegisteredMessage);
         }
     }
 }
