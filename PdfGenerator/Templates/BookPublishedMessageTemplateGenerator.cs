@@ -1,4 +1,5 @@
 using System.Text;
+using HandlebarsDotNet;
 using PdfGenerator.Interfaces;
 using PdfGenerator.Models;
 
@@ -8,8 +9,8 @@ namespace PdfGenerator.Templates
     {
         public string GenerateHtmlTemplate(BookInPdf message)
         {
-            var stringBuilder = new StringBuilder();
-            stringBuilder.AppendFormat(@"
+            var htmlString = new StringBuilder();
+            htmlString.Append(@"
             <html>
             <head>
                 <style>
@@ -45,56 +46,62 @@ namespace PdfGenerator.Templates
             </head>
                 <body>
                     <div class='container'>
-                        <div class='title'>Book was {0} published on {1}</div>
+                        <div class='title'>{{bookName}} was published on {{publishedAt}}</div>
                         <div class='book-info'>
                             <div class='property'>
                                 <div class='property-name'>Name:</div>
-                                <div class='book-property'>{2}</div>
+                                <div class='book-property'>{{bookName}}</div>
                             </div>
                             <div class='property'>
                                 <div class='property-name'>ISBN 10:</div>
-                                <div class='book-property'>{3}</div>
+                                <div class='book-property'>{{isbn10}}</div>
                             </div>
                             <div class='property'>
                                 <div class='property-name'>ISBN 13:</div>
-                                <div class='book-property'>{4}</div>
+                                <div class='book-property'>{{isbn13}}</div>
                             </div>
                             <div class='property'>
                                 <div class='property-name'>Count of pages:</div>
-                                <div class='book-property'>{5}</div>
+                                <div class='book-property'>{{pagesCount}}</div>
                             </div>
                             <div class='property'>
                                 <div class='property-name'>Year:</div>
-                                <div class='book-property'>{6}</div>
+                                <div class='book-property'>{{publishedIn}}</div>
                             </div>
                             <div class='property'>
                                 <div class='property-name'>Language:</div>
-                                <div class='book-property'>{7}</div>
+                                <div class='book-property'>{{language}}</div>
                             </div>
                             <div class='property'>
                                 <div class='property-name'>Category:</div>
-                                <div class='book-property'>{8}</div>
+                                <div class='book-property'>{{category}}</div>
                             </div>
                             <div class='property'>
                                 <div class='property-name'>Publisher:</div>
-                                <div class='book-property'>{9}</div>
+                                <div class='book-property'>{{publisher}}</div>
                             </div>
                         </div>
                     </div>
                 </body>
-            <html>",            
-            message.BookGuid, 
-            message.BookName,
-            message.ISBN10,
-            message.ISBN13,
-            message.PagesCount.ToString(),
-            message.PublishYear,
-            message.Language,
-            message.Category,
-            message.Publisher,
-            DateTime.UtcNow.ToShortDateString());
+            <html>");
 
-            return stringBuilder.ToString();
+            var context = new 
+            { 
+                bookName = message.BookName,
+                publishedAt = DateTime.UtcNow,
+                isbn10 = message.ISBN10,
+                isbn13 = message.ISBN13,
+                pagesCount = message.PagesCount,
+                publishedIn = message.PublishYear,
+                language = message.Language,
+                category = message.Category,
+                publisher = message.Publisher,
+            };
+
+            var template = Handlebars.Compile(htmlString.ToString());
+            var htmlTemplate = template(context);
+            
+            return htmlTemplate;
         }
     }
 }
