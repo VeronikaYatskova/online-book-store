@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using FluentAssertions;
@@ -7,6 +6,7 @@ using Moq;
 using Profiles.Application.DTOs.Request;
 using Profiles.Application.Features.Users.Commands.AddUser;
 using Profiles.Application.Interfaces.Repositories;
+using Profiles.Application.PipelineBehaviour;
 using Profiles.Domain.Entities;
 using Xunit;
 
@@ -33,7 +33,10 @@ namespace Profiles.Tests.Members.Commands
 
         [Theory]
         [InlineData("user1@gmail.com", "Veronika", "Veronika")]
-        public async Task Handle_AddingUser_ShouldSucceed(string email, string firstName, string lastName)
+        [InlineData("user2@mail.com", "User1", "User1User1")]
+        [InlineData("user3@gmail.com", "User2", "User2")]
+        [InlineData("user4@mail.com", "User3User3", "User3User3User3User3")]
+        public async Task AddUser_ValidData_ShouldSucceed(string email, string firstName, string lastName)
         {
             // Arrange
 
@@ -65,6 +68,46 @@ namespace Profiles.Tests.Members.Commands
             // Assert
 
             await act.Should().NotThrowAsync();
+        }
+
+        // [Theory]
+        // [InlineData("user1gmail.com", "Veronika", "Veronika")]
+        // [InlineData("", "User1User1", "User1User1")]
+        // [InlineData("ugmail.com", "User1User1", "User1User1")]
+        // [InlineData("user4mail.com", "User3User3User3User3", "User3User3User3User3")]
+        public async Task AddUser_InvalidEmail_ShouldThrowValidationExceptionOnInvalidEmail(string email, string firstName, string lastName)
+        {
+            // Arrange
+
+            var userRequest = new AddUserRequest()
+            {
+                Email = email,
+                FirstName = firstName,
+                LastName = lastName,
+            };
+
+            var userEntity = new User()
+            {
+                Email = userRequest.Email,
+                FirstName = userRequest.FirstName,
+                LastName = userRequest.LastName,
+            };
+
+            var command = new AddUserCommand(userRequest);
+
+            // _mockValidator
+            //     .Setup(v => v.ValidateAndThrowAsync(It.IsAny<AddUserCommand>()))
+            //     .ThrowsAsync(new ValidationException(ValidationMessages.InvalidEmailMessage));
+
+            // Act
+            
+            var act = async () => await _handler.Handle(command, default);
+            
+            // Assert
+
+            await act.Should()
+                .ThrowAsync<ValidationException>()
+                .WithMessage(ValidationMessages.InvalidEmailMessage);
         }
     }
 }

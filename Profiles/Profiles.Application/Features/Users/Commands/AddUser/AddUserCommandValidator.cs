@@ -11,6 +11,10 @@ namespace Profiles.Application.Features.Users.Commands.AddUser
                 .NotEmpty()
                 .WithMessage(ValidationMessages.FieldIsRequiredMessage);
 
+            RuleFor(u => u.UserData.Email)
+                .Must(IsValidEmail)
+                .WithMessage(ValidationMessages.InvalidEmailMessage);
+
             RuleFor(u => u.UserData.FirstName)
                 .NotEmpty()
                 .WithMessage(ValidationMessages.FieldIsRequiredMessage);
@@ -18,6 +22,11 @@ namespace Profiles.Application.Features.Users.Commands.AddUser
             RuleFor(u => u.UserData.LastName)
                 .NotEmpty()
                 .WithMessage(ValidationMessages.FieldIsRequiredMessage);            
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            return email.Contains("@");
         }
     }
 }
