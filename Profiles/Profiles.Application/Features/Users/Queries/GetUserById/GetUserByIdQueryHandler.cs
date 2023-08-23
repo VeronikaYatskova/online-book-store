@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using OnlineBookStore.Exceptions.Exceptions;
 using Profiles.Application.DTOs.Response;
 using Profiles.Application.Interfaces.Repositories;
 
@@ -18,7 +19,8 @@ namespace Profiles.Application.Features.Users.Queries.GetUserById
         
         public async Task<GetUsersResponse> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetUserByIdAsync(Guid.Parse(request.UserId));
+            var user = await _userRepository.GetUserByIdAsync(Guid.Parse(request.UserId)) ??
+                throw new NotFoundException(ExceptionMessages.UserNotFoundByIdMessage);
 
             return _mapper.Map<GetUsersResponse>(user);
         }

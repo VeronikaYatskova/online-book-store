@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using FluentValidation.TestHelper;
 using Profiles.Application.DTOs.Request;
 using Profiles.Application.Features.Users.Commands.DeleteUser;
@@ -20,7 +19,7 @@ namespace Profiles.Tests.Members.Validators
         [InlineData("152d652b-50ae-4db2-82cc-d733bf1ee2bd")]
         [InlineData("696e13cb-59de-4611-873a-5f11d61fc5f0")]
         [InlineData("de8e8ffd-a6c1-45d9-b1b9-437a85fd141e")]
-        public async Task Should_not_have_error_when_userId_is_specified(string userId)
+        public void Should_not_have_error_when_userId_is_specified(string userId)
         {
             // Arrange
             var deleteUserRequest = new DeleteUserRequest { UserId = userId };
@@ -35,7 +34,7 @@ namespace Profiles.Tests.Members.Validators
 
         [Theory]
         [InlineData("")]
-        public async Task Should_have_error_when_userId_is_not_specified(string userId)
+        public void Should_have_error_when_userId_is_not_specified(string userId)
         {
             // Arrange
             var deleteUserRequest = new DeleteUserRequest { UserId = userId };

@@ -3,11 +3,9 @@ using AutoMapper;
 using FluentAssertions;
 using FluentValidation;
 using Moq;
-using OnlineBookStore.Exceptions.Exceptions;
 using Profiles.Application.DTOs.Request;
 using Profiles.Application.Features.Users.Commands.AddUser;
 using Profiles.Application.Interfaces.Repositories;
-using Profiles.Application.PipelineBehaviour;
 using Profiles.Domain.Entities;
 using Xunit;
 
@@ -40,7 +38,6 @@ namespace Profiles.Tests.Members.Commands
         public async Task AddUser_ValidData_ShouldSucceed(string email, string firstName, string lastName)
         {
             // Arrange
-
             var userRequest = new AddUserRequest()
             {
                 Email = email,
@@ -63,52 +60,10 @@ namespace Profiles.Tests.Members.Commands
             var command = new AddUserCommand(userRequest);
 
             // Act
-            
             var act = async () => await _handler.Handle(command, default);
             
             // Assert
-
             await act.Should().NotThrowAsync();
-        }
-
-        // [Theory]
-        // [InlineData("user1gmail.com", "Veronika", "Veronika")]
-        // [InlineData("", "User1User1", "User1User1")]
-        // [InlineData("ugmail.com", "User1User1", "User1User1")]
-        // [InlineData("user4mail.com", "User3User3User3User3", "User3User3User3User3")]
-        public async Task AddUser_InvalidEmail_ShouldThrowValidationExceptionOnInvalidEmail(string email, string firstName, string lastName)
-        {
-            // Arrange
-
-            var userRequest = new AddUserRequest()
-            {
-                Email = email,
-                FirstName = firstName,
-                LastName = lastName,
-            };
-
-            var userEntity = new User()
-            {
-                Email = userRequest.Email,
-                FirstName = userRequest.FirstName,
-                LastName = userRequest.LastName,
-            };
-
-            var command = new AddUserCommand(userRequest);
-
-            // _mockValidator
-            //     .Setup(v => v.ValidateAndThrowAsync(It.IsAny<AddUserCommand>()))
-            //     .ThrowsAsync(new ValidationException(ValidationMessages.InvalidEmailMessage));
-
-            // Act
-            
-            var act = async () => await _handler.Handle(command, default);
-            
-            // Assert
-
-            await act.Should()
-                .ThrowAsync<OnlineBookStore.Exceptions.Exceptions.ValidationException>()
-                .WithMessage(ValidationMessages.InvalidEmailMessage);
         }
     }
 }

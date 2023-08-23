@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using FluentValidation.TestHelper;
 using Profiles.Application.DTOs.Request;
 using Profiles.Application.Features.Users.Commands.EditUser;
@@ -18,7 +17,7 @@ namespace Profiles.Tests.Members.Validators
 
         [Theory]
         [ClassData(typeof(EditUserCommandValidTestData))]
-        public async Task Should_not_have_error_when_data_is_specified_and_valid(EditUserRequest editUserRequest)
+        public void Should_not_have_error_when_data_is_specified_and_valid(EditUserRequest editUserRequest)
         {
             // Arrange
             var command = new EditUserCommand(editUserRequest);
@@ -32,7 +31,7 @@ namespace Profiles.Tests.Members.Validators
 
         [Theory]
         [ClassData(typeof(EditUserCommandInvalidTestData))]
-        public async Task Should_have_error_when_one_of_the_fields_is_empty(EditUserRequest editUserRequest)
+        public void Should_have_error_when_one_of_the_fields_is_empty(EditUserRequest editUserRequest)
         {
             // Arrange
             var command = new EditUserCommand(editUserRequest);

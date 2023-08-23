@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -6,42 +5,41 @@ using FluentAssertions;
 using Moq;
 using OnlineBookStore.Exceptions.Exceptions;
 using Profiles.Application.DTOs.Response;
-using Profiles.Application.Features.Users.Queries.GetAllUsers;
+using Profiles.Application.Features.Users.Queries.GetPublishers;
 using Profiles.Application.Interfaces.Repositories;
-using Profiles.Domain.Entities;
 using Profiles.Tests.Members.Data;
 using Xunit;
 
 namespace Profiles.Tests.Members.Queries
 {
-    public class GetAllUsersQueryHandlerTests
+    public class GetPublishersQueryHandlerTests
     {
-        private readonly Mock<IUserRepository> _mockUserRepository;
+        private readonly Mock<IPublisherRepository> _mockPublisherRepository;
         private readonly Mock<IMapper> _mockMapper;
-        private readonly GetUsersQueryHandler _handler;
+        private readonly GetPublishersQueryHandler _handler;
 
-        public GetAllUsersQueryHandlerTests()
+        public GetPublishersQueryHandlerTests()
         {
-            _mockUserRepository = new ();
+            _mockPublisherRepository = new ();
             _mockMapper = new ();
 
-            _handler = new GetUsersQueryHandler(
-                _mockUserRepository.Object,
+            _handler = new GetPublishersQueryHandler(
+                _mockPublisherRepository.Object,
                 _mockMapper.Object
             );
         }
 
         [Fact]
-        public async Task GetUsers_UsersExist_ShouldReturnListOfUsers()
+        public async Task GetPublishers_PublishersExist_ShouldReturnListOfUsers()
         {
             // Arrange
-            var repositoryResponse = GetAllUsersQueryHandlerTestData.RepositoryResponse;
+            var repositoryResponse = GetPublishersQueryHandlerTestData.RepositoryResponse;
             
-            var handlerResponse = GetAllUsersQueryHandlerTestData.HandlerResponse;
+            var handlerResponse = GetPublishersQueryHandlerTestData.HandlerResponse;
 
-            var query = new GetUsersQuery();
+            var query = new GetPublishersQuery();
 
-            _mockUserRepository.Setup(r => r.GetAllUsersAsync())
+            _mockPublisherRepository.Setup(r => r.GetPublishersAsync())
                 .ReturnsAsync(repositoryResponse);
             
             _mockMapper.Setup(m => m.Map<IEnumerable<GetUsersResponse>>(repositoryResponse))
@@ -57,19 +55,19 @@ namespace Profiles.Tests.Members.Queries
         }
 
         [Fact]
-        public async Task GetUsers_UsersDoesNotExist_ShouldThrowNotFoundException()
+        public async Task GetPublishers_PublishersDoNotExist_ShouldThrowNotFoundException()
         {
             // Arrange
-            var query = new GetUsersQuery();
+            var query = new GetPublishersQuery();
 
-            _mockUserRepository.Setup(r => r.GetAllUsersAsync())
-                .ThrowsAsync(new NotFoundException(ExceptionMessages.UsersNotFoundMessage));
+            _mockPublisherRepository.Setup(r => r.GetPublishersAsync())
+                .ThrowsAsync(new NotFoundException(ExceptionMessages.PublishersNotFoundMessage));
 
             // Act
             var act = async () => await _handler.Handle(query, default);
             
             // Assert
             await act.Should().ThrowAsync<NotFoundException>();
-        }
+        }        
     }
 }

@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using FluentValidation.TestHelper;
 using Profiles.Application.DTOs.Request;
 using Profiles.Application.Features.Users.Commands.AddUser;
@@ -21,7 +20,7 @@ namespace Profiles.Tests.Members.Validators
         [InlineData("user2@mail.com", "User1", "User1User1")]
         [InlineData("user3@gmail.com", "User2", "User2")]
         [InlineData("user4@mail.com", "User3User3", "User3User3User3User3")]
-        public async Task Should_not_have_error_when_email_is_specified(string email, string firstName, string lastName)
+        public void Should_not_have_error_when_email_is_specified(string email, string firstName, string lastName)
         {
             // Arrange
             var userRequest = new AddUserRequest()
@@ -34,11 +33,9 @@ namespace Profiles.Tests.Members.Validators
             var command = new AddUserCommand(userRequest);
 
             // Act
-
             var validationResult = _validator.TestValidate(command);
 
             // Assert
-
             validationResult.ShouldNotHaveValidationErrorFor(u => u.UserData.Email);
         }
 
@@ -60,11 +57,9 @@ namespace Profiles.Tests.Members.Validators
             var command = new AddUserCommand(userRequest);
 
             // Act
-
             var validationResult = _validator.TestValidate(command);
 
             // Assert
-
             validationResult.ShouldHaveValidationErrorFor(u => u.UserData.Email)
                 .WithErrorMessage(ValidationMessages.InvalidEmailMessage);
         }
@@ -87,11 +82,9 @@ namespace Profiles.Tests.Members.Validators
             var command = new AddUserCommand(userRequest);
 
             // Act
-
             var validationResult = _validator.TestValidate(command);
 
             // Assert
-
             validationResult.ShouldHaveAnyValidationError()
                 .WithErrorMessage(ValidationMessages.FieldIsRequiredMessage);
         }

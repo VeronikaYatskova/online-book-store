@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -6,42 +5,41 @@ using FluentAssertions;
 using Moq;
 using OnlineBookStore.Exceptions.Exceptions;
 using Profiles.Application.DTOs.Response;
-using Profiles.Application.Features.Users.Queries.GetAllUsers;
+using Profiles.Application.Features.Users.Queries.GetNormalUsers;
 using Profiles.Application.Interfaces.Repositories;
-using Profiles.Domain.Entities;
 using Profiles.Tests.Members.Data;
 using Xunit;
 
 namespace Profiles.Tests.Members.Queries
 {
-    public class GetAllUsersQueryHandlerTests
+    public class GetNormalUsersQueryHandlerTests
     {
-        private readonly Mock<IUserRepository> _mockUserRepository;
+        private readonly Mock<INormalUserRepository> _mockNormalUserRepository;
         private readonly Mock<IMapper> _mockMapper;
-        private readonly GetUsersQueryHandler _handler;
+        private readonly GetNormalUsersQueryHandler _handler;
 
-        public GetAllUsersQueryHandlerTests()
+        public GetNormalUsersQueryHandlerTests()
         {
-            _mockUserRepository = new ();
+            _mockNormalUserRepository = new ();
             _mockMapper = new ();
 
-            _handler = new GetUsersQueryHandler(
-                _mockUserRepository.Object,
+            _handler = new GetNormalUsersQueryHandler(
+                _mockNormalUserRepository.Object,
                 _mockMapper.Object
             );
         }
 
         [Fact]
-        public async Task GetUsers_UsersExist_ShouldReturnListOfUsers()
+        public async Task GetNormalUsers_UsersExist_ShouldReturnListOfUsers()
         {
             // Arrange
-            var repositoryResponse = GetAllUsersQueryHandlerTestData.RepositoryResponse;
+            var repositoryResponse = GetNormalUsersQueryHandlerTestData.RepositoryResponse;
             
-            var handlerResponse = GetAllUsersQueryHandlerTestData.HandlerResponse;
+            var handlerResponse = GetNormalUsersQueryHandlerTestData.HandlerResponse;
 
-            var query = new GetUsersQuery();
+            var query = new GetNormalUsersQuery();
 
-            _mockUserRepository.Setup(r => r.GetAllUsersAsync())
+            _mockNormalUserRepository.Setup(r => r.GetNormalUsersAsync())
                 .ReturnsAsync(repositoryResponse);
             
             _mockMapper.Setup(m => m.Map<IEnumerable<GetUsersResponse>>(repositoryResponse))
@@ -57,14 +55,14 @@ namespace Profiles.Tests.Members.Queries
         }
 
         [Fact]
-        public async Task GetUsers_UsersDoesNotExist_ShouldThrowNotFoundException()
+        public async Task GetNormalUsers_UsersDoNotExist_ShouldThrowNotFoundException()
         {
             // Arrange
-            var query = new GetUsersQuery();
+            var query = new GetNormalUsersQuery();
 
-            _mockUserRepository.Setup(r => r.GetAllUsersAsync())
+            _mockNormalUserRepository.Setup(r => r.GetNormalUsersAsync())
                 .ThrowsAsync(new NotFoundException(ExceptionMessages.UsersNotFoundMessage));
-
+            
             // Act
             var act = async () => await _handler.Handle(query, default);
             
