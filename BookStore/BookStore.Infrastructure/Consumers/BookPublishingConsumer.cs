@@ -1,6 +1,4 @@
-using AutoMapper;
 using BookStore.Application.Abstractions.Contracts.Interfaces;
-using BookStore.Domain.Entities;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 using OnlineBookStore.Messages.Models.Messages;
@@ -9,21 +7,15 @@ namespace BookStore.Infrastructure.Consumers
 {
     public class BookPublishingConsumer : IConsumer<BookPublishingMessage>
     {
-        private readonly IAzureService _azureService;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
+        private readonly IBookPublishingFacade _bookPublishingFacade;
         private readonly ILogger<BookPublishingConsumer> _logger;
 
         public BookPublishingConsumer(
-            IAzureService azureService, 
-            ILogger<BookPublishingConsumer> logger, 
-            IMapper mapper, 
-            IUnitOfWork unitOfWork)
+            IBookPublishingFacade bookPublishingFacade,
+            ILogger<BookPublishingConsumer> logger)
         {
-            _azureService = azureService;
             _logger = logger;
-            _mapper = mapper;
-            _unitOfWork = unitOfWork;
+            _bookPublishingFacade = bookPublishingFacade;
         }
 
         public async Task Consume(ConsumeContext<BookPublishingMessage> context)
@@ -32,46 +24,8 @@ namespace BookStore.Infrastructure.Consumers
 
             var bookInfo = context.Message;
 
-            await _azureService.CopyFileAsync(context.Message.BookFakeName);
-
-            var bookEntity = _mapper.Map<BookEntity>(bookInfo);
-
-            await _unitOfWork.BooksRepository.CreateAsync(bookEntity);
-
-            var book = await _unitOfWork.BooksRepository
-                .FindByConditionAsync(b => b.BookGuid == bookEntity.BookGuid);
+            await _bookPublishingFacade.PublishBookAsync(bookInfo);
             
-            if (book is null)
-            {
-                if (bookInfo.AuthorsGuid.Count() > 1)
-                {
-                    foreach (var authorId in bookInfo.AuthorsGuid)
-                    {
-                        var bookAuthorEntity = new BookAuthorEntity
-                        {
-                            Guid = Guid.NewGuid(),
-                            BookGuid = bookEntity.BookGuid,
-                            AuthorGuid = Guid.Parse(authorId),
-                        };
-
-                        await _unitOfWork.AuthorsBooksRepository.CreateAsync(bookAuthorEntity);
-                    }
-                }
-                else
-                {
-                    var bookAuthorEntity = new BookAuthorEntity
-                    {
-                        Guid = Guid.NewGuid(),
-                        BookGuid = bookEntity.BookGuid,
-                        AuthorGuid = Guid.Parse(bookInfo.AuthorsGuid.First()),
-                    };
-
-                    await _unitOfWork.AuthorsBooksRepository.CreateAsync(bookAuthorEntity);
-                }
-            }           
-
-            await _unitOfWork.SaveChangesAsync();
-
             await context.RespondAsync(new BookPublishedMessage { StatusCode = 200 });
         }
     }

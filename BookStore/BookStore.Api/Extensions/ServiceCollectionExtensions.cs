@@ -6,7 +6,6 @@ using BookStore.Application.Services.CloudServices.Amazon.Models;
 using BookStore.Infrastructure.Consumers;
 using BookStore.Application.Services.CloudServices.Azurite.Models;
 using MassTransit;
-using BookStore.Infrastructure.Consumers;
 using Microsoft.Extensions.Options;
 using OnlineBookStore.Queues;
 
