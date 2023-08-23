@@ -7,6 +7,10 @@ namespace Profiles.Application.Features.Users.Commands.EditUser
     {
         public EditUserCommandValidator()
         {
+            RuleFor(u => u.UserData.Id)
+                .NotEmpty()
+                .WithMessage(ValidationMessages.FieldIsRequiredMessage);
+                
             RuleFor(u => u.UserData.Email)
                 .NotEmpty()
                 .WithMessage(ValidationMessages.FieldIsRequiredMessage);

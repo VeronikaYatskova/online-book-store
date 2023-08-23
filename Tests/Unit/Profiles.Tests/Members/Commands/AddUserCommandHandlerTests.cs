@@ -3,6 +3,7 @@ using AutoMapper;
 using FluentAssertions;
 using FluentValidation;
 using Moq;
+using OnlineBookStore.Exceptions.Exceptions;
 using Profiles.Application.DTOs.Request;
 using Profiles.Application.Features.Users.Commands.AddUser;
 using Profiles.Application.Interfaces.Repositories;
@@ -106,7 +107,7 @@ namespace Profiles.Tests.Members.Commands
             // Assert
 
             await act.Should()
-                .ThrowAsync<ValidationException>()
+                .ThrowAsync<OnlineBookStore.Exceptions.Exceptions.ValidationException>()
                 .WithMessage(ValidationMessages.InvalidEmailMessage);
         }
     }

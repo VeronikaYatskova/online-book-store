@@ -34,7 +34,6 @@ namespace Profiles.Tests.Members.Queries
         public async Task GetUsers_UsersExist_ShouldReturnListOfUsers()
         {
             // Arrange
-
             var repositoryResponse = new List<User>
             {
                 new User
@@ -94,11 +93,9 @@ namespace Profiles.Tests.Members.Queries
                 .Returns(handlerResponse);
 
             // Act
-
             var act = await _handler.Handle(query, default);
             
             // Assert
-            
             act.Should().NotBeNullOrEmpty();
             act.Should().AllBeAssignableTo<GetUsersResponse>();
             act.Should().BeEquivalentTo(handlerResponse);
@@ -108,7 +105,6 @@ namespace Profiles.Tests.Members.Queries
         public async Task GetUsers_UsersDoesNotExist_ShouldThrowNotFoundException()
         {
             // Arrange
-
             var repositoryResponse = default(List<User>);
             var handlerResponse = default(List<GetUsersResponse>);
 
@@ -121,13 +117,10 @@ namespace Profiles.Tests.Members.Queries
                 .Returns(handlerResponse);
 
             // Act
-
             var act = async () => await _handler.Handle(query, default);
             
             // Assert
-            
             await act.Should().ThrowAsync<NotFoundException>();
         }
-
     }
 }
