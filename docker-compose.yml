@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: BookStore/Dockerfile
     ports:
-      - "7223:80"
+      - "7025:80"
     depends_on:
       - postgres
       - azurite-db
@@ -65,11 +65,12 @@ services:
 
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
+    user: root
     environment:
-      - SA_PASSWORD=SpikePrototype2016!
-      - ACCEPT_EULA=Y
+        - ACCEPT_EULA=Y
+        - SA_PASSWORD=SpikePrototype2016!
     ports:
-      - "1433:1433"
+        - 1442:1433
 
   postgres:
     image: postgres
@@ -77,7 +78,7 @@ services:
       POSTGRES_USER: "admin"
       POSTGRES_PASSWORD: "admin"
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - ./volumes/postgres:/var/lib/postgresql/data
       - ./init_db.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
