@@ -13,8 +13,8 @@ namespace Requests.API.Controllers
         private readonly ILogger<RequestsController> _logger;
 
         public RequestsController(
-            IRequestsService requestsService, 
-            ILogger<RequestsController> logger, 
+            IRequestsService requestsService,
+            ILogger<RequestsController> logger,
             IBlobStorageService blobStorageService)
         {
             _requestsService = requestsService;

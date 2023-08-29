@@ -38,13 +38,7 @@ namespace BookStore.Application.Features.Book.Queries.GetFavoriteBooks
 
             var favoriteBooksDto = _mapper.Map<IEnumerable<BookDto>>(bookEntities);
 
-            foreach (var book in favoriteBooksDto)
-            {
-                var blob = await _azureService.GetBlobByAsync(b => b.Name == book.BookFakeName)
-                    ?? throw new FileDoesNotExistException();
-                    
-                book.FileURL = blob.Uri!;
-            }
+            await _azureService.LoadRelatedData(favoriteBooksDto);
 
             return favoriteBooksDto;
         }

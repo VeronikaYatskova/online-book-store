@@ -4,6 +4,8 @@ using AutoMapper;
 using MediatR;
 using OnlineBookStore.Exceptions.Exceptions;
 using BookStore.Domain.Exceptions;
+using BookStore.Application.Services.CloudServices.Azurite.Models;
+using Microsoft.Extensions.Options;
 
 namespace BookStore.Application.Features.Book.Queries.GetBookById
 {
@@ -12,15 +14,18 @@ namespace BookStore.Application.Features.Book.Queries.GetBookById
         private readonly IUnitOfWork _unitOfWork; 
         private readonly IMapper _mapper;
         private readonly IAzureService _azureService;
+        private readonly BlobStorageSettings _blobStorageSettings;
 
         public GetBookByIdQueryHandler(
             IUnitOfWork unitOfWork,
             IMapper mapper,
-            IAzureService azureService)
+            IAzureService azureService,
+            IOptions<BlobStorageSettings> blobStorageSettings)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _azureService = azureService;
+            _blobStorageSettings = blobStorageSettings.Value;
         }
 
         public async Task<BookDto> Handle(GetBookByIdQuery request, CancellationToken cancellationToken)
@@ -35,11 +40,22 @@ namespace BookStore.Application.Features.Book.Queries.GetBookById
         
             var bookDto = _mapper.Map<BookDto>(book);
             
-            var blob = await _azureService.GetBlobByAsync(b => b.Name == book.BookFakeName);
+            var blobUri = await _azureService.GetBlobByNameAsync(
+                book.BookFakeName!, 
+                _blobStorageSettings.PublishedBooksContainerName);
                     
-            if (blob is not null)
+            if (blobUri is not null)
             {
-                bookDto.FileURL = blob.Uri!;
+                bookDto.FileURL = blobUri!;
+            }
+
+            var blobCoverUri = await _azureService.GetBlobByNameAsync(
+                book.BookFakeName!, 
+                _blobStorageSettings.BookCoversContainerName);
+
+            if (blobCoverUri is not null)
+            {
+                bookDto.BookCoverFakeName = blobCoverUri!;
             }
 
             return bookDto;

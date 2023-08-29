@@ -1,4 +1,5 @@
 using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Requests.BLL.DTOs.General;
@@ -16,9 +17,11 @@ namespace Requests.DAL.Repositories.Implementations
             _blobStorageSettings = blobStorageSettings.Value;
         }
 
-        public async Task<BlobManipulation> DeleteAsync(string blobFilename)
+        public async Task<BlobManipulation> DeleteAsync(string blobFilename, string fromContainer)
         {
-            BlobContainerClient client = new BlobContainerClient(_blobStorageSettings.ConnectionString, _blobStorageSettings.ContainerName);
+            BlobContainerClient client = new BlobContainerClient(
+                _blobStorageSettings.ConnectionString, 
+                fromContainer);
 
             BlobClient file = client.GetBlobClient(blobFilename);
 
@@ -31,11 +34,13 @@ namespace Requests.DAL.Repositories.Implementations
             };
         }
 
-        public async Task<IEnumerable<Blob>> GetAllAsync()
+        public async Task<IEnumerable<Blob>> GetAllAsync(string fromContainer)
         {
             var blobServiceClient = new BlobServiceClient(_blobStorageSettings.ConnectionString);
-            var container = blobServiceClient.GetBlobContainerClient(_blobStorageSettings.ContainerName);
+            var container = blobServiceClient.GetBlobContainerClient(fromContainer);
+
             await container.CreateIfNotExistsAsync();
+            await container.SetAccessPolicyAsync(Azure.Storage.Blobs.Models.PublicAccessType.BlobContainer);
 
             var files = new List<Blob>();
 
@@ -56,18 +61,25 @@ namespace Requests.DAL.Repositories.Implementations
             return files;
         }
         
-        public async Task<Blob?> GetBlobByNameAsync(string blobName)
+        public async Task<string?> GetBlobByNameAsync(string blobName, string fromContainer)
         {
-            var blobs = await GetAllAsync();
+            var container = new BlobContainerClient(
+                _blobStorageSettings.ConnectionString, 
+                fromContainer);
 
-            return blobs.FirstOrDefault(x => x.Name == blobName);
+            await container.SetAccessPolicyAsync(PublicAccessType.BlobContainer);
+
+            var blob = container.GetBlobClient(blobName);
+            return blob.Uri.AbsoluteUri;
         }
 
-        public async Task<BlobManipulation> UploadAsync(IFormFile blob, string? fileFakeName = null)
+        public async Task<BlobManipulation> UploadAsync(IFormFile blob, string toContainer, string? fileFakeName = null)
         {
-            var container = new BlobContainerClient(_blobStorageSettings.ConnectionString, _blobStorageSettings.ContainerName);
+            var container = new BlobContainerClient(
+                _blobStorageSettings.ConnectionString, 
+                toContainer);
 
-            await container.CreateIfNotExistsAsync();
+            await container.CreateIfNotExistsAsync(PublicAccessType.BlobContainer);
 
             var fileName = fileFakeName is null ? blob.FileName : fileFakeName;  
             var client = container.GetBlobClient(fileName);

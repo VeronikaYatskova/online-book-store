@@ -1,6 +1,7 @@
-using System.Linq.Expressions;
 using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using BookStore.Application.Abstractions.Contracts.Interfaces;
+using BookStore.Application.DTOs.Response;
 using BookStore.Application.Services.CloudServices.Azurite.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -46,11 +47,16 @@ namespace BookStore.Application.Services.CloudServices.Azurite
             return files;
         }
 
-        public async Task<Blob?> GetBlobByAsync(Func<Blob, bool> expression)
+        public async Task<string?> GetBlobByNameAsync(string blobName, string fromContainer)
         {
-            var blobs = await GetAllAsync();
+            var container = new BlobContainerClient(
+                _blobStorageSettings.ConnectionString, 
+                fromContainer);
 
-            return blobs.FirstOrDefault(expression);
+            await container.SetAccessPolicyAsync(PublicAccessType.BlobContainer);
+
+            var blob = container.GetBlobClient(blobName);
+            return blob.Uri.AbsoluteUri;
         }
 
         public async Task<byte[]> DownloadAsync(string blobFilename)
@@ -75,11 +81,11 @@ namespace BookStore.Application.Services.CloudServices.Azurite
             throw new FileNotFoundException();
         }
 
-        public async Task<BlobResponse> UploadAsync(IFormFile blob, string? fileFakeName = null)
+        public async Task<BlobResponse> UploadAsync(IFormFile blob, string toContainer, string? fileFakeName = null)
         {
             var container = new BlobContainerClient(
                 _blobStorageSettings.ConnectionString, 
-                _blobStorageSettings.PublishedBooksContainerName);
+                toContainer);
 
             await container.CreateIfNotExistsAsync();
 
@@ -99,7 +105,7 @@ namespace BookStore.Application.Services.CloudServices.Azurite
                 }
             };
         }
-        
+
         public async Task DeleteAsync(string blobFileName)
         {
             var client = new BlobContainerClient(
@@ -111,15 +117,15 @@ namespace BookStore.Application.Services.CloudServices.Azurite
             await file.DeleteAsync();
         }
 
-        public async Task CopyFileAsync(string fileName)
+        public async Task CopyFileAsync(string fileName, string fromContainer, string toContainer)
         {
             var requestedBooksContainer = new BlobContainerClient(
                 _blobStorageSettings.ConnectionString, 
-                _blobStorageSettings.RequestedBooksContainerName);
+                fromContainer);
 
             var publishedBooksContainer = new BlobContainerClient(
                 _blobStorageSettings.ConnectionString, 
-                _blobStorageSettings.PublishedBooksContainerName);
+                toContainer);
 
             await publishedBooksContainer.CreateIfNotExistsAsync();
 
@@ -129,6 +135,30 @@ namespace BookStore.Application.Services.CloudServices.Azurite
             await publishedFile.StartCopyFromUriAsync(file.Uri);
             
             await DeleteAsync(fileName);
+        }
+
+        public async Task LoadRelatedData(IEnumerable<BookDto> books)
+        {
+            foreach (var book in books)
+            {
+                var blobUrl = await GetBlobByNameAsync(
+                    book.BookFakeName, 
+                    _blobStorageSettings.PublishedBooksContainerName);
+
+                if (book.BookCoverFakeName is not null)
+                {
+                    var BookCoverFakeName = await GetBlobByNameAsync(
+                        book.BookCoverFakeName, 
+                        _blobStorageSettings.BookCoversContainerName);
+
+                     book.BookCoverFakeName = BookCoverFakeName!;
+                }
+
+                if (blobUrl is not null)
+                {
+                    book.FileURL = blobUrl!;
+                }
+            }
         }
     }
 }

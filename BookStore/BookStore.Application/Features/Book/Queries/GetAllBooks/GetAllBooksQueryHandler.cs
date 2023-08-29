@@ -4,6 +4,8 @@ using AutoMapper;
 using MediatR;
 using OnlineBookStore.Exceptions.Exceptions;
 using BookStore.Domain.Exceptions;
+using BookStore.Application.Services.CloudServices.Azurite.Models;
+using Microsoft.Extensions.Options;
 
 namespace BookStore.Application.Features.Book.Queries.GetAllBooks
 {
@@ -12,15 +14,18 @@ namespace BookStore.Application.Features.Book.Queries.GetAllBooks
         private readonly IUnitOfWork _unitOfWork; 
         private readonly IMapper _mapper;
         private readonly IAzureService _azureService;
+        private readonly BlobStorageSettings _blobStorageSettings;
 
         public GetAllBooksQueryHandler(
-            IUnitOfWork unitOfWork, 
-            IMapper mapper, 
-            IAzureService azureService)
+            IUnitOfWork unitOfWork,
+            IMapper mapper,
+            IAzureService azureService,
+            IOptions<BlobStorageSettings> blobStorageSettings)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _azureService = azureService;
+            _blobStorageSettings = blobStorageSettings.Value;
         }
 
         public async Task<IEnumerable<BookDto>> Handle(GetAllBooksQuery request, CancellationToken cancellationToken)
@@ -37,15 +42,7 @@ namespace BookStore.Application.Features.Book.Queries.GetAllBooks
 
             var booksDto = _mapper.Map<IEnumerable<BookDto>>(books);
 
-            foreach (var book in booksDto)
-            {
-                var blob = await _azureService.GetBlobByAsync(b => b.Name == book.BookFakeName);
-                    
-                if (blob is not null)
-                {
-                    book.FileURL = blob.Uri!;
-                }
-            }
+            await _azureService.LoadRelatedData(booksDto);
 
             return booksDto;
         }

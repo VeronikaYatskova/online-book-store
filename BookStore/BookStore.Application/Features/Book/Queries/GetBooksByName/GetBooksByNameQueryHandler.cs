@@ -38,15 +38,7 @@ namespace BookStore.Application.Features.Book.Queries.GetBooksByName
 
             var booksDto = _mapper.Map<IEnumerable<BookDto>>(books);
 
-            foreach (var book in booksDto)
-            {
-                var blob = await _azureService.GetBlobByAsync(b => b.Name == book.BookFakeName);
-                    
-                if (blob is not null)
-                {
-                    book.FileURL = blob.Uri!;
-                }
-            }
+            await _azureService.LoadRelatedData(booksDto);
 
             return booksDto;
         }

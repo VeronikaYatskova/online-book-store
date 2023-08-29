@@ -1,5 +1,6 @@
 using AutoMapper;
 using MassTransit;
+using Microsoft.Extensions.Options;
 using OnlineBookStore.Messages.Models.Messages;
 using Requests.BLL.DTOs.Requests;
 using Requests.BLL.DTOs.Responses;
@@ -11,6 +12,7 @@ namespace Requests.BLL.Services.Implementations
 {
     public class RequestsService : IRequestsService
     {
+        private readonly BlobStorageSettings _blobStorageSettings;
         private readonly IRequestsRepository _requestsRepository;
         private readonly IUserRepository _userRepository;
         private readonly IBlobStorageService _blobStorageService;
@@ -24,7 +26,8 @@ namespace Requests.BLL.Services.Implementations
             IMapper mapper,
             IUserRepository userRepository,
             IPublishEndpoint publishEndpoint,
-            IRequestClient<BookPublishingMessage> requestClient)
+            IRequestClient<BookPublishingMessage> requestClient,
+            IOptions<BlobStorageSettings> blobStorageSettings)
         {
             _requestsRepository = requestsRepository;
             _mapper = mapper;
@@ -32,6 +35,7 @@ namespace Requests.BLL.Services.Implementations
             _publishEndpoint = publishEndpoint;
             _blobStorageService = blobStorageService;
             _requestClient = requestClient;
+            _blobStorageSettings = blobStorageSettings.Value;
         }
 
         public async Task<IEnumerable<GetRequestsDto>> GetRequestsAsync()
@@ -70,14 +74,31 @@ namespace Requests.BLL.Services.Implementations
         {
             var request = _mapper.Map<Request>(addRequestDto);
             
-            var fileFakeName = Guid.NewGuid();
-            var fileExtension = Path.GetExtension(addRequestDto.File.FileName);
+            var bookFileFakeName = Guid.NewGuid();
+            var bookFileExtension = Path.GetExtension(addRequestDto.File.FileName);
 
-            request.BookFakeName = string.Format("{0}{1}", fileFakeName, fileExtension);
-
+            if (addRequestDto.BookCoverFile is not null)
+            {
+                var bookCoverFileFakeName = Guid.NewGuid();
+                var bookCoverFileExtension = Path.GetExtension(addRequestDto.BookCoverFile.FileName);
+                
+                request.BookCoverFakeName = string.Format("{0}{1}", bookCoverFileFakeName, bookCoverFileExtension);;
+                
+                await _blobStorageService.UploadAsync(
+                    addRequestDto.BookCoverFile,
+                    _blobStorageSettings.BookCoversContainerName,
+                    request.BookFakeName
+                ); 
+            }
+            
+            request.BookFakeName = string.Format("{0}{1}", bookFileFakeName, bookFileExtension);
+            
             await _requestsRepository.AddAsync(request);
 
-            await _blobStorageService.UploadAsync(addRequestDto.File, request.BookFakeName);
+            await _blobStorageService.UploadAsync(
+                addRequestDto.File, 
+                _blobStorageSettings.RequestsContainerName,
+                request.BookFakeName);
 
             var publisher = await _userRepository.GetByConditionAsync(c => c.Id == addRequestDto.PublisherId);
             
@@ -115,6 +136,7 @@ namespace Requests.BLL.Services.Implementations
             
             var bookPublishingMessage = _mapper.Map<BookPublishingMessage>(addBookDto);
             bookPublishingMessage.BookFakeName = request.BookFakeName;
+            bookPublishingMessage.BookPictureURL = request.BookCoverFakeName;
             
             var response = await _requestClient.GetResponse<BookPublishedMessage>(bookPublishingMessage);
 

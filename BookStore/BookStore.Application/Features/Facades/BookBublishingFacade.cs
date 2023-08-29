@@ -1,6 +1,8 @@
 using AutoMapper;
 using BookStore.Application.Abstractions.Contracts.Interfaces;
+using BookStore.Application.Services.CloudServices.Azurite.Models;
 using BookStore.Domain.Entities;
+using Microsoft.Extensions.Options;
 using OnlineBookStore.Messages.Models.Messages;
 
 namespace BookStore.Application.Features.Facades
@@ -8,24 +10,31 @@ namespace BookStore.Application.Features.Facades
     public class BookBublishingFacade : IBookPublishingFacade
     {
         private readonly IAzureService _azureService;
+        private readonly BlobStorageSettings _blobStorageSettings;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
         public BookBublishingFacade(
-            IAzureService azureService, 
-            IUnitOfWork unitOfWork, 
-            IMapper mapper)
+            IAzureService azureService,
+            IUnitOfWork unitOfWork,
+            IMapper mapper,
+            IOptions<BlobStorageSettings> blobStorageSettings)
         {
             _azureService = azureService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _blobStorageSettings = blobStorageSettings.Value;
         }
 
         public async Task PublishBookAsync(BookPublishingMessage bookInfo)
         {
-            await _azureService.CopyFileAsync(bookInfo.BookFakeName);
+            await _azureService.CopyFileAsync(
+                bookInfo.BookFakeName, 
+                _blobStorageSettings.RequestedBooksContainerName, 
+                _blobStorageSettings.PublishedBooksContainerName);
 
             var bookEntity = _mapper.Map<BookEntity>(bookInfo);
+            bookEntity.BookCoverFakeName = bookInfo.BookPictureURL;
 
             await _unitOfWork.BooksRepository.CreateAsync(bookEntity);
 

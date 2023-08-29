@@ -5,8 +5,8 @@ namespace Requests.DAL.Repositories.Interfaces
 {
     public interface IBlobStorageRepository
     {
-        Task<IEnumerable<Blob>> GetAllAsync();
-        Task<Blob?> GetBlobByNameAsync(string blobName);
-        Task<BlobManipulation> UploadAsync(IFormFile blob, string? fileFakeName = null);
+        Task<IEnumerable<Blob>> GetAllAsync(string fromContainer);
+        Task<string?> GetBlobByNameAsync(string blobName, string fromContainer);
+        Task<BlobManipulation> UploadAsync(IFormFile blob, string toContainer, string? fileFakeName = null);
     }
 }
