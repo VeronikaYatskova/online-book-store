@@ -2,75 +2,80 @@ version: '3'
 
 services:
   
-  bookstore:
-    build:
-      context: .
-      dockerfile: BookStore/Dockerfile
-    ports:
-      - "7025:80"
-    depends_on:
-      - postgres
-      - azurite-db
-      - rabbitmq
+  # bookstore:
+  #   build:
+  #     context: .
+  #     dockerfile: BookStore/Dockerfile
+  #   ports:
+  #     - "7025:80"
+  #   depends_on:
+  #     - postgres
+  #     - azurite-db
+  #     - rabbitmq
     
-  auth:
-    build:
-      context: .
-      dockerfile: Auth/Dockerfile
-    ports:
-      - "7198:80"
-    depends_on:
-      - postgres
-      - rabbitmq
+  # auth:
+  #   build:
+  #     context: .
+  #     dockerfile: Auth/Dockerfile
+  #   ports:
+  #     - "7198:80"
+  #   depends_on:
+  #     - postgres
+  #     - rabbitmq
 
   profiles:
     build:
       context: .
       dockerfile: Profiles/Dockerfile
+    labels:
+      - mssql=mssql
     ports:
       - "7034:80"
     depends_on:
       - mssql
       - rabbitmq
   
-  requests:
-    build:
-      context: .
-      dockerfile: Requests/Dockerfile
-    ports:
-      - "7024:80"
-    depends_on:
-      - mongo
-      - azurite-db
-      - rabbitmq
+  # requests:
+  #   build:
+  #     context: .
+  #     dockerfile: Requests/Dockerfile
+  #   ports:
+  #     - "7024:80"
+  #   depends_on:
+  #     - mongo
+  #     - azurite-db
+  #     - rabbitmq
 
-  comments:
-    build:
-      context: .
-      dockerfile: Comments/Dockerfile
-    ports:
-      - "7045:80"
-    depends_on:
-      - mongo
-      - rabbitmq
+  # comments:
+  #   build:
+  #     context: .
+  #     dockerfile: Comments/Dockerfile
+  #   ports:
+  #     - "7045:80"
+  #   depends_on:
+  #     - mongo
+  #     - rabbitmq
 
-  email:
-    build:
-      context: .
-      dockerfile: EmailService/Dockerfile
-    ports:
-      - "7265:80"
-    depends_on:
-      - rabbitmq
+  # email:
+  #   build:
+  #     context: .
+  #     dockerfile: EmailService/Dockerfile
+  #   ports:
+  #     - "7265:80"
+  #   depends_on:
+  #     - rabbitmq
 
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    user: root
     environment:
-        - ACCEPT_EULA=Y
-        - SA_PASSWORD=SpikePrototype2016!
+      MSSQL_SA_PASSWORD: "change_this_password"
+      MSSQL_PID: "Developer"
+      ACCEPT_EULA: "Y"
+      MSSQL_TCP_PORT: 1433
     ports:
         - 1442:1433
+    volumes:
+      - ./mssql_init_database.sql:/init.sql
 
   postgres:
     image: postgres

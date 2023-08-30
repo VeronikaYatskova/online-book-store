@@ -53,8 +53,6 @@ namespace BookStore.WebApi.Extensions
                 {
                     var rabbitMqSettings = context.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
 
-                    // Log.Logger.Information("RabbitMq host: ", rabbitMqSettings.Host);
-
                     configuration.Host(rabbitMqSettings.Host, h =>
                     {
                         h.Username(rabbitMqSettings.UserName);
