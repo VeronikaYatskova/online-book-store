@@ -1,7 +1,7 @@
 using EmailService.Models;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using Serilog;
+
 using MailKitSmtpClient = MailKit.Net.Smtp.SmtpClient;
 
 namespace EmailService.Services
@@ -19,9 +19,6 @@ namespace EmailService.Services
 
         public async Task SendEmailAsync(Message message)
         {
-            Log.Logger.Information("Email service: Email content " + message.Content);
-            _logger.LogInformation("Email service: Email subject" + message.Subject);
-            
             MimeMessage emailMessage = new MimeMessage();
             emailMessage = CreateMessage(message);
 
@@ -32,10 +29,7 @@ namespace EmailService.Services
         {
             var emailMessage = new MimeMessage();
             
-            _logger.LogInformation("From email address: " + _emailConfig.From);
-
-            // emailMessage.From.Add(new MailboxAddress("email", _emailConfig.From));
-            emailMessage.From.Add(new MailboxAddress("email", "noreplymybookstore@gmail.com"));
+            emailMessage.From.Add(new MailboxAddress("email", _emailConfig.From));
             emailMessage.To.AddRange(message.To);
             emailMessage.Subject = message.Subject;
 
@@ -53,12 +47,9 @@ namespace EmailService.Services
 
             try
             {
-                // await client.ConnectAsync(_emailConfig.SmtpServer, _emailConfig.Port, true);
-                // client.Authenticate(_emailConfig.From, _emailConfig.Password);
+                await client.ConnectAsync(_emailConfig.SmtpServer, _emailConfig.Port, true);
+                client.Authenticate(_emailConfig.From, _emailConfig.Password);
                 
-                await client.ConnectAsync("smtp.gmail.com", 465, true);
-                client.Authenticate("noreplymybookstore@gmail.com", "ndfkdgkfcpwcsjpk");
-
                 await client.SendAsync(mimeMessage);
             }
             catch(Exception ex)

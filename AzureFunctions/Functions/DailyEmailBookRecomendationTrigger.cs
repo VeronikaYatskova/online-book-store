@@ -12,7 +12,9 @@ namespace Company.Function
         private readonly IEmailService _emailService;
         private readonly ILogger<DailyEmailBookRecomendationTrigger> _logger;
 
-        public DailyEmailBookRecomendationTrigger(IEmailService emailService, ILogger<DailyEmailBookRecomendationTrigger> logger)
+        public DailyEmailBookRecomendationTrigger(
+            IEmailService emailService,
+            ILogger<DailyEmailBookRecomendationTrigger> logger)
         {
             _emailService = emailService;
             _logger = logger;
