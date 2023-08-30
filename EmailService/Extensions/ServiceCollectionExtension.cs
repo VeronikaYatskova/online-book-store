@@ -55,10 +55,10 @@ namespace EmailService.Extensions
                        c.ConfigureConsumer<EmailConfirmationConsumer>(context); 
                     });
 
-                    config.ReceiveEndpoint("daily-book-recommendation", c =>
-                    {
-                        c.ConfigureConsumer<DailyEmailBookRecommendationConsumer>(context);
-                    });
+                    // config.ReceiveEndpoint("daily-book-recommendation", c =>
+                    // {
+                    //     c.ConfigureConsumer<DailyEmailBookRecommendationConsumer>(context);
+                    // });
                 });
             });
         }
