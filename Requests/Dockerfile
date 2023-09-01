@@ -4,22 +4,18 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
-COPY ["/Requests.BLL/Requests.BLL.csproj", "src/Requests.BLL/"]
-COPY ["/Requests.DAL/Requests.DAL.csproj", "src/Requests.DAL/"]
-COPY ["/Requests.API/Requests.API.csproj", "src/Requests.API/"]
+COPY ["Requests/.", "./"]
 
-RUN dotnet restore "src/Requests.API/Requests.API.csproj"
-COPY . .
-
-WORKDIR "/src/Requests.API"
-RUN dotnet build -c Release -o app/build
+RUN dotnet restore "Requests.API/Requests.API.csproj"
+RUN dotnet build "Requests.API/Requests.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet publish "Requests.API/Requests.API.csproj" -c Release -o /app/publish
 
 FROM base AS runtime
 WORKDIR /app
 
 COPY --from=publish /app/publish .
+RUN ls -l
 
-ENTRYPOINT [ "dotnet", "Requests.API.dll" ]
+ENTRYPOINT ["dotnet", "Requests.API.dll"]

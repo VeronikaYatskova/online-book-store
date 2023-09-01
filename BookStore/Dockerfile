@@ -4,15 +4,12 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
-COPY ["/BookStore.Application/BookStore.Application.csproj", "src/BookStore.Application/"]
-COPY ["/BookStore.Domain/BookStore.Domain.csproj", "src/BookStore.Domain/"]
-COPY ["/BookStore.Infrastructure/BookStore.Infrastructure.csproj", "src/BookStore.Infrastructure/"]
-COPY ["/BookStore.Api/BookStore.Api.csproj", "src/BookStore.Api/"]
+COPY ["/BookStore/.", "src/"]
 
 RUN dotnet restore "src/BookStore.Api/BookStore.Api.csproj"
 COPY . .
 
-WORKDIR "/src/BookStore.Api/"
+WORKDIR "/src/BookStore/"
 RUN dotnet build -c Release -o /app/build
 
 FROM build AS publish
@@ -22,6 +19,5 @@ FROM base AS runtime
 WORKDIR /app
 
 COPY --from=publish /app/publish .
-RUN ls -l
 
 ENTRYPOINT ["dotnet", "BookStore.Api.dll"]

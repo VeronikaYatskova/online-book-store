@@ -75,13 +75,13 @@ namespace Auth.API.Extensions
             {
                 x.UsingRabbitMq((context, config) =>
                 {
-                        var options = context.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
+                    var options = context.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
 
-                        config.Host(options.Host, h =>
-                        {
-                            h.Username(options.UserName);
-                            h.Password(options.Password);
-                        });
+                    config.Host(options.Host, h =>
+                    {
+                        h.Username(options.UserName);
+                        h.Password(options.Password);
+                    });
                 });
             });
         }

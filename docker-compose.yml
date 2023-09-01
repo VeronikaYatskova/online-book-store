@@ -3,18 +3,20 @@ version: '3'
 services:
   
   bookstore:
-    image: book-store-api
+    build:
+      context: .
+      dockerfile: BookStore/Dockerfile
     ports:
-      - "7223:80"
+      - "7025:80"
     depends_on:
       - postgres
       - azurite-db
       - rabbitmq
-    environment:
-      - ConnectionString:Host=postgres;User ID =admin;Password=admin;Port=5432;Database=books;Integrated Security=true;Pooling=true;
-
+    
   auth:
-    image: book-store-auth:latest
+    build:
+      context: .
+      dockerfile: Auth/Dockerfile
     ports:
       - "7198:80"
     depends_on:
@@ -22,7 +24,11 @@ services:
       - rabbitmq
 
   profiles:
-    image: profiles:latest
+    build:
+      context: .
+      dockerfile: Profiles/Dockerfile
+    labels:
+      - mssql=mssql
     ports:
       - "7034:80"
     depends_on:
@@ -36,9 +42,9 @@ services:
     ports:
       - "7024:80"
     depends_on:
-      - mongo
       - azurite-db
       - rabbitmq
+      - mongo
 
   comments:
     build:
@@ -47,8 +53,8 @@ services:
     ports:
       - "7045:80"
     depends_on:
-      - mongo
       - rabbitmq
+      - mongo
 
   email:
     build:
@@ -62,10 +68,14 @@ services:
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
-      - SA_PASSWORD=SpikePrototype2016!
-      - ACCEPT_EULA=Y
+      MSSQL_SA_PASSWORD: "change_this_password"
+      MSSQL_PID: "Developer"
+      ACCEPT_EULA: "Y"
+      MSSQL_TCP_PORT: 1433
     ports:
-      - "1433:1433"
+        - 1442:1433
+    volumes:
+      - ./mssql_init_database.sql:/init.sql
 
   postgres:
     image: postgres
@@ -73,7 +83,7 @@ services:
       POSTGRES_USER: "admin"
       POSTGRES_PASSWORD: "admin"
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - ./volumes/postgres:/var/lib/postgresql/data
       - ./init_db.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
@@ -81,7 +91,7 @@ services:
   mongo:
     image: mongo:latest
     ports:
-      - 27017:27017
+      - 27018:27017
 
   pgadmin:
     container_name: pgadmin4_container
@@ -101,9 +111,10 @@ services:
       - RABBITMQ_DEFAULT_PASS=user
     ports:
       # RabbitMq instance
-      - "5672:5672"
+      - "5673:5672"
       # Web interface
       - "15672:15672"
+    restart: on-failure
 
   azurite-db:
     image: mcr.microsoft.com/azure-storage/azurite

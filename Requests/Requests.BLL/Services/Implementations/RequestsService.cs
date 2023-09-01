@@ -1,6 +1,7 @@
 using AutoMapper;
 using MassTransit;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 using OnlineBookStore.Messages.Models.Messages;
 using Requests.BLL.DTOs.Requests;
 using Requests.BLL.DTOs.Responses;
@@ -19,6 +20,7 @@ namespace Requests.BLL.Services.Implementations
         private readonly IMapper _mapper;
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly IRequestClient<BookPublishingMessage> _requestClient;
+        private readonly ILogger<RequestsService> _logger;
 
         public RequestsService(
             IRequestsRepository requestsRepository,
@@ -27,7 +29,8 @@ namespace Requests.BLL.Services.Implementations
             IUserRepository userRepository,
             IPublishEndpoint publishEndpoint,
             IRequestClient<BookPublishingMessage> requestClient,
-            IOptions<BlobStorageSettings> blobStorageSettings)
+            IOptions<BlobStorageSettings> blobStorageSettings,
+            ILogger<RequestsService> logger)
         {
             _requestsRepository = requestsRepository;
             _mapper = mapper;
@@ -36,6 +39,7 @@ namespace Requests.BLL.Services.Implementations
             _blobStorageService = blobStorageService;
             _requestClient = requestClient;
             _blobStorageSettings = blobStorageSettings.Value;
+            _logger = logger;
         }
 
         public async Task<IEnumerable<GetRequestsDto>> GetRequestsAsync()
@@ -72,6 +76,8 @@ namespace Requests.BLL.Services.Implementations
 
         public async Task AddRequestAsync(AddRequestDto addRequestDto)
         {
+            _logger.LogInformation($"{addRequestDto.UserId} {addRequestDto.PublisherId}");
+
             var request = _mapper.Map<Request>(addRequestDto);
             
             var bookFileFakeName = Guid.NewGuid();
@@ -100,8 +106,18 @@ namespace Requests.BLL.Services.Implementations
                 _blobStorageSettings.RequestsContainerName,
                 request.BookFakeName);
 
-            var publisher = await _userRepository.GetByConditionAsync(c => c.Id == addRequestDto.PublisherId);
-            
+            var fakePublisher = new User
+            {
+                Id = "64d8e3c9b5eb70d5f5958b22",
+                Email = "fakepublisher@gmail.com",
+                RoleId = "02a27bd4-960f-4f30-9c79-51be15e219b5"
+            };
+
+            await _userRepository.AddUserAsync(fakePublisher);
+
+            var publisher = await _userRepository.GetByConditionAsync(c => c.Id == addRequestDto.PublisherId) ??
+                throw new ArgumentNullException("publisher is null");
+
             var requestCreatedMessage = _mapper.Map<RequestCreatedMessage>(request);
             requestCreatedMessage.PublisherEmail = publisher.Email;
 

@@ -16,7 +16,7 @@ builder.Services.AddLayers(configuration);
 
 builder.Services.AddOptions(configuration);
 
-builder.Services.AddMassTransitConfig();
+builder.Services.AddMassTransitConfig(configuration);
 
 var app = builder.Build();
 
@@ -30,7 +30,7 @@ if (app.Environment.IsDevelopment())
 
 app.ConfigureCustomExceptionMiddleware();
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 
 app.UseAuthentication();
 

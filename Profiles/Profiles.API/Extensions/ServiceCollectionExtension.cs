@@ -45,12 +45,13 @@ namespace Profiles.API.Extensions
             services.AddMassTransit(busConfigurator =>
             {   
                 busConfigurator.AddConsumer<UserRegisteredConsumer>();
+                busConfigurator.AddConsumer<UserDeletedConsumer>();
                 
                 busConfigurator.UsingRabbitMq((context, configuration) => 
                 {
                     var rabbitMqSettings = context.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
 
-                    configuration.Host(new Uri(rabbitMqSettings.Host!), h =>
+                    configuration.Host(rabbitMqSettings.Host!, h =>
                     {
                         h.Username(rabbitMqSettings.UserName);
                         h.Password(rabbitMqSettings.Password);
@@ -59,6 +60,11 @@ namespace Profiles.API.Extensions
                     configuration.ReceiveEndpoint(Queues.UserRegisteredQueue, c => 
                     {
                         c.ConfigureConsumer<UserRegisteredConsumer>(context);   
+                    });
+
+                    configuration.ReceiveEndpoint("user-deleted-queue", c => 
+                    {
+                        c.ConfigureConsumer<UserDeletedConsumer>(context);   
                     });
                 });
             });
