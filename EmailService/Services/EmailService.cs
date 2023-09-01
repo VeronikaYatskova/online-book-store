@@ -9,15 +9,18 @@ namespace EmailService.Services
     public class EmailService : IEmailService
     {
         private readonly EmailConfiguration _emailConfig;
+        private readonly ILogger<EmailService> _logger;
 
-        public EmailService(IOptions<EmailConfiguration> emailConfig)
+        public EmailService(IOptions<EmailConfiguration> emailConfig, ILogger<EmailService> logger)
         {
             _emailConfig = emailConfig.Value;
+            _logger = logger;
         }
 
         public async Task SendEmailAsync(Message message)
         {
-            var emailMessage = CreateMessage(message);
+            MimeMessage emailMessage = new MimeMessage();
+            emailMessage = CreateMessage(message);
 
             await Send(emailMessage);
         }
@@ -25,14 +28,16 @@ namespace EmailService.Services
         private MimeMessage CreateMessage(Message message)
         {
             var emailMessage = new MimeMessage();
+            
             emailMessage.From.Add(new MailboxAddress("email", _emailConfig.From));
             emailMessage.To.AddRange(message.To);
             emailMessage.Subject = message.Subject;
-            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text)
-            {
-                Text = message.Content,
-            };
 
+            var builder = new BodyBuilder();
+            builder.TextBody = message.Content;
+
+            emailMessage.Body = builder.ToMessageBody();
+            
             return emailMessage;
         }
 
@@ -44,7 +49,7 @@ namespace EmailService.Services
             {
                 await client.ConnectAsync(_emailConfig.SmtpServer, _emailConfig.Port, true);
                 client.Authenticate(_emailConfig.From, _emailConfig.Password);
-
+                
                 await client.SendAsync(mimeMessage);
             }
             catch(Exception ex)

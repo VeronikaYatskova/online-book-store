@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using BookStore.Infrastructure.Persistance.Repositories;
 using BookStore.Infrastructure;
+using PdfGenerator.Interfaces;
+using PdfGenerator;
 
 namespace Infrastructure.Extensions
 {
@@ -14,6 +16,8 @@ namespace Infrastructure.Extensions
         {
             services.AddDbContext(config);
             services.AddRepositories();
+            services.AddScoped<ITemplateGenerator, TemplateGenerator>(); 
+            services.AddScoped<IPdfGenerator, PdfGenerator.PdfGenerator>(); 
         }
 
         private static void AddDbContext(this IServiceCollection services, IConfiguration config)

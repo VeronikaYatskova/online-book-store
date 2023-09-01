@@ -23,7 +23,7 @@ namespace EmailService.Consumers
                 new string[] { context.Message.PublisherEmail },
                 "Book publishing request",
                 EmailMessages.RequestCreated);
-                
+            
             await _emailService.SendEmailAsync(message);
         }
     }

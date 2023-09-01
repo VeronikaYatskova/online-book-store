@@ -8,6 +8,9 @@ using BookStore.Application.Services.CloudServices.Azurite.Models;
 using MassTransit;
 using Microsoft.Extensions.Options;
 using OnlineBookStore.Queues;
+using Hangfire;
+using Hangfire.PostgreSql;
+using BookStore.Application.Services.BackgroundServices;
 
 namespace BookStore.WebApi.Extensions
 {
@@ -17,6 +20,7 @@ namespace BookStore.WebApi.Extensions
         {
             services.AddApplicationLayer();
             services.AddInfrastructureLayer(configuration);
+            services.AddHttpContextAccessor();
         }
 
         public static void AddCustomLogger(this ILoggingBuilder loggingBuilder)
@@ -70,6 +74,17 @@ namespace BookStore.WebApi.Extensions
                     });
                 });
             });
+        }
+
+        public static void AddHangfireConfig(this IServiceCollection services, IConfiguration configuration)
+        {
+            var hangfireConnectionString = configuration["ConnectionStrings:HangfireConnection"];
+            
+            services.AddHangfire(config => 
+                config.UseSimpleAssemblyNameTypeSerializer()
+                      .UseRecommendedSerializerSettings()
+                      .UsePostgreSqlStorage(hangfireConnectionString));
+            services.AddHangfireServer();
         }
     }
 }

@@ -8,6 +8,7 @@ using BookStore.Application.Services;
 using BookStore.Application.Services.CloudServices.Amazon;
 using BookStore.Application.Services.CloudServices.Azurite;
 using BookStore.Application.Features.Facades;
+using BookStore.Application.Services.BackgroundServices;
 
 namespace BookStore.Application.Extensions
 {
@@ -26,6 +27,7 @@ namespace BookStore.Application.Extensions
             services.AddScoped<IAwsS3Service, AwsS3Service>();
             services.AddScoped<IAzureService, AzureService>();
             services.AddScoped<IBookPublishingFacade, BookBublishingFacade>(); 
+            services.AddScoped<IBackgroudService, BackgroudService>();
         }
     }
 }

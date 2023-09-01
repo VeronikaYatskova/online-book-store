@@ -55,7 +55,7 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
                 throw new AlreadyExistsException(ExceptionMessages.UserAlreadyExistsMessage);
             }
 
-            var userEntity = _mapper.Map<Domain.Models.User>(userData); 
+            var userEntity = _mapper.Map<UserEntity>(userData); 
             
             _passwordService.CreatePasswordHash(userData.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -67,16 +67,10 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
             userEntity.PasswordSalt = passwordSalt;
 
             await _userRepository.CreateAsync(userEntity);
-
-            _logger.LogError("Before save");
-
             await _userRepository.SaveChangesAsync();
 
-            _logger.LogError("After save");
-            
-            var userMessage = _mapper.Map<UserRegisteredMessage>(userEntity);
-
-            await request._publishEndpoint.Publish(userMessage);         
+            var userRegisteredMessage = _mapper.Map<UserRegisteredMessage>(userEntity);
+            await _publishEndpoint.Publish(userRegisteredMessage);
         }
     }
 }

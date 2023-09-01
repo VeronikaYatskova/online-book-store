@@ -28,6 +28,7 @@ namespace EmailService.Extensions
                 x.AddConsumer<RequestCreatedConsumer>();
                 x.AddConsumer<RequestUpdateConsumer>();
                 x.AddConsumer<EmailConfirmationConsumer>();
+                x.AddConsumer<DailyEmailBookRecommendationConsumer>();
 
                 x.UsingRabbitMq((context, config) =>
                 {
@@ -53,6 +54,11 @@ namespace EmailService.Extensions
                     {
                        c.ConfigureConsumer<EmailConfirmationConsumer>(context); 
                     });
+
+                    // config.ReceiveEndpoint("daily-book-recommendation", c =>
+                    // {
+                    //     c.ConfigureConsumer<DailyEmailBookRecommendationConsumer>(context);
+                    // });
                 });
             });
         }
