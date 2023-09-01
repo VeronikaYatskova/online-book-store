@@ -1,11 +1,10 @@
 using AutoMapper;
 using MediatR;
 using Profiles.Application.DTOs.Response;
-using Profiles.Application.Features.Users.Queries.GetNormalUsers;
 using Profiles.Application.Interfaces.Repositories;
 using OnlineBookStore.Exceptions.Exceptions;
 
-namespace Profiles.Application.Features.Users.Queries.GetAuthors
+namespace Profiles.Application.Features.Users.Queries.GetNormalUsers
 {
     public class GetNormalUsersQueryHandler : IRequestHandler<GetNormalUsersQuery, IEnumerable<GetUsersResponse>>
     {
