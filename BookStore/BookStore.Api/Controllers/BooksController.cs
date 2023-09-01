@@ -23,7 +23,7 @@ namespace BookStore.WebApi.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IAzureService _azureService;
-
+        
         public BooksController(
             IMediator mediator,
             IAzureService azureService)
