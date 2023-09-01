@@ -11,6 +11,9 @@ using OnlineBookStore.Queues;
 using Hangfire;
 using Hangfire.PostgreSql;
 using BookStore.Application.Services.BackgroundServices;
+using Serilog.Exceptions;
+using Serilog.Sinks.Elasticsearch;
+using System.Reflection;
 
 namespace BookStore.WebApi.Extensions
 {
@@ -23,15 +26,18 @@ namespace BookStore.WebApi.Extensions
             services.AddHttpContextAccessor();
         }
 
-        public static void AddCustomLogger(this ILoggingBuilder loggingBuilder)
+        public static void AddCustomLogger(this ILoggingBuilder loggingBuilder, IConfiguration configuration)
         {
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Information)
+                .Enrich.FromLogContext()
+                .Enrich.WithExceptionDetails()
+                .WriteTo.Debug()
+                .WriteTo.Console()
+                .WriteTo.Elasticsearch(ConfigureElasticSink(configuration, environment))
+                .Enrich.WithProperty("Environment", environment)
+                .ReadFrom.Configuration(configuration)
                 .CreateLogger();
-
-            loggingBuilder.ClearProviders();
-            loggingBuilder.AddSerilog(Log.Logger);
         }
 
         public static void AddOptions(this IServiceCollection services, IConfiguration configuration)
@@ -85,6 +91,21 @@ namespace BookStore.WebApi.Extensions
                       .UseRecommendedSerializerSettings()
                       .UsePostgreSqlStorage(hangfireConnectionString));
             services.AddHangfireServer();
+        }
+
+        private static ElasticsearchSinkOptions ConfigureElasticSink(IConfiguration configuration, string environment)
+        {
+            return new ElasticsearchSinkOptions(new Uri(configuration["ElasticConfig:Uri"]))    
+            {
+                AutoRegisterTemplate = true,
+                IndexFormat = $"{Assembly
+                    .GetExecutingAssembly()
+                    .GetName().Name
+                    .ToLower()
+                    .Replace(".", "-")}-{environment.ToLower()}-{DateTime.UtcNow:yyyy-MM}",
+                NumberOfReplicas = 2,
+                NumberOfShards = 2,  
+            };
         }
     }
 }

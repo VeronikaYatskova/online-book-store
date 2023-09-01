@@ -3,11 +3,13 @@ using BookStore.WebApi.Extensions;
 using BookStore.Api.Extensions;
 using Hangfire;
 using BookStore.Application.Abstractions.Contracts.Interfaces;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-builder.Logging.AddCustomLogger();
+builder.Logging.AddCustomLogger(configuration);
+builder.Host.UseSerilog();
 
 builder.Services.AddControllers();
 
