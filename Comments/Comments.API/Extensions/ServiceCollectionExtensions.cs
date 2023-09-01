@@ -37,7 +37,7 @@ namespace Comments.API.Extensions
                 {
                     var rabbitMqSettings = context.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
 
-                    configuration.Host(new Uri(rabbitMqSettings.Host!), h =>
+                    configuration.Host(rabbitMqSettings.Host!, h =>
                     {
                         h.Username(rabbitMqSettings.UserName);
                         h.Password(rabbitMqSettings.Password);

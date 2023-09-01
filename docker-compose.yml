@@ -35,35 +35,35 @@ services:
       - mssql
       - rabbitmq
   
-  # requests:
-  #   build:
-  #     context: .
-  #     dockerfile: Requests/Dockerfile
-  #   ports:
-  #     - "7024:80"
-  #   depends_on:
-  #     - mongo
-  #     - azurite-db
-  #     - rabbitmq
+  requests:
+    build:
+      context: .
+      dockerfile: Requests/Dockerfile
+    ports:
+      - "7024:80"
+    depends_on:
+      - azurite-db
+      - rabbitmq
+      - mongo
 
-  # comments:
-  #   build:
-  #     context: .
-  #     dockerfile: Comments/Dockerfile
-  #   ports:
-  #     - "7045:80"
-  #   depends_on:
-  #     - mongo
-  #     - rabbitmq
+  comments:
+    build:
+      context: .
+      dockerfile: Comments/Dockerfile
+    ports:
+      - "7045:80"
+    depends_on:
+      - rabbitmq
+      - mongo
 
-  # email:
-  #   build:
-  #     context: .
-  #     dockerfile: EmailService/Dockerfile
-  #   ports:
-  #     - "7265:80"
-  #   depends_on:
-  #     - rabbitmq
+  email:
+    build:
+      context: .
+      dockerfile: EmailService/Dockerfile
+    ports:
+      - "7265:80"
+    depends_on:
+      - rabbitmq
 
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -91,7 +91,7 @@ services:
   mongo:
     image: mongo:latest
     ports:
-      - 27017:27017
+      - 27018:27017
 
   pgadmin:
     container_name: pgadmin4_container

@@ -10,7 +10,9 @@ namespace Auth.Application.AutoMapper
     {
         public MapperProfile()
         {
-            CreateMap<User, GetUsersResponse>();
+            CreateMap<User, GetUsersResponse>()
+                .ForMember(u => u.UserGuid,
+                x => x.MapFrom(ur => ur.Id.ToString()));
             CreateMap<LoginUserRequest, User>();
             CreateMap<RegisterUserRequest, User>();
             CreateMap<User, UserRegisteredMessage>();
