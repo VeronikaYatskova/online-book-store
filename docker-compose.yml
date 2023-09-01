@@ -55,6 +55,7 @@ services:
     depends_on:
       - rabbitmq
       - mongo
+      - redis
 
   email:
     build:
@@ -151,9 +152,19 @@ services:
     networks:
       - elastic
 
-networks:
-  elastic:
-    driver: bridge
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - '6379:6379'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes: 
+      - ./volumes/redis/cache:/data
 
-volumes:
-  elasticsearch-data:
+  networks:
+    elastic:
+      driver: bridge
+
+  volumes:
+    elasticsearch-data:
