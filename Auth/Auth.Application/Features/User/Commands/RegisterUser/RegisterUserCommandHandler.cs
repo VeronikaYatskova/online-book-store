@@ -9,6 +9,7 @@ using MediatR;
 using UserEntity = Auth.Domain.Models.User;
 using Auth.Domain.Exceptions;
 using OnlineBookStore.Messages.Models.Messages;
+using Microsoft.Extensions.Logging;
 
 namespace Auth.Application.Features.User.Commands.RegisterUser
 {
@@ -21,6 +22,7 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
         private readonly IMapper _mapper;
         private readonly IValidator<RegisterUserCommand> _validator;
         private readonly IPublishEndpoint _publishEndpoint;
+        private readonly ILogger<RegisterUserCommandHandler> _logger;
 
         public RegisterUserCommandHandler(
             IRepository<UserEntity> userRepository,
@@ -29,7 +31,8 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
             IPasswordService passwordService,
             IMapper mapper,
             IValidator<RegisterUserCommand> validator,
-            IPublishEndpoint publishEndpoint)
+            IPublishEndpoint publishEndpoint,
+            ILogger<RegisterUserCommandHandler> logger)
         {
             _userRepository = userRepository;
             _userRoleRepository = userRoleRepository;
@@ -38,6 +41,7 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
             _mapper = mapper;
             _validator = validator;
             _publishEndpoint = publishEndpoint;
+            _logger = logger;
         }
 
         public async Task Handle(RegisterUserCommand request, CancellationToken cancellationToken)
@@ -63,11 +67,16 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
             userEntity.PasswordSalt = passwordSalt;
 
             await _userRepository.CreateAsync(userEntity);
+
+            _logger.LogError("Before save");
+
             await _userRepository.SaveChangesAsync();
 
+            _logger.LogError("After save");
+            
             var userMessage = _mapper.Map<UserRegisteredMessage>(userEntity);
 
-            await _publishEndpoint.Publish(userMessage);         
+            await request._publishEndpoint.Publish(userMessage);         
         }
     }
 }

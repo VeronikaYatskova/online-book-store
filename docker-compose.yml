@@ -111,7 +111,7 @@ services:
       - RABBITMQ_DEFAULT_PASS=user
     ports:
       # RabbitMq instance
-      - "5672:5672"
+      - "5673:5672"
       # Web interface
       - "15672:15672"
     restart: on-failure

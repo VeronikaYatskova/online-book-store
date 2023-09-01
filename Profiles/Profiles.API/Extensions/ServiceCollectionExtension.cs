@@ -64,7 +64,7 @@ namespace Profiles.API.Extensions
 
                     configuration.ReceiveEndpoint("user-deleted-queue", c => 
                     {
-                        c.ConfigureConsumer<UserRegisteredConsumer>(context);   
+                        c.ConfigureConsumer<UserDeletedConsumer>(context);   
                     });
                 });
             });

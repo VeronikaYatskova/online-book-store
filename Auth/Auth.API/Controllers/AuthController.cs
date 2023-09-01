@@ -51,7 +51,9 @@ namespace Auth.API.Controllers
         [HttpPost("users/sign-up")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterUserRequest request)
         {
-            await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.UserRole));
+            await _publishEndpoint.Publish(new UserRegisteredMessage());
+
+            await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.UserRole, _publishEndpoint));
 
             await ConfirmEmail(request.Email);
 
@@ -61,7 +63,7 @@ namespace Auth.API.Controllers
         [HttpPost("publishers/sign-up")]
         public async Task<IActionResult> RegisterPublisher([FromBody] RegisterUserRequest request)
         {
-            await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.PublisherRole));
+            await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.PublisherRole, _publishEndpoint));
             
             await ConfirmEmail(request.Email);
 
@@ -71,7 +73,7 @@ namespace Auth.API.Controllers
         [HttpPost("authors/sign-up")]
         public async Task<IActionResult> RegisterAuthor([FromBody] RegisterUserRequest request)
         {
-            await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.AuthorRole));
+            await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.AuthorRole, _publishEndpoint));
 
             await ConfirmEmail(request.Email);
 
