@@ -81,8 +81,8 @@ namespace Profiles.API.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUserAsync([FromRoute] string id)
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> DeleteUserAsync([FromRoute] string userId)
         {
             await _mediator.Send(new DeleteUserCommand(new DeleteUserRequest
             {

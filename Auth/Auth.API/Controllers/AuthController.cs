@@ -81,7 +81,7 @@ namespace Auth.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ConfirmEmail(string verificationToken, string email)
+        public async Task<IActionResult> ConfirmEmail([FromQuery]string verificationToken, string email)
         {
             var result = await _mediator.Send(new ConfirmEmailCommand(verificationToken, email));
 
