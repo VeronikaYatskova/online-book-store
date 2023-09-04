@@ -1,17 +1,78 @@
 {
     "GlobalConfiguration": {
-        "BaseUrl": "https://localhost:7102"
-    },
+        "BaseUrl": "http://localhost:7101"
+    }, 
+
     "Routes": [
         {
-            "UpstreamPathTemplate": "/gateway/books",
+            "UpstreamPathTemplate": "/books",
             "UpstreamHttpMethod": [ "Get", "Post" ],
             "DownstreamPathTemplate": "/api/books",
-            "DownstreamScheme": "https",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                "Host": "localhost",
-                "Port": 7025
+                    "Host": "bookstore",
+                    "Port": 80
+                }
+            ]
+        },
+        {
+            "UpstreamPathTemplate": "/books/{id}",
+            "UpstreamHttpMethod": [ "Get", "Delete" ],
+            "DownstreamPathTemplate": "/api/books/ids/{id}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "bookstore",
+                    "Port": 80
+                }
+            ]
+        },
+        {
+            "UpstreamPathTemplate": "/books/comments",
+            "UpstreamHttpMethod": [ "Post" ],
+            "DownstreamPathTemplate": "/api/books/comments",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "bookstore",
+                    "Port": 80
+                }
+            ]
+        },
+        {
+            "UpstreamPathTemplate": "/books/documents/{documentName}",
+            "UpstreamHttpMethod": [ "Get" ],
+            "DownstreamPathTemplate": "/api/books/documents/{documentName}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "bookstore",
+                    "Port": 80
+                }
+            ]
+        },
+        {
+            "UpstreamPathTemplate": "/books/favorites",
+            "UpstreamHttpMethod": [ "Get" ],
+            "DownstreamPathTemplate": "/api/books/favorites",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "bookstore",
+                    "Port": 80
+                }
+            ]
+        },
+        {
+            "UpstreamPathTemplate": "/books/favorites/{bookId}",
+            "UpstreamHttpMethod": [ "Post", "Delete" ],
+            "DownstreamPathTemplate": "/api/books/favorites/{bookId}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "bookstore",
+                    "Port": 80
                 }
             ]
         }

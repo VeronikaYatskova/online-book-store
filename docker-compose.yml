@@ -2,6 +2,23 @@ version: '3'
 
 services:
   
+  gateway:
+    image: gateway
+    build:
+      context: .
+      dockerfile: Gateway/Dockerfile
+    ports:
+      - 7101:80
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - bookstore
+      - auth
+      - profiles
+      - comments
+      - requests
+      - email
+
   bookstore:
     build:
       context: .
@@ -162,9 +179,9 @@ services:
     volumes: 
       - ./volumes/redis/cache:/data
 
-  networks:
-    elastic:
-      driver: bridge
+networks:
+  elastic:
+    driver: bridge
 
-  volumes:
-    elasticsearch-data:
+volumes:
+  elasticsearch-data:
