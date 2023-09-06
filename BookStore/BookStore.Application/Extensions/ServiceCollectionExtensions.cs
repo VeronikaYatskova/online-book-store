@@ -20,6 +20,8 @@ namespace BookStore.Application.Extensions
             
             services.AddMediatR(_ => _.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             
+            services.AddHttpContextAccessor();
+
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 

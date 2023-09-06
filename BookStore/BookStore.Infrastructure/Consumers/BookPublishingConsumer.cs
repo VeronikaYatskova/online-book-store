@@ -1,3 +1,4 @@
+using AutoMapper;
 using BookStore.Application.Abstractions.Contracts.Interfaces;
 using BookStore.Application.Services.CloudServices.Azurite.Models;
 using BookStore.Domain.Entities;
@@ -17,14 +18,19 @@ namespace BookStore.Infrastructure.Consumers
         private readonly ILogger<BookPublishingConsumer> _logger;
         private readonly ITemplateGenerator _templateGenerator;
         private readonly IPdfGenerator _pdfGenerator;
-        private readonly BlobStorageSettings _blobStorageSettings;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
         public BookPublishingConsumer(
             IBookPublishingFacade bookPublishingFacade,
-            ILogger<BookPublishingConsumer> logger)
+            ILogger<BookPublishingConsumer> logger,
+            IUnitOfWork unitOfWork,
+            IMapper mapper)
         {
             _logger = logger;
             _bookPublishingFacade = bookPublishingFacade;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task Consume(ConsumeContext<BookPublishingMessage> context)

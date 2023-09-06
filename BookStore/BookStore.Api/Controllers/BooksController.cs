@@ -12,11 +12,12 @@ using BookStore.Application.Features.Book.Queries.GetBooksByName;
 using BookStore.Application.Features.Book.Queries.GetFavoriteBooks;
 using BookStore.Application.Features.Comment.Commands;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookStore.WebApi.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/books")]
     [ApiController]
     public class BooksController : ControllerBase

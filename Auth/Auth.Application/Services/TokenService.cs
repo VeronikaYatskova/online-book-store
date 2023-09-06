@@ -21,17 +21,20 @@ namespace Auth.Application.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IRepository<User> _userRepository;
         private readonly IOptions<AppSettings> _appSetting;
+        private readonly IRepository<UserRole> _roleRepository;
 
         public TokenService (
             IConfiguration config,
             IHttpContextAccessor httpContextAccessor,
             IRepository<User> userRepository,
+            IRepository<UserRole> roleRepository,
             IOptions<AppSettings> appSetting)
         {
             _config = config;
             _httpContextAccessor = httpContextAccessor;
             _userRepository = userRepository;
             _appSetting = appSetting;
+            _roleRepository = roleRepository;
         }
 
         public string CreateToken(User user)
@@ -39,7 +42,9 @@ namespace Auth.Application.Services
             var claims = new []
             {
                 new Claim(TokenClaims.UserIdClaim, user.Id.ToString()),
-                new Claim(TokenClaims.UserRoleClaim, user.Role.Name)
+                new Claim(TokenClaims.UserRoleClaim, user.Role.Name),
+                new Claim(JwtRegisteredClaimNames.Aud, "gatewayApi"),
+                new Claim(JwtRegisteredClaimNames.Iss, "gatewayApi"),
             };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSetting.Value.SecretKey));

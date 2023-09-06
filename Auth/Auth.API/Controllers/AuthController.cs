@@ -11,6 +11,7 @@ using Auth.Application.Abstractions.Interfaces.Services;
 using Auth.Application.Features.User.Commands.ConfirmEmail;
 using MassTransit;
 using OnlineBookStore.Messages.Models.Messages;
+using AutoMapper;
 
 namespace Auth.API.Controllers
 {
@@ -21,15 +22,18 @@ namespace Auth.API.Controllers
         private readonly IMediator _mediator;
         private readonly ITokenService _tokenService;
         private readonly IPublishEndpoint _publishEndpoint;
+        private readonly IMapper _mapper;
 
         public AuthController(
-            IMediator mediator, 
-            ITokenService tokenService, 
-            IPublishEndpoint publishEndpoint)
+            IMediator mediator,
+            ITokenService tokenService,
+            IPublishEndpoint publishEndpoint,
+            IMapper mapper)
         {
             _mediator = mediator;
             _tokenService = tokenService;
             _publishEndpoint = publishEndpoint;
+            _mapper = mapper;
         }
 
         [HttpGet("users")]
@@ -55,9 +59,17 @@ namespace Auth.API.Controllers
 
             await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.UserRole, _publishEndpoint));
 
-            await ConfirmEmail(request.Email);
+            var user = _mapper.Map<User>(request);
+            user.Role = new UserRole
+            {
+               Id = new Guid("09f1a17e-a830-415d-8611-7c9595d3dcc5"),
+               Name = "User",
+            };
+            
+            // await ConfirmEmail(request.Email);
+            var token = _tokenService.CreateToken(user);
 
-            return Created("User was created.", request);
+            return Ok(token);
         }
 
         [HttpPost("publishers/sign-up")]

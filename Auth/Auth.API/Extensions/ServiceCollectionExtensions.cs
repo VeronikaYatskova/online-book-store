@@ -26,8 +26,10 @@ namespace Auth.API.Extensions
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
                             .GetBytes(configuration.GetSection("AppSettings:SecretKey").Value!)),
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidAudience = "gatewayApi",
+                        ValidIssuer = "gatewayApi",
                     };
                 });
         }
