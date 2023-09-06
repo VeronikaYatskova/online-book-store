@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Auth.Application.Features.User.Commands.RegisterUser
 {
-    public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand>
+    public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, string>
     {
         private readonly IRepository<UserEntity> _userRepository;
         private readonly IRepository<UserRole> _userRoleRepository;
@@ -44,7 +44,7 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
             _logger = logger;
         }
 
-        public async Task Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+        public async Task<string> Handle(RegisterUserCommand request, CancellationToken cancellationToken) 
         {
             await _validator.ValidateAndThrowAsync(request);
             
@@ -68,9 +68,14 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
 
             await _userRepository.CreateAsync(userEntity);
             await _userRepository.SaveChangesAsync();
-
+            
             var userRegisteredMessage = _mapper.Map<UserRegisteredMessage>(userEntity);
             await _publishEndpoint.Publish(userRegisteredMessage);
+
+            var token = _tokenService.CreateToken(userEntity);
+            await _tokenService.SetRefreshTokenAsync(userEntity);
+            
+            return token;
         }
     }
 }

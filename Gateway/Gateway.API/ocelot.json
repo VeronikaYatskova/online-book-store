@@ -50,7 +50,13 @@
                     "Host": "bookstore",
                     "Port": 80
                 }
-            ]
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": [
+                    "gatewayApi.scope"
+                ]
+            }
         },
         {
             "UpstreamPathTemplate": "/books/documents/{documentName}",
@@ -80,7 +86,13 @@
                     "Host": "bookstore",
                     "Port": 80
                 }
-            ]
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": [
+                    "gatewayApi.scope"
+                ]
+            }
         },
         {
             "UpstreamPathTemplate": "/books/favorites/{bookId}",
@@ -92,7 +104,13 @@
                     "Host": "bookstore",
                     "Port": 80
                 }
-            ]
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": [
+                    "gatewayApi.scope"
+                ]
+            }
         },
 
 
@@ -154,7 +172,13 @@
                     "Host": "auth",
                     "Port": 80
                 }
-            ]
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": [
+                    "gatewayApi.scope"
+                ]
+            }
         },
 
 
@@ -180,7 +204,13 @@
                     "Host": "comments",
                     "Port": 80
                 }
-            ]
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": [
+                    "gatewayApi.scope"
+                ]
+            }
         },
         {
             "UpstreamPathTemplate": "/comments",
@@ -192,7 +222,13 @@
                     "Host": "comments",
                     "Port": 80
                 }
-            ]
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": [
+                    "gatewayApi.scope"
+                ]
+            }
         },
 
 
@@ -206,7 +242,13 @@
                     "Host": "comments",
                     "Port": 80
                 }
-            ]
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": [
+                    "gatewayApi.scope"
+                ]
+            }
         },
         {
             "UpstreamPathTemplate": "/users/authors",
@@ -218,7 +260,16 @@
                     "Host": "profiles",
                     "Port": 80
                 }
-            ]
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": [
+                    "gatewayApi.scope"
+                ]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "Publisher,  User"
+            }
         },
         {
             "UpstreamPathTemplate": "/users/publishers",
@@ -230,7 +281,16 @@
                     "Host": "profiles",
                     "Port": 80
                 }
-            ]
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": [
+                    "gatewayApi.scope"
+                ]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "Author"
+            }
         },
         {
             "UpstreamPathTemplate": "/users/{userId}",
@@ -254,7 +314,16 @@
                     "Host": "profiles",
                     "Port": 80
                 }
-            ]
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": [
+                    "gatewayApi.scope"
+                ]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "User"
+            }
         },
 
 
@@ -268,7 +337,16 @@
                     "Host": "requests",
                     "Port": 80
                 }
-            ]
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": [
+                    "gatewayApi.scope"
+                ]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "Publisher"
+            }
         },
         {
             "UpstreamPathTemplate": "/requests/{requestsId}",
@@ -280,7 +358,16 @@
                     "Host": "requests",
                     "Port": 80
                 }
-            ]
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": [
+                    "gatewayApi.scope"
+                ]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "Publisher"
+            }
         },
         {
             "UpstreamPathTemplate": "/publishers/{publisherId}/requests",
@@ -292,7 +379,16 @@
                     "Host": "requests",
                     "Port": 80
                 }
-            ]
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": [
+                    "gatewayApi.scope"
+                ]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "Publisher"
+            }
         },
         {
             "UpstreamPathTemplate": "/users/{userId}/requests",
@@ -304,7 +400,16 @@
                     "Host": "requests",
                     "Port": 80
                 }
-            ]
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": [
+                    "gatewayApi.scope"
+                ]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "Author"
+            }
         },
         {
             "UpstreamPathTemplate": "/requests",
@@ -328,7 +433,16 @@
                     "Host": "requests",
                     "Port": 80
                 }
-            ]
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": [
+                    "gatewayApi.scope"
+                ]
+            },
+            "RouteClaimsRequirement": {
+                "Role": "Publisher"
+            }
         }
     ]
 }

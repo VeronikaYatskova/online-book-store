@@ -59,17 +59,9 @@ namespace Auth.API.Controllers
 
             await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.UserRole, _publishEndpoint));
 
-            var user = _mapper.Map<User>(request);
-            user.Role = new UserRole
-            {
-               Id = new Guid("09f1a17e-a830-415d-8611-7c9595d3dcc5"),
-               Name = "User",
-            };
-            
             // await ConfirmEmail(request.Email);
-            var token = _tokenService.CreateToken(user);
-
-            return Ok(token);
+            
+            return Created("", request);
         }
 
         [HttpPost("publishers/sign-up")]
@@ -77,7 +69,7 @@ namespace Auth.API.Controllers
         {
             await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.PublisherRole, _publishEndpoint));
             
-            await ConfirmEmail(request.Email);
+            // await ConfirmEmail(request.Email);
 
             return Created("User was created.", request);
         }
@@ -87,7 +79,7 @@ namespace Auth.API.Controllers
         {
             await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.AuthorRole, _publishEndpoint));
 
-            await ConfirmEmail(request.Email);
+            // await ConfirmEmail(request.Email);
 
             return Created("User was created.", request);
         }

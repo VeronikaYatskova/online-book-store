@@ -4,5 +4,9 @@ using MediatR;
 
 namespace Auth.Application.Features.User.Commands.RegisterUser
 {
-    public record RegisterUserCommand(RegisterUserRequest UserDataRequest, string Role, IPublishEndpoint _publishEndpoint) : IRequest;
+    public record RegisterUserCommand(
+        RegisterUserRequest UserDataRequest, 
+        string Role, 
+        IPublishEndpoint _publishEndpoint
+    ) : IRequest<string>;
 }
