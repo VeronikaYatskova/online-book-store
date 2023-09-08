@@ -1,6 +1,9 @@
 using Requests.API.Extension;
 using Requests.DAL.Extensions;
 using Requests.BLL.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -11,6 +14,8 @@ builder.Logging.AddCustomLogger();
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+builder.Services.AddCustomAuthentication(configuration);
 
 builder.Services.AddApiLayer(configuration);
 builder.Services.AddDataAccessLayer();
@@ -33,6 +38,7 @@ if (app.Environment.IsDevelopment())
 
 // app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

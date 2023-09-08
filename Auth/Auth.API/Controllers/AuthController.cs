@@ -57,31 +57,31 @@ namespace Auth.API.Controllers
         {
             await _publishEndpoint.Publish(new UserRegisteredMessage());
 
-            await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.UserRole, _publishEndpoint));
+            var token = await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.UserRole, _publishEndpoint));
 
             // await ConfirmEmail(request.Email);
             
-            return Created("", request);
+            return Created("", token);
         }
 
         [HttpPost("publishers/sign-up")]
         public async Task<IActionResult> RegisterPublisher([FromBody] RegisterUserRequest request)
         {
-            await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.PublisherRole, _publishEndpoint));
+            var token = await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.PublisherRole, _publishEndpoint));
             
             // await ConfirmEmail(request.Email);
 
-            return Created("User was created.", request);
+            return Created("User was created.", token);
         }
 
         [HttpPost("authors/sign-up")]
         public async Task<IActionResult> RegisterAuthor([FromBody] RegisterUserRequest request)
         {
-            await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.AuthorRole, _publishEndpoint));
+            var token = await _mediator.Send(new RegisterUserCommand(request, UserRolesConstants.AuthorRole, _publishEndpoint));
 
             // await ConfirmEmail(request.Email);
 
-            return Created("User was created.", request);
+            return Created("User was created.", token);
         }
 
         [HttpGet]
@@ -93,7 +93,7 @@ namespace Auth.API.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteUser(DeleteUserRequest request)
+        public async Task<IActionResult> DeleteUser([FromBody] DeleteUserRequest request)
         {
             await _mediator.Send(new DeleteUserCommand(request.Email));
 

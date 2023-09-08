@@ -12,7 +12,7 @@ var configuration = builder.Configuration;
 
 // Add services to the container.
 
-builder.Services.ConfigureAuthentication();
+builder.Services.ConfigureAuthentication(configuration);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -34,6 +34,7 @@ await app.UseOcelot();
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -14,7 +14,8 @@ namespace Comments.DAL.Extensions
 
         public static void AddRepositories(this IServiceCollection services)
         {
-            services.AddScoped<ICommentsRepository, CommentsRepository>(); 
+            services.AddScoped<ICommentsRepository, CommentsRepository>();
+            services.AddScoped<ICacheRepository, CacheRepository>();
         }
     }
 }

@@ -53,9 +53,7 @@
             ],
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": [
-                    "gatewayApi.scope"
-                ]
+                "AllowedScopes": []
             }
         },
         {
@@ -71,9 +69,7 @@
             ],
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": [
-                    "gatewayApi.scope"
-                ]
+                "AllowedScopes": []
             }
         },
         {
@@ -89,9 +85,7 @@
             ],
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": [
-                    "gatewayApi.scope"
-                ]
+                "AllowedScopes": []
             }
         },
         {
@@ -107,9 +101,7 @@
             ],
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": [
-                    "gatewayApi.scope"
-                ]
+                "AllowedScopes": []
             }
         },
 
@@ -163,9 +155,9 @@
             ]
         },
         {
-            "UpstreamPathTemplate": "/auth?email={email}",
+            "UpstreamPathTemplate": "/auth",
             "UpstreamHttpMethod": [ "Delete" ],
-            "DownstreamPathTemplate": "/api/auth?email={email}",
+            "DownstreamPathTemplate": "/api/auth",
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
@@ -175,9 +167,7 @@
             ],
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": [
-                    "gatewayApi.scope"
-                ]
+                "AllowedScopes": []
             }
         },
 
@@ -207,9 +197,7 @@
             ],
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": [
-                    "gatewayApi.scope"
-                ]
+                "AllowedScopes": []
             }
         },
         {
@@ -225,9 +213,7 @@
             ],
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": [
-                    "gatewayApi.scope"
-                ]
+                "AllowedScopes": []
             }
         },
 
@@ -245,9 +231,7 @@
             ],
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": [
-                    "gatewayApi.scope"
-                ]
+                "AllowedScopes": []
             }
         },
         {
@@ -263,9 +247,7 @@
             ],
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": [
-                    "gatewayApi.scope"
-                ]
+                "AllowedScopes": []
             },
             "RouteClaimsRequirement": {
                 "Role": "Publisher,  User"
@@ -284,9 +266,7 @@
             ],
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": [
-                    "gatewayApi.scope"
-                ]
+                "AllowedScopes": []
             },
             "RouteClaimsRequirement": {
                 "Role": "Author"
@@ -317,9 +297,7 @@
             ],
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": [
-                    "gatewayApi.scope"
-                ]
+                "AllowedScopes": []
             },
             "RouteClaimsRequirement": {
                 "Role": "User"
@@ -340,9 +318,7 @@
             ],
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": [
-                    "gatewayApi.scope"
-                ]
+                "AllowedScopes": []
             },
             "RouteClaimsRequirement": {
                 "Role": "Publisher"
@@ -361,9 +337,7 @@
             ],
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": [
-                    "gatewayApi.scope"
-                ]
+                "AllowedScopes": []
             },
             "RouteClaimsRequirement": {
                 "Role": "Publisher"
@@ -382,9 +356,7 @@
             ],
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": [
-                    "gatewayApi.scope"
-                ]
+                "AllowedScopes": []
             },
             "RouteClaimsRequirement": {
                 "Role": "Publisher"
@@ -403,9 +375,7 @@
             ],
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": [
-                    "gatewayApi.scope"
-                ]
+                "AllowedScopes": []
             },
             "RouteClaimsRequirement": {
                 "Role": "Author"
@@ -436,9 +406,7 @@
             ],
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": [
-                    "gatewayApi.scope"
-                ]
+                "AllowedScopes": []
             },
             "RouteClaimsRequirement": {
                 "Role": "Publisher"

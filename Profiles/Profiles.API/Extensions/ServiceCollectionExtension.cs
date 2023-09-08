@@ -7,6 +7,9 @@ using Microsoft.Extensions.Options;
 using MassTransit;
 using Profiles.Infrastructure.Consumers;
 using OnlineBookStore.Queues;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Profiles.API.Extensions
 {
@@ -16,6 +19,22 @@ namespace Profiles.API.Extensions
         {
             services.AddInfrastrucureLayer();
             services.AddApplicationLayer();
+        }
+        
+        public static void AddCustomAuthentication(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+                            .GetBytes(configuration.GetSection("AppSettings:SecretKey").Value!)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                    };
+                });
         }
 
         public static void AddCustomLogger(this ILoggingBuilder loggingBuilder)

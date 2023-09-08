@@ -19,17 +19,15 @@ namespace Auth.API.Extensions
         public static void AddCustomAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
                             .GetBytes(configuration.GetSection("AppSettings:SecretKey").Value!)),
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidAudience = "gatewayApi",
-                        ValidIssuer = "gatewayApi",
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
                     };
                 });
         }

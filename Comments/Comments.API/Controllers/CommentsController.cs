@@ -1,6 +1,7 @@
 using Comments.API.Filters;
 using Comments.BLL.DTOs.Request;
 using Comments.BLL.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Comments.API.Controllers
@@ -33,6 +34,7 @@ namespace Comments.API.Controllers
             return Created("", addCommentRequest);
         }
 
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateCommentAsync([FromBody] UpdateCommentRequest updateCommentRequest)
         {
@@ -41,6 +43,7 @@ namespace Comments.API.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpDelete("{commentId}")]
         public async Task<IActionResult> DeleteCommentAsync([FromRoute] string commentId)
         {

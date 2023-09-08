@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -11,17 +12,20 @@ namespace Gateway.API.Extensions
             services.AddSwaggerForOcelot(configuration);
         }
 
-        public static void ConfigureAuthentication(this IServiceCollection services)
+        public static void ConfigureAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidAudience = "gatewayApi",
-                        ValidIssuer = "gatewayApi",
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+                            .GetBytes(configuration.GetSection("AppSettings:SecretKey").Value!)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        // ValidAudience = "gatewayApi",
+                        // ValidIssuer = "gatewayApi",
                     };
                 });
         }

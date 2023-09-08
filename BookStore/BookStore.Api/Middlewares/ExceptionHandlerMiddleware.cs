@@ -7,11 +7,13 @@ namespace BookStore.WebApi.Middlewares
     {
         private readonly RequestDelegate _next;
         private readonly IExceptionsService _exceptionService;
+        private readonly ILogger<ExceptionHandlerMiddleware> _logger;
 
-        public ExceptionHandlerMiddleware(RequestDelegate next, IExceptionsService exceptionService)
+        public ExceptionHandlerMiddleware(RequestDelegate next, IExceptionsService exceptionService, ILogger<ExceptionHandlerMiddleware> logger)
         {
             _next = next;
             _exceptionService = exceptionService;
+            _logger = logger;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -22,7 +24,8 @@ namespace BookStore.WebApi.Middlewares
             }
             catch (Exception ex)
             {
-                await HandleExceptionAsync(context, ex);
+                _logger.LogError(ex, "Exception");
+                // await HandleExceptionAsync(context, ex);
             }
         }
 

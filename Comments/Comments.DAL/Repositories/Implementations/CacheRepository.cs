@@ -11,7 +11,7 @@ namespace Comments.DAL.Repositories.Implementations
         private readonly CacheSettings _cacheSettings;
         private readonly IDatabase _cacheDb;
 
-        public CacheRepository(IOptions<CacheSettings> cacheSettings, IDatabase cacheDb)
+        public CacheRepository(IOptions<CacheSettings> cacheSettings)
         {
             _cacheSettings = cacheSettings.Value;
 

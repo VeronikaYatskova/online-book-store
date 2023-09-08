@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Requests.BLL.DTOs.Requests;
 using Requests.BLL.Services.Interfaces;
@@ -22,6 +23,7 @@ namespace Requests.API.Controllers
             _blobStorageService = blobStorageService;
         }
 
+        [Authorize(Roles = "Publisher")]
         [HttpGet("requests")]
         public async Task<IActionResult> GetRequests()
         {
@@ -30,6 +32,7 @@ namespace Requests.API.Controllers
             return Ok(requests);
         }
 
+        [Authorize(Roles = "Publisher")]
         [HttpGet("requests/{requestId}")]
         public async Task<IActionResult> GetRequestById(string requestId)
         {
@@ -38,6 +41,7 @@ namespace Requests.API.Controllers
             return Ok(request);
         }
 
+        [Authorize(Roles = "Publisher")]
         [HttpGet("publishers/{publisherId}/requests")]
         public async Task<IActionResult> GetPublishersRequest(string publisherId)
         {
@@ -46,6 +50,7 @@ namespace Requests.API.Controllers
             return Ok(requests);
         }
 
+        [Authorize(Roles = "Author")]
         [HttpGet("users/{userId}/requests")]
         public async Task<IActionResult> GetUsersRequests(string userId)
         {
@@ -54,6 +59,7 @@ namespace Requests.API.Controllers
             return Ok(requests);
         }
 
+        [Authorize(Roles = "Author")]
         [HttpPost("requests")]
         public async Task<IActionResult> AddRequest([FromForm] AddRequestDto addRequestDto)
         {
@@ -62,6 +68,7 @@ namespace Requests.API.Controllers
             return Created("", addRequestDto);
         }
 
+        [Authorize(Roles = "Publisher")]
         [HttpDelete("requests")]
         public async Task<IActionResult> DeleteRequest([FromBody] DeleteRequestDto deleteRequestDto)
         {
@@ -70,6 +77,7 @@ namespace Requests.API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Publisher")]
         [HttpPut("requests")]
         public async Task<IActionResult> UpdateRequest([FromBody] UpdateRequestDto updateRequestDto)
         {
@@ -78,6 +86,7 @@ namespace Requests.API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Publisher")]
         [HttpPost("requests/{requestId}")]
         public async Task<IActionResult> PublishBook([FromRoute] string requestId, [FromBody] AddBookDto addBookDto)
         {

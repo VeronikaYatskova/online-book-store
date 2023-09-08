@@ -10,6 +10,8 @@ builder.Logging.AddCustomLogger();
 
 builder.Services.AddOptionsConfiguration(configuration);
 
+builder.Services.AddCustomAuthentication(configuration);
+
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

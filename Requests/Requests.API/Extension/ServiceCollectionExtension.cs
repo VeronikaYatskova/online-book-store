@@ -1,5 +1,8 @@
+using System.Text;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using OnlineBookStore.Messages.Models.Messages;
 using OnlineBookStore.Queues;
 using Requests.BLL.Consumers;
@@ -16,6 +19,22 @@ namespace Requests.API.Extension
         {
             services.AddOptions(configuration);
             services.AddMessageSender();
+        }
+
+        public static void AddCustomAuthentication(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+                            .GetBytes(configuration.GetSection("AppSettings:SecretKey").Value!)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                    };
+                });
         }
 
         public static void AddCustomLogger(this ILoggingBuilder loggingBuilder)

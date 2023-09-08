@@ -12,6 +12,9 @@ using Serilog.Sinks.Elasticsearch;
 using System.Reflection;
 using Hangfire;
 using Hangfire.PostgreSql;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace BookStore.WebApi.Extensions
 {
@@ -21,6 +24,22 @@ namespace BookStore.WebApi.Extensions
         {
             services.AddApplicationLayer();
             services.AddInfrastructureLayer(configuration);
+        }
+
+        public static void AddCustomAuthentication(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+                            .GetBytes(configuration.GetSection("AppSettings:SecretKey").Value!)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                    };
+                });
         }
 
         public static void AddCustomLogger(this ILoggingBuilder loggingBuilder, IConfiguration configuration)

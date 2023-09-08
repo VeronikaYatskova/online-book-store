@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Profiles.Application.DTOs.Request;
 using Profiles.Application.Features.Users.Commands.AddUser;
@@ -33,7 +34,7 @@ namespace Profiles.API.Controllers
             return Ok(users);
         }
 
-        [HttpGet("normal-users")]
+        [HttpGet("normal-users")] // delete this
         public async Task<IActionResult> GetNormalUserAsync()
         {
             var users = await _mediator.Send(new GetNormalUsersQuery());
@@ -41,6 +42,7 @@ namespace Profiles.API.Controllers
             return Ok(users);
         }
 
+        [Authorize(Roles = "Publisher")]
         [HttpGet("authors")]
         public async Task<IActionResult> GetAuthorsAsync()
         {
@@ -49,6 +51,7 @@ namespace Profiles.API.Controllers
             return Ok(authors);
         }
 
+        [Authorize(Roles = "Author")]
         [HttpGet("publishers")]
         public async Task<IActionResult> GetPublishersAsync()
         {
@@ -65,7 +68,7 @@ namespace Profiles.API.Controllers
             return Ok(user);
         }
 
-        [HttpPost]
+        [HttpPost] // delete ?
         public async Task<IActionResult> AddUserAsync([FromBody] AddUserRequest user)
         {
             await _mediator.Send(new AddUserCommand(user));
@@ -74,6 +77,7 @@ namespace Profiles.API.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<IActionResult> EditUserAsync([FromBody] EditUserRequest user)
         {
             await _mediator.Send(new EditUserCommand(user));
@@ -81,12 +85,12 @@ namespace Profiles.API.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{userId}")]
+        [HttpDelete("{userId}")] // delete
         public async Task<IActionResult> DeleteUserAsync([FromRoute] string userId)
         {
             await _mediator.Send(new DeleteUserCommand(new DeleteUserRequest
             {
-                UserId = id
+                UserId = userId
             }));
 
             return NoContent();

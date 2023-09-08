@@ -3,10 +3,6 @@ using BookStore.WebApi.Extensions;
 using BookStore.Api.Extensions;
 using Hangfire;
 using BookStore.Application.Abstractions.Contracts.Interfaces;
-using Serilog;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -16,21 +12,7 @@ var configuration = builder.Configuration;
 
 builder.Services.AddControllers();
 
-builder.Services.AddAuthorization();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-                            .GetBytes(configuration.GetSection("AppSettings:SecretKey").Value!)),
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidAudience = "gatewayApi",
-                        ValidIssuer = "gatewayApi",
-                    };
-                });
+builder.Services.AddCustomAuthentication(configuration);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -1,9 +1,11 @@
+using System.Text;
 using Comments.BLL.Consumers;
 using Comments.BLL.DTOs.General;
 using Comments.DAL.Entities;
-using Comments.DAL.Repositories.Implementations;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using OnlineBookStore.Queues;
 using Serilog;
 using Serilog.Events;
@@ -15,6 +17,22 @@ namespace Comments.API.Extensions
         public static void AddApiLayer(this IServiceCollection services, IConfiguration config)
         {
             services.AddOptions(config);
+        }
+
+        public static void AddCustomAuthentication(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+                            .GetBytes(configuration.GetSection("AppSettings:SecretKey").Value!)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                    };
+                });
         }
 
         public static void AddCustomLogger(this ILoggingBuilder loggingBuilder)

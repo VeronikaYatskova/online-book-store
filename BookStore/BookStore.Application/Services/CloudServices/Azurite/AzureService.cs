@@ -34,6 +34,7 @@ namespace BookStore.Application.Services.CloudServices.Azurite
             {
                 var uri = container.Uri.ToString();
                 var name = file.Name;
+                
                 var fullUri = $"{uri}/{name}";
 
                 files.Add(new Blob

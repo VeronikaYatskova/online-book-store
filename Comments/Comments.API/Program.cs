@@ -1,11 +1,7 @@
 using Comments.API.Extensions;
 using Comments.API.Middlewares.ExceptionHandlerMiddleware;
-using Comments.BLL.Consumers;
-using Comments.BLL.DTOs.General;
 using Comments.BLL.Extensions;
 using Comments.DAL.Extensions;
-using MassTransit;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -16,6 +12,8 @@ builder.Logging.AddCustomLogger();
 
 builder.Services.AddControllers()
                 .AddFluentValidation();
+
+builder.Services.AddCustomAuthentication(configuration);
 
 builder.Services.AddDataAccessLayer(configuration);
 builder.Services.AddBusinessLogicLayer();
@@ -38,8 +36,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
