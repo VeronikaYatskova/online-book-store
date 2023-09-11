@@ -10,7 +10,7 @@ builder.Logging.AddCustomLogger();
 
 builder.Services.AddOptionsConfiguration(configuration);
 
-builder.Services.AddCustomAuthentication(configuration);
+// builder.Services.AddCustomAuthentication(configuration);
 
 builder.Services.AddControllers();
 

@@ -12,7 +12,6 @@ using BookStore.Application.Features.Book.Queries.GetBooksByName;
 using BookStore.Application.Features.Book.Queries.GetFavoriteBooks;
 using BookStore.Application.Features.Comment.Commands;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookStore.WebApi.Controllers
@@ -78,7 +77,6 @@ namespace BookStore.WebApi.Controllers
             return Ok(await _azureService.GetAllAsync());
         }
 
-        [Authorize(Roles = "Publisher")]
         [HttpDelete("bookIds/{bookId}")]
         public async Task<IActionResult> DeleteBookAsync([FromRoute] string bookId)
         {
@@ -88,7 +86,6 @@ namespace BookStore.WebApi.Controllers
             return Ok();
         }
 
-        [Authorize]
         [HttpGet("documents/{documentName}")]
         public async Task<IActionResult> DownloadBook([FromRoute] string documentName)
         {
@@ -97,7 +94,6 @@ namespace BookStore.WebApi.Controllers
             return File(document, "application/octet-stream", documentName);
         }
 
-        [Authorize(Roles = "User")]
         [HttpGet("favorites")]
         public async Task<IActionResult> GetFavoriteBooks()
         {
@@ -108,7 +104,6 @@ namespace BookStore.WebApi.Controllers
             return Ok(favoriteBooks);
         }
 
-        [Authorize(Roles = "User")]
         [HttpPost("favorites/{bookId}")]
         public async Task<IActionResult> AddBookToFavourite([FromRoute] string bookId)
         {
@@ -119,7 +114,6 @@ namespace BookStore.WebApi.Controllers
             return Created("", bookId);
         }
 
-        [Authorize(Roles = "User")]
         [HttpDelete("favorites/{bookId}")]
         public async Task<IActionResult> DeleteBookFromFavourite([FromRoute] string bookId)
         {

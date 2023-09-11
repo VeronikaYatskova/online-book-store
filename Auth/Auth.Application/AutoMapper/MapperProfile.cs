@@ -16,6 +16,7 @@ namespace Auth.Application.AutoMapper
             CreateMap<LoginUserRequest, User>();
             CreateMap<RegisterUserRequest, User>();
             CreateMap<User, UserRegisteredMessage>();
+            CreateMap<RegisterUserRequest, UserRegisteredMessage>();
         }
     }
 }

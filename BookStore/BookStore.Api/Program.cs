@@ -12,7 +12,7 @@ var configuration = builder.Configuration;
 
 builder.Services.AddControllers();
 
-builder.Services.AddCustomAuthentication(configuration);
+// builder.Services.AddCustomAuthentication(configuration);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

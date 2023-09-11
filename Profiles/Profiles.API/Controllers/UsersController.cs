@@ -42,7 +42,6 @@ namespace Profiles.API.Controllers
             return Ok(users);
         }
 
-        [Authorize(Roles = "Publisher")]
         [HttpGet("authors")]
         public async Task<IActionResult> GetAuthorsAsync()
         {
@@ -51,7 +50,6 @@ namespace Profiles.API.Controllers
             return Ok(authors);
         }
 
-        [Authorize(Roles = "Author")]
         [HttpGet("publishers")]
         public async Task<IActionResult> GetPublishersAsync()
         {
@@ -77,7 +75,6 @@ namespace Profiles.API.Controllers
         }
 
         [HttpPut]
-        [Authorize]
         public async Task<IActionResult> EditUserAsync([FromBody] EditUserRequest user)
         {
             await _mediator.Send(new EditUserCommand(user));

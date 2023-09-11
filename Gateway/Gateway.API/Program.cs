@@ -1,4 +1,5 @@
 using Gateway.API.Extensions;
+using Gateway.API.Middleware;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
@@ -30,7 +31,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-await app.UseOcelot();
+var config = new OcelotPipelineConfiguration
+{
+    AuthorizationMiddleware = async (context, next) =>
+    {
+        await OcelotJwtMiddleware.Authorize(context, next);
+    }
+};
+
+await app.UseOcelot(config);
 
 app.UseHttpsRedirection();
 

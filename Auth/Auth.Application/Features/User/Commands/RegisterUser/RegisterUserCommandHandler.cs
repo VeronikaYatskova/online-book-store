@@ -69,7 +69,12 @@ namespace Auth.Application.Features.User.Commands.RegisterUser
             await _userRepository.CreateAsync(userEntity);
             await _userRepository.SaveChangesAsync();
             
-            var userRegisteredMessage = _mapper.Map<UserRegisteredMessage>(userEntity);
+            var userRegisteredMessage = _mapper.Map<UserRegisteredMessage>(request.UserDataRequest);
+            
+            _logger.LogError($"Registered user info: {userRegisteredMessage.Email} {userRegisteredMessage.FirstName} {userRegisteredMessage.LastName}");
+
+            userRegisteredMessage.RoleId = role.Id;
+
             await _publishEndpoint.Publish(userRegisteredMessage);
 
             var token = _tokenService.CreateToken(userEntity);
