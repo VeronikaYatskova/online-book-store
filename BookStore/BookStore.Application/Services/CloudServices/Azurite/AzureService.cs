@@ -148,11 +148,11 @@ namespace BookStore.Application.Services.CloudServices.Azurite
 
                 if (book.BookCoverFakeName is not null)
                 {
-                    var BookCoverFakeName = await GetBlobByNameAsync(
+                    var bookCoverFakeName = await GetBlobByNameAsync(
                         book.BookCoverFakeName, 
                         _blobStorageSettings.BookCoversContainerName);
 
-                     book.BookCoverFakeName = BookCoverFakeName!;
+                     book.BookCoverFakeName = bookCoverFakeName!;
                 }
 
                 if (blobUrl is not null)

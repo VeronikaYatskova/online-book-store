@@ -6,6 +6,7 @@ using OnlineBookStore.Exceptions.Exceptions;
 using BookStore.Domain.Exceptions;
 using BookStore.Application.Services.CloudServices.Azurite.Models;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace BookStore.Application.Features.Book.Queries.GetAllBooks
 {
@@ -15,17 +16,20 @@ namespace BookStore.Application.Features.Book.Queries.GetAllBooks
         private readonly IMapper _mapper;
         private readonly IAzureService _azureService;
         private readonly BlobStorageSettings _blobStorageSettings;
+        private readonly ILogger<GetAllBooksQueryHandler> _logger;
 
         public GetAllBooksQueryHandler(
             IUnitOfWork unitOfWork,
             IMapper mapper,
             IAzureService azureService,
-            IOptions<BlobStorageSettings> blobStorageSettings)
+            IOptions<BlobStorageSettings> blobStorageSettings,
+            ILogger<GetAllBooksQueryHandler> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _azureService = azureService;
             _blobStorageSettings = blobStorageSettings.Value;
+            _logger = logger;
         }
 
         public async Task<IEnumerable<BookDto>> Handle(GetAllBooksQuery request, CancellationToken cancellationToken)

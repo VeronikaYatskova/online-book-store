@@ -34,7 +34,6 @@ namespace Comments.API.Controllers
             return Created("", addCommentRequest);
         }
 
-        [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateCommentAsync([FromBody] UpdateCommentRequest updateCommentRequest)
         {
@@ -43,7 +42,6 @@ namespace Comments.API.Controllers
             return NoContent();
         }
 
-        [Authorize]
         [HttpDelete("{commentId}")]
         public async Task<IActionResult> DeleteCommentAsync([FromRoute] string commentId)
         {

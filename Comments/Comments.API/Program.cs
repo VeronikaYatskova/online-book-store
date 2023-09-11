@@ -13,7 +13,7 @@ builder.Logging.AddCustomLogger();
 builder.Services.AddControllers()
                 .AddFluentValidation();
 
-builder.Services.AddCustomAuthentication(configuration);
+// builder.Services.AddCustomAuthentication(configuration);
 
 builder.Services.AddDataAccessLayer(configuration);
 builder.Services.AddBusinessLogicLayer();

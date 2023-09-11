@@ -1,5 +1,6 @@
 using System.Text.Json;
 using BookStore.Application.Abstractions.Contracts.Interfaces;
+using Newtonsoft.Json;
 
 namespace BookStore.WebApi.Middlewares
 {
@@ -7,13 +8,11 @@ namespace BookStore.WebApi.Middlewares
     {
         private readonly RequestDelegate _next;
         private readonly IExceptionsService _exceptionService;
-        private readonly ILogger<ExceptionHandlerMiddleware> _logger;
 
-        public ExceptionHandlerMiddleware(RequestDelegate next, IExceptionsService exceptionService, ILogger<ExceptionHandlerMiddleware> logger)
+        public ExceptionHandlerMiddleware(RequestDelegate next, IExceptionsService exceptionService)
         {
             _next = next;
             _exceptionService = exceptionService;
-            _logger = logger;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -24,8 +23,7 @@ namespace BookStore.WebApi.Middlewares
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Exception");
-                // await HandleExceptionAsync(context, ex);
+                await HandleExceptionAsync(context, ex);
             }
         }
 
@@ -33,7 +31,8 @@ namespace BookStore.WebApi.Middlewares
         {
             var code = _exceptionService.GetStatusCodeOnException(ex);
 
-            var result = JsonSerializer.Serialize(new { error = ex.Message });
+            var result = JsonConvert.SerializeObject(new { error = ex.Message });
+
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)code;
 

@@ -378,7 +378,7 @@
                 "AllowedScopes": []
             },
             "RouteClaimsRequirement": {
-                "Role": "Author"
+                "Role": "User"
             }
         },
         {
@@ -391,7 +391,14 @@
                     "Host": "requests",
                     "Port": 80
                 }
-            ]
+            ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            },
+            "RouteClaimsRequirement": {
+                "Role": "Author"
+            }
         },
         {
             "UpstreamPathTemplate": "/requests/{requestId}",
