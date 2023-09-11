@@ -1,6 +1,11 @@
 {
     "GlobalConfiguration": {
-        "BaseUrl": "http://localhost:7101"
+        "BaseUrl": "http://localhost:7101",
+        "QoSOptions": {
+            "ExceptionsAllowedBeforeBreaking": 3,
+            "DurationOfBreak": 1000,
+            "TimeoutValue": 5000
+          }
     },
 
     "Routes": [

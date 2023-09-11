@@ -2,6 +2,7 @@ using Gateway.API.Extensions;
 using Gateway.API.Middleware;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using Ocelot.Provider.Polly;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,14 @@ var configuration = builder.Configuration;
 
 // Add services to the container.
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+    });
+});
+
 builder.Services.ConfigureAuthentication(configuration);
 
 builder.Services.AddControllers();
@@ -20,7 +29,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddOcelot(configuration);
+builder.Services.AddOcelot(configuration).AddPolly();
 
 var app = builder.Build();
 
@@ -42,6 +51,8 @@ var config = new OcelotPipelineConfiguration
 await app.UseOcelot(config);
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
