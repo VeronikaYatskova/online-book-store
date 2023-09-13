@@ -1,4 +1,5 @@
 using AutoMapper;
+using BookStore.Application.Abstractions.Contracts.Interfaces;
 using MassTransit;
 using MediatR;
 using OnlineBookStore.Messages.Models.Messages;
@@ -9,11 +10,16 @@ namespace BookStore.Application.Features.Comment.Commands
     {
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly IMapper _mapper;
+        private readonly ITokenService _tokenService;
 
-        public AddBookCommentCommandHandler(IPublishEndpoint publishEndpoint, IMapper mapper)
+        public AddBookCommentCommandHandler(
+            IPublishEndpoint publishEndpoint,
+            IMapper mapper, 
+            ITokenService tokenService)
         {
             _publishEndpoint = publishEndpoint;
             _mapper = mapper;
+            _tokenService = tokenService;
         }
 
         public async Task Handle(AddBookCommentCommand request, CancellationToken cancellationToken)
@@ -21,8 +27,8 @@ namespace BookStore.Application.Features.Comment.Commands
             var commentAddedMessage = _mapper.Map<CommentAddedMessage>(request.CommentData);
             
             commentAddedMessage.Date = DateTime.UtcNow;
-            commentAddedMessage.UserId = "fbc02566-87cb-4ac1-a85f-bb339bae4672";
-
+            commentAddedMessage.UserId = await _tokenService.GetUserIdFromTokenAsync();
+            
             await _publishEndpoint.Publish(commentAddedMessage);
         }
     }

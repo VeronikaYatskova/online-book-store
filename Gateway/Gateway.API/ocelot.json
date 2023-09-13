@@ -59,6 +59,9 @@
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
                 "AllowedScopes": []
+            },
+            "RouteClaimsRequirement": {
+                "Role": "Publisher,User,Author"
             }
         },
         {

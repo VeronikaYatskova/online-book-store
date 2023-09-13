@@ -19,26 +19,6 @@ namespace Gateway.API.Middleware
             }
         }
 
-        // private static bool ValidateScope(HttpContext httpContext)
-        // {
-        //     var downstreamRoute = httpContext.Items.DownstreamRoute();
-        //     var listOfScopes = downstreamRoute.AuthenticationOptions.AllowedScopes;
-
-        //     if (listOfScopes == null || listOfScopes.Count == 0) return true;
-
-        //     var userClaimsPrincipals = httpContext.User.Claims.ToArray();
-        //     List<string> listOfClaimTypes = new List<string>();
-        //     foreach (var userClaim in userClaimsPrincipals)
-        //     {
-        //         listOfClaimTypes.Add(userClaim.Type);
-        //     }
-        //     foreach (string scope in listOfScopes)
-        //     {
-        //         if (!listOfClaimTypes.Contains(scope)) return false;
-        //     }
-        //     return true;
-        // }
-        
         private static bool ValidateRole(HttpContext ctx)
         {
             var downStreamRoute = ctx.Items.DownstreamRoute();

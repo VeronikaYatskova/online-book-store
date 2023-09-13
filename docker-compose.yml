@@ -27,7 +27,7 @@ services:
       - "7025:80"
     depends_on:
       - postgres
-      # - azurite-db
+      - azurite-db
       - rabbitmq
     
   auth:
@@ -59,7 +59,7 @@ services:
     ports:
       - "7024:80"
     depends_on:
-      #- azurite-db
+      - azurite-db
       - rabbitmq
       - mongo
 

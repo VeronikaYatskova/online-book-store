@@ -30,16 +30,6 @@ namespace Comments.BLL.Services.Implementation
             return commentsResponse;
         }
 
-        public async Task AddCommentAsync(AddCommentRequest addCommentRequest)
-        {
-            var commentEntity = _mapper.Map<Comment>(addCommentRequest);
-
-            commentEntity.Date = DateTime.UtcNow;
-            commentEntity.UserId = "fbc02566-87cb-4ac1-a85f-bb339bae4672"; // there should be and id of loged in user
-
-            await _commentsRepository.AddAsync(commentEntity);
-        }
-
         public async Task UpdateCommentAsync(UpdateCommentRequest updateCommentRequest)
         {
             var commentEntity = _mapper.Map<Comment>(updateCommentRequest);

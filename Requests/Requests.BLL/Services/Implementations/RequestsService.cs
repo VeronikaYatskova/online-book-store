@@ -8,6 +8,7 @@ using Requests.BLL.DTOs.Responses;
 using Requests.BLL.Services.Interfaces;
 using Requests.DAL.Models;
 using Requests.DAL.Repositories.Interfaces;
+using OnlineBookStore.Exceptions.Exceptions;
 
 namespace Requests.BLL.Services.Implementations
 {
@@ -21,6 +22,7 @@ namespace Requests.BLL.Services.Implementations
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly IRequestClient<BookPublishingMessage> _requestClient;
         private readonly ILogger<RequestsService> _logger;
+        private readonly ITokenService _tokenService;
 
         public RequestsService(
             IRequestsRepository requestsRepository,
@@ -30,7 +32,8 @@ namespace Requests.BLL.Services.Implementations
             IPublishEndpoint publishEndpoint,
             IRequestClient<BookPublishingMessage> requestClient,
             IOptions<BlobStorageSettings> blobStorageSettings,
-            ILogger<RequestsService> logger)
+            ILogger<RequestsService> logger,
+            ITokenService tokenService)
         {
             _requestsRepository = requestsRepository;
             _mapper = mapper;
@@ -40,6 +43,7 @@ namespace Requests.BLL.Services.Implementations
             _requestClient = requestClient;
             _blobStorageSettings = blobStorageSettings.Value;
             _logger = logger;
+            _tokenService = tokenService;
         }
 
         public async Task<IEnumerable<GetRequestsDto>> GetRequestsAsync()
@@ -76,50 +80,41 @@ namespace Requests.BLL.Services.Implementations
 
         public async Task AddRequestAsync(AddRequestDto addRequestDto)
         {
-            _logger.LogInformation($"{addRequestDto.UserId} {addRequestDto.PublisherId}");
-
             var request = _mapper.Map<Request>(addRequestDto);
-            
+            request.UserId = await _tokenService.GetUserIdFromTokenAsync();
+
             var bookFileFakeName = Guid.NewGuid();
             var bookFileExtension = Path.GetExtension(addRequestDto.File.FileName);
 
+            request.BookFakeName = string.Format("{0}{1}", bookFileFakeName, bookFileExtension);
+
             if (addRequestDto.BookCoverFile is not null)
             {
-                var bookCoverFileFakeName = Guid.NewGuid();
-                var bookCoverFileExtension = Path.GetExtension(addRequestDto.BookCoverFile.FileName);
-                
-                request.BookCoverFakeName = string.Format("{0}{1}", bookCoverFileFakeName, bookCoverFileExtension);;
-                
+                var fileName = addRequestDto.BookCoverFile.FileName;
+                var bookCoverFile = addRequestDto.BookCoverFile;
+                var bookCoversStorage = _blobStorageSettings.BookCoversContainerName;
+
+                request.BookCoverFakeName = CreateFakeCoverName(fileName);
+
                 await _blobStorageService.UploadAsync(
-                    addRequestDto.BookCoverFile,
-                    _blobStorageSettings.BookCoversContainerName,
+                    bookCoverFile,
+                    bookCoversStorage,
                     request.BookFakeName
                 ); 
             }
-            
-            request.BookFakeName = string.Format("{0}{1}", bookFileFakeName, bookFileExtension);
-            
-            await _requestsRepository.AddAsync(request);
 
+            await _requestsRepository.AddAsync(request);
             await _blobStorageService.UploadAsync(
                 addRequestDto.File, 
                 _blobStorageSettings.RequestsContainerName,
                 request.BookFakeName);
 
-            var fakePublisher = new User
-            {
-                Id = "64d8e3c9b5eb70d5f5958b22",
-                Email = "fakepublisher@gmail.com",
-                RoleId = "02a27bd4-960f-4f30-9c79-51be15e219b5"
-            };
-
-            await _userRepository.AddUserAsync(fakePublisher);
-
             var publisher = await _userRepository.GetByConditionAsync(c => c.Id == addRequestDto.PublisherId) ??
-                throw new ArgumentNullException("publisher is null");
+                throw new NotFoundException("Publisher is not found.");
 
             var requestCreatedMessage = _mapper.Map<RequestCreatedMessage>(request);
             requestCreatedMessage.PublisherEmail = publisher.Email;
+            requestCreatedMessage.UserId = await _tokenService.GetUserIdFromTokenAsync();
 
             await _publishEndpoint.Publish(requestCreatedMessage);
         }
@@ -151,15 +146,27 @@ namespace Requests.BLL.Services.Implementations
             var request = await _requestsRepository.GetByConditionAsync(r => r.Id == requestId);
             
             var bookPublishingMessage = _mapper.Map<BookPublishingMessage>(addBookDto);
+
             bookPublishingMessage.BookFakeName = request.BookFakeName;
             bookPublishingMessage.BookPictureURL = request.BookCoverFakeName;
+            bookPublishingMessage.PublisherGuid = await _tokenService.GetUserIdFromTokenAsync();
             
+            _logger.LogInformation("Publisher id from token: " + bookPublishingMessage.PublisherGuid);
+
             var response = await _requestClient.GetResponse<BookPublishedMessage>(bookPublishingMessage);
 
             if (response.Message.StatusCode == 200)
             {
                 await _requestsRepository.DeleteAsync(requestId);
             }
+        }
+
+        private string CreateFakeCoverName(string fileName)
+        {
+            var bookCoverFileFakeName = Guid.NewGuid();
+            var bookCoverFileExtension = Path.GetExtension(fileName);
+            
+            return string.Format("{0}{1}", bookCoverFileFakeName, bookCoverFileExtension);;
         }
     }
 }

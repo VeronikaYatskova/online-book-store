@@ -3,6 +3,7 @@ using BookStore.WebApi.Extensions;
 using BookStore.Api.Extensions;
 using Hangfire;
 using BookStore.Application.Abstractions.Contracts.Interfaces;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -12,7 +13,7 @@ var configuration = builder.Configuration;
 
 builder.Services.AddControllers();
 
-// builder.Services.AddCustomAuthentication(configuration);
+builder.Services.AddCustomAuthentication(configuration);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -1,7 +1,6 @@
 using Comments.API.Filters;
 using Comments.BLL.DTOs.Request;
 using Comments.BLL.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Comments.API.Controllers
@@ -24,14 +23,6 @@ namespace Comments.API.Controllers
             var comments = await _commentsService.GetCommentsByBookIdAsync(bookId);
 
             return Ok(comments);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AddCommentAsync([FromBody] AddCommentRequest addCommentRequest)
-        {
-            await _commentsService.AddCommentAsync(addCommentRequest);
-
-            return Created("", addCommentRequest);
         }
 
         [HttpPut]

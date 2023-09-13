@@ -30,6 +30,7 @@ namespace BookStore.Application.Extensions
             services.AddScoped<IAzureService, AzureService>();
             services.AddScoped<IBookPublishingFacade, BookBublishingFacade>(); 
             services.AddScoped<IBackgroudService, BackgroudService>();
+            services.AddScoped<ITokenService, TokenService>();
         }
     }
 }

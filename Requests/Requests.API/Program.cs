@@ -15,7 +15,7 @@ builder.Logging.AddCustomLogger();
 
 builder.Services.AddControllers();
 
-// builder.Services.AddCustomAuthentication(configuration);
+builder.Services.AddCustomAuthentication(configuration);
 
 builder.Services.AddApiLayer(configuration);
 builder.Services.AddDataAccessLayer();

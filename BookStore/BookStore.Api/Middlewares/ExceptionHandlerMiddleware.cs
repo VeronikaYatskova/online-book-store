@@ -1,4 +1,3 @@
-using System.Text.Json;
 using BookStore.Application.Abstractions.Contracts.Interfaces;
 using Newtonsoft.Json;
 
