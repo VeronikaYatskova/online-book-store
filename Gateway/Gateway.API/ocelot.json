@@ -22,6 +22,18 @@
             ]
         },
         {
+            "UpstreamPathTemplate": "/categories",
+            "UpstreamHttpMethod": [ "Get" ],
+            "DownstreamPathTemplate": "/api/categories",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "bookstore",
+                    "Port": 80
+                }
+            ]
+        },
+        {
             "UpstreamPathTemplate": "/books/{id}",
             "UpstreamHttpMethod": [ "Get" ],
             "DownstreamPathTemplate": "/api/books/ids/{id}",
