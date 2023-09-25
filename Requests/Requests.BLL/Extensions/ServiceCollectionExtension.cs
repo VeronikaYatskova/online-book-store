@@ -10,6 +10,7 @@ namespace Requests.BLL.Extensions
         {
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddServices();
+            services.AddHttpContextAccessor();
         }
 
         private static void AddServices(this IServiceCollection services)

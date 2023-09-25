@@ -5,6 +5,16 @@ using Ocelot.Middleware;
 using Ocelot.Provider.Polly;
 
 var builder = WebApplication.CreateBuilder(args);
+var corsPolicyName = "CorsPolicy";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(corsPolicyName,
+        builder => builder.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+    );
+});
 
 builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
     .AddJsonFile("ocelot.json", optional: false, reloadOnChange: true)
@@ -13,14 +23,6 @@ builder.Configuration.SetBasePath(builder.Environment.ContentRootPath)
 var configuration = builder.Configuration;
 
 // Add services to the container.
-
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(builder =>
-    {
-        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-    });
-});
 
 builder.Services.ConfigureAuthentication(configuration);
 
@@ -48,11 +50,13 @@ var config = new OcelotPipelineConfiguration
     }
 };
 
+app.UsePreflightRequestHandler();
+
 await app.UseOcelot(config);
 
 app.UseHttpsRedirection();
 
-app.UseCors();
+app.UseCors(corsPolicyName);
 
 app.UseAuthentication();
 app.UseAuthorization();
