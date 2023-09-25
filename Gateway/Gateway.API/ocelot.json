@@ -5,12 +5,6 @@
             "ExceptionsAllowedBeforeBreaking": 3,
             "DurationOfBreak": 1000,
             "TimeoutValue": 5000
-        },
-        "CorsMiddleware": {
-            "AllowCredentials": true,
-            "AllowOrigins": [ "*" ],
-            "AllowHeaders": [ "*" ],
-            "AllowMethods": [ "*" ]
         }
     },
 
