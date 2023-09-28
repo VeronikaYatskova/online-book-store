@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Requests.BLL.Services.Implementations;
 using Requests.BLL.Services.Interfaces;
@@ -10,8 +11,7 @@ namespace Requests.BLL.Extensions
         {
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddServices();
-            services.AddHttpContextAccessor();
-        }
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();        }
 
         private static void AddServices(this IServiceCollection services)
         {

@@ -13,11 +13,12 @@ namespace BookStore.Application.Profiles
         {
             CreateMap<BookEntity, BookDto>()
                 .ForMember(b => b.Category,
-                    b => b.MapFrom(b => b.Category.CategoryGuid.ToString()))
+                    b => b.MapFrom(b => b.Category.CategoryName))
                 .ForMember(b => b.Publisher,
-                    b => b.MapFrom(b => b.Publisher.Id.ToString()))
+                    b => b.MapFrom(b => b.Publisher.Email))
                 .ForMember(b => b.Authors,
-                    b => b.MapFrom(b => b.BookAuthors.Select(a => a.AuthorGuid.ToString()).ToArray()));
+                    b => b.MapFrom(b => b.BookAuthors == null ? Array.Empty<string>() 
+                        : b.BookAuthors.Select(a => a.Author.Email).ToArray()));
             
             CreateMap<AddBookDto, BookDto>();
 

@@ -24,7 +24,7 @@ namespace BookStore.Application.Services.CloudServices.Azurite
         {
             var blobServiceClient = new BlobServiceClient(_blobStorageSettings.ConnectionString);
             var container = blobServiceClient
-                .GetBlobContainerClient(_blobStorageSettings.PublishedBooksContainerName);
+                .GetBlobContainerClient(_blobStorageSettings.RequestedBooksContainerName);
             
             await container.CreateIfNotExistsAsync();
 
@@ -53,6 +53,8 @@ namespace BookStore.Application.Services.CloudServices.Azurite
             var container = new BlobContainerClient(
                 _blobStorageSettings.ConnectionString, 
                 fromContainer);
+
+            await container.CreateIfNotExistsAsync();
 
             await container.SetAccessPolicyAsync(PublicAccessType.BlobContainer);
 

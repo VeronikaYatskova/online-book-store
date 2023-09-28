@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Requests.BLL.DTOs.Requests;
 using Requests.BLL.Services.Interfaces;

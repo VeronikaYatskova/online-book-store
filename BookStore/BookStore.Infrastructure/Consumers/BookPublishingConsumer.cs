@@ -1,11 +1,8 @@
 using AutoMapper;
 using BookStore.Application.Abstractions.Contracts.Interfaces;
-using BookStore.Application.Services.CloudServices.Azurite.Models;
 using BookStore.Domain.Entities;
 using MassTransit;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using OnlineBookStore.Messages.Models.Messages;
 using PdfGenerator.Interfaces;
 using PdfGenerator.Models;

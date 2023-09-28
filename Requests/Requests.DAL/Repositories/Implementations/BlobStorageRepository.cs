@@ -40,7 +40,7 @@ namespace Requests.DAL.Repositories.Implementations
             var container = blobServiceClient.GetBlobContainerClient(fromContainer);
 
             await container.CreateIfNotExistsAsync();
-            await container.SetAccessPolicyAsync(Azure.Storage.Blobs.Models.PublicAccessType.BlobContainer);
+            await container.SetAccessPolicyAsync(PublicAccessType.BlobContainer);
 
             var files = new List<Blob>();
 
