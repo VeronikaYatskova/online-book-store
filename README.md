@@ -5,16 +5,23 @@
 
 * ASP.NET WebApi
 * Entity Framework
+* Dapper
 * Clean Architecture
 * Three Layered Architecture
 * Mediator with CQRS pattern
 * AutoMapper
 * PostgreSQL
-* Docker and docker compose files
+* MSSQL
+* MongoDb 
+* Docker and docker compose
 * Fluent Api and Fluent Validation
 * AWS S3 and Minio for storing books
-* DinkToPdf Tool to convert html to pdf
+* Azure Blob Storage
+* i7text library to convert html to pdf
 * Serilog
-* Polly
-* RabbitMQ
+* RabbitMQ with MassTransit
 * MailKit
+* Ocelot Gateway with authentication and retry policy
+* Azure Function that triggers rabbit mq queue
+* XUnit Unit tests
+  
