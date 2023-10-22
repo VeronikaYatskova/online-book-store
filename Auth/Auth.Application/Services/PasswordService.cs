@@ -4,7 +4,6 @@ using Auth.Application.Abstractions.Interfaces.Services;
 using Auth.Application.DTOs.Request;
 using OnlineBookStore.Exceptions.Exceptions;
 using Auth.Domain.Models;
-using Auth.Domain.Exceptions;
 
 namespace Auth.Application.Services
 {
