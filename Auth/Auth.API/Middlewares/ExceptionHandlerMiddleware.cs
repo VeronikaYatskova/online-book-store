@@ -1,6 +1,6 @@
 using System.Net;
 using System.Text.Json;
-using Auth.Domain.Exceptions;
+using OnlineBookStore.Exceptions.Exceptions;
 
 namespace Auth.API.Middlewares
 {

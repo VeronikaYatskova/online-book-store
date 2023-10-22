@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Comments.DAL", "Comments.DAL\Comments.DAL.csproj", "{F8AFEAD1-4C02-47C4-9A33-B42D6AD79BB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Comments.BLL", "Comments.BLL\Comments.BLL.csproj", "{A90F8178-E16C-436C-9770-A30497725C08}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Comments.API", "Comments.API\Comments.API.csproj", "{143BC4D1-0523-42D5-B1CC-207D3FCC334E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F8AFEAD1-4C02-47C4-9A33-B42D6AD79BB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8AFEAD1-4C02-47C4-9A33-B42D6AD79BB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8AFEAD1-4C02-47C4-9A33-B42D6AD79BB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8AFEAD1-4C02-47C4-9A33-B42D6AD79BB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A90F8178-E16C-436C-9770-A30497725C08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A90F8178-E16C-436C-9770-A30497725C08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A90F8178-E16C-436C-9770-A30497725C08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A90F8178-E16C-436C-9770-A30497725C08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{143BC4D1-0523-42D5-B1CC-207D3FCC334E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{143BC4D1-0523-42D5-B1CC-207D3FCC334E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{143BC4D1-0523-42D5-B1CC-207D3FCC334E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{143BC4D1-0523-42D5-B1CC-207D3FCC334E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

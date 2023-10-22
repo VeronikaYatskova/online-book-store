@@ -1,32 +1,31 @@
-using Auth.Application.Abstractions.Repositories;
+using Auth.Application.Abstractions.Interfaces.Repositories;
 using Auth.Application.DTOs.Response;
+using Auth.Domain.Exceptions;
 using AutoMapper;
 using MediatR;
-using Auth.Domain.Exceptions;
+using OnlineBookStore.Exceptions.Exceptions;
+
+using UserEntity = Auth.Domain.Models.User;
 
 namespace Auth.Application.Features.User.Queries.GetUsers
 {
     public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IEnumerable<GetUsersResponse>>
     {
-        private readonly IUserRepository userRepository;
-        private readonly IMapper mapper;
+        private readonly IRepository<UserEntity> _userRepository;
+        private readonly IMapper _mapper;
 
-        public GetUsersQueryHandler(IUserRepository userRepository, IMapper mapper)
+        public GetUsersQueryHandler(IRepository<UserEntity> userRepository, IMapper mapper)
         {
-            this.userRepository = userRepository;
-            this.mapper = mapper;
+            _userRepository = userRepository;
+            _mapper = mapper;
         }
 
-        public Task<IEnumerable<GetUsersResponse>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<GetUsersResponse>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
         {
-            var users = userRepository.FindAllUsers();
+            var users = await _userRepository.FindAllAsync()! ??
+                throw new NotFoundException(ExceptionMessages.UserNotFoundMessage);
 
-            if (users is null)
-            {
-                throw Exceptions.NoUsers;
-            }
-
-            return Task.FromResult(mapper.Map<IEnumerable<GetUsersResponse>>(users));
+            return _mapper.Map<IEnumerable<GetUsersResponse>>(users);
         }
     }
 }

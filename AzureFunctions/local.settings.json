@@ -1,0 +1,14 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "RabbitMqConnection": "amqp://user:user@localhost:5672",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated"
+  },
+  "EmailConfig": {
+    "From": "noreplymybookstore@gmail.com",
+    "SmtpServer": "smtp.gmail.com",
+    "Port": 465,
+    "UserName": "noreplymybookstore@gmail.com",
+    "Password": "ndfkdgkfcpwcsjpk"
+  }
+}

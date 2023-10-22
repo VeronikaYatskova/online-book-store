@@ -1,30 +1,37 @@
-using Auth.Infrastructure;
-using Auth.Application;
-using Serilog;
-using Serilog.Events;
 using Auth.API.Middlewares;
+using Auth.API.Extensions;
+using FluentValidation.AspNetCore;
+using Auth.Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var configuration = builder.Configuration;
 
-var logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Information)
-                .CreateLogger();
+builder.Logging.AddCustomLogger();
 
-builder.Logging.ClearProviders();
-builder.Logging.AddSerilog(logger);
+builder.Services.AddControllers()
+                .AddFluentValidation();
 
-builder.Services.AddControllers();
+builder.Services.AddLayers(configuration);
 
-builder.Services.AddInfrastructureLayer(configuration);
-builder.Services.AddApplicationLayer();
+builder.Services.AddOptions<RabbitMqSettings>()
+    .Bind(configuration
+    .GetSection("RabbitMqConfig"));
+
+builder.Services.AddMassTransitConfig(configuration);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddCustomSwaggerGen();
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddCustomAuthentication(configuration);
+
+builder.Services.AddOptions(configuration);
 
 var app = builder.Build();
 
@@ -37,7 +44,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseAuthentication();
 
 app.UseAuthorization();
 

@@ -1,9 +1,10 @@
 namespace Auth.Domain.Models
 {
-    public static class UserRole
+    public class UserRole
     {
-        public const string Normal = "Normal";
-        public const string Publisher = "Publisher";
-        public const string Author = "Author";
+        public Guid Id { get; set; }
+        public string Name { get; set; } = default!;
+
+        public virtual List<User> Users { get; set; } = default!;
     }
 }

@@ -2,33 +2,114 @@ version: '3'
 
 services:
   
-  api:
-    image: book-store:1.0
+  gateway:
+    image: gateway
+    build:
+      context: .
+      dockerfile: Gateway/Dockerfile
     ports:
-      - "7223:80"
+      - 7101:80
+    environment: 
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - bookstore
+      - auth
+      - profiles
+      - comments
+      - requests
+      - email
 
+  bookstore:
+    build:
+      context: .
+      dockerfile: BookStore/Dockerfile
+    ports:
+      - "7025:80"
+    depends_on:
+      - postgres
+      - azurite-db
+      - rabbitmq
+    
   auth:
-    image: book-store-auth:latest
+    build:
+      context: .
+      dockerfile: Auth/Dockerfile
     ports:
       - "7198:80"
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  profiles:
+    build:
+      context: .
+      dockerfile: Profiles/Dockerfile
+    labels:
+      - mssql=mssql
+    ports:
+      - "7034:80"
+    depends_on:
+      - mssql
+      - rabbitmq
+  
+  requests:
+    build:
+      context: .
+      dockerfile: Requests/Dockerfile
+    ports:
+      - "7024:80"
+    depends_on:
+      - azurite-db
+      - rabbitmq
+      - mongo
+
+  comments:
+    build:
+      context: .
+      dockerfile: Comments/Dockerfile
+    ports:
+      - "7045:80"
+    depends_on:
+      - rabbitmq
+      - mongo
+      - redis
+
+  email:
+    build:
+      context: .
+      dockerfile: EmailService/Dockerfile
+    ports:
+      - "7265:80"
+    depends_on:
+      - rabbitmq
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      MSSQL_SA_PASSWORD: "change_this_password"
+      MSSQL_PID: "Developer"
+      ACCEPT_EULA: "Y"
+      MSSQL_TCP_PORT: 1433
+    ports:
+        - 1442:1433
+    volumes:
+      - ./mssql_init_database.sql:/init.sql
 
   postgres:
     image: postgres
     environment:
-      POSTGRES_DB: "books"
-      POSTGRES_USER: "admin"
-      POSTGRES_PASSWORD: "admin"
-    ports:
-      - "5432:5432"
-
-  postgres-auth:
-    image: postgres
-    environment:
-      POSTGRES_DB: "books-users"
       POSTGRES_USER: "admin"
       POSTGRES_PASSWORD: "admin"
     ports:
       - "5433:5432"
+    volumes:
+      - ./volumes/postgres:/var/lib/postgresql/data
+      - ./init_db.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - 27018:27017
 
   pgadmin:
     container_name: pgadmin4_container
@@ -40,25 +121,67 @@ services:
     ports:
       - "8082:80"
 
-  pgadmin-auth:
-    container_name: pgadmin4_container_auth
-    image: dpage/pgadmin4
-    restart: always
+  rabbitmq:
+    container_name: "rabbitmq"
+    image: rabbitmq:3.8-management-alpine
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: root
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=user
     ports:
-      - "8083:80"
-      
-  minio:
-    image: minio/minio
-    command: server --console-address ":9001" /data/
+      # RabbitMq instance
+      - "5673:5672"
+      # Web interface
+      - "15672:15672"
+    restart: on-failure
+
+  azurite-db:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: azurite-db
     ports:
-      - '9000:9000'
-      - '9001:9001'
-    environment:
-      MINIO_ROOT_USER: asdasdj132sd1sasd12edasdqw212ed123ad1s12
-      MINIO_ROOT_PASSWORD: asdaasasdasddasdj132sd1sasd12edasdqw212ed123ad1s12asd1231nfasd
+      - 10000:10000
+      - 10001:10001
+      - 10002:10002
+
+  elasticsearch:
+    container_name: elasticsearch
+    image: elasticsearch:8.7.1
+    ports:
+      - 9200:9200
     volumes:
-      - ./volumes/minio/.minio/data:/export
-      - ./volumes/minio/.minio/config:/root/.minio
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    environment:
+      - xpack.watcher.enabled=false
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+    networks:
+      - elastic
+
+  kibana:
+    container_name: kibana
+    image: kibana:8.7.1
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_URL=https://localhost:9200
+    networks:
+      - elastic
+
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - '6379:6379'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes: 
+      - ./volumes/redis/cache:/data
+
+networks:
+  elastic:
+    driver: bridge
+
+volumes:
+  elasticsearch-data:
