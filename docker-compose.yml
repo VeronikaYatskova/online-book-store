@@ -179,6 +179,15 @@ services:
     volumes: 
       - ./volumes/redis/cache:/data
 
+  reverseproxy:
+    build:
+      context: ./Nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+
 networks:
   elastic:
     driver: bridge
